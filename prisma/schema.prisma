@@ -1,0 +1,302 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum VenueType {
+  conference
+  journal
+  workshop
+  preprint
+  poster
+  talk
+  thesis
+}
+
+enum PublicationStatus {
+  draft
+  published
+}
+
+enum ProjectStatus {
+  draft
+  published
+}
+
+enum TimelineEventType {
+  education
+  experience
+  award
+  talk
+  service
+  publication_milestone
+}
+
+enum MediaOwnerType {
+  publication
+  project
+  page
+}
+
+enum MediaKind {
+  pdf
+  image
+  figure
+  poster
+}
+
+enum ContactMessageStatus {
+  new
+  read
+  archived
+  spam
+}
+
+enum EntryStatus {
+  draft
+  published
+}
+
+enum UserRole {
+  owner
+  editor
+}
+
+model Publication {
+  id            String            @id @default(cuid())
+  slug          String            @unique
+  title         String
+  authors       Json
+  venue         String
+  venueType     VenueType         @default(conference)
+  year          Int
+  publishedAt   DateTime          @default(now())
+  status        PublicationStatus @default(draft)
+  abstract      String?
+  tldr          String?
+  contributions Json?
+  doi           String?
+  arxivId       String?
+  pdfUrl        String?
+  codeUrl       String?
+  projectUrl    String?
+  bibtex        String?
+  citationCount Int?
+  featured      Boolean           @default(false)
+  sortOrder     Int               @default(0)
+  ogImageUrl    String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  deletedAt     DateTime?
+  tags          PublicationTag[]
+
+  @@index([status, deletedAt, featured, sortOrder])
+}
+
+model Project {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  title         String
+  summary       String
+  role          String?
+  status        ProjectStatus  @default(draft)
+  year          Int
+  problem       String?
+  approach      String?
+  architecture  String?
+  challenges    String?
+  results       String?
+  retrospective String?
+  techStack     Json?
+  repoUrl       String?
+  demoUrl       String?
+  featured      Boolean        @default(false)
+  sortOrder     Int            @default(0)
+  ogImageUrl    String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  tags          ProjectTag[]
+
+  @@index([status, deletedAt, featured, sortOrder])
+}
+
+model Tag {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  label       String
+  description String?
+  color       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  publications PublicationTag[]
+  projects    ProjectTag[]
+}
+
+model PublicationTag {
+  publicationId String
+  tagId         String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([publicationId, tagId])
+  @@index([tagId])
+}
+
+model ProjectTag {
+  projectId String
+  tagId     String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([projectId, tagId])
+  @@index([tagId])
+}
+
+model TimelineEvent {
+  id           String              @id @default(cuid())
+  type         TimelineEventType
+  title        String
+  organization String
+  location     String?
+  startDate    DateTime
+  endDate      DateTime?
+  description  String?
+  highlights   Json?
+  url          String?
+  sortOrder    Int                 @default(0)
+  visible      Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([visible, startDate, sortOrder])
+  @@index([type])
+}
+
+model SkillCategory {
+  id        String @id @default(cuid())
+  name      String
+  sortOrder Int    @default(0)
+  skills    Skill[]
+}
+
+model Skill {
+  id         String         @id @default(cuid())
+  categoryId String
+  category   SkillCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name       String
+  proficiency String?       @default("advanced")
+  sortOrder  Int            @default(0)
+
+  @@index([categoryId])
+}
+
+model Media {
+  id        String         @id @default(cuid())
+  ownerType MediaOwnerType
+  ownerId   String
+  url       String
+  kind      MediaKind      @default(image)
+  alt       String?
+  caption   String?
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+
+  @@index([ownerType, ownerId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  role          UserRole  @default(owner)
+  totpSecret    String?
+  totpEnabled   Boolean   @default(false)
+  backupCodes   Json?
+  failedAttempts Int      @default(0)
+  lockedUntil   DateTime?
+  lastLoginAt   DateTime?
+  lastLoginIp   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  auditLogs     AuditLog[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  userAgent  String?
+  ip         String?
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String?
+  entityId   String?
+  ip         String
+  userAgent  String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String                @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  body      String
+  status    ContactMessageStatus  @default(new)
+  ip        String?
+  createdAt DateTime              @default(now())
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+}
+
+model TeachingAssistant {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  course      String
+  university  String
+  professor   String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  highlights  Json?
+  technologies String?
+  status      EntryStatus  @default(draft)
+  sortOrder   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model ResearchingAssistant {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  lab         String
+  university  String
+  supervisor  String
+  topic       String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  outcomes    Json?
+  technologies String?
+  status      EntryStatus  @default(draft)
+  sortOrder   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
