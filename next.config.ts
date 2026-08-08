@@ -1,6 +1,9 @@
 import type { NextConfig } from "next"
 
+const isProd = process.env.NODE_ENV === "production"
+
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
@@ -39,6 +42,18 @@ const nextConfig: NextConfig = {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
         },
+        ...(isProd
+          ? [
+              {
+                key: "Strict-Transport-Security",
+                value: "max-age=63072000; includeSubDomains; preload",
+              },
+              {
+                key: "X-XSS-Protection",
+                value: "1; mode=block",
+              },
+            ]
+          : []),
       ],
     },
   ],
