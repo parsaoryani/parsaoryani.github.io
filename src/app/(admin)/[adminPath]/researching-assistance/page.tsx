@@ -9,7 +9,7 @@ export default async function AdminResearchingPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Researching Assistance</h1>
+        <h1 className="text-2xl font-bold">Research Experience</h1>
         <Link href="researching-assistance/new">
           <Button variant="default" size="sm" className="font-mono text-xs gap-1.5"><Plus size={14} /> New Entry</Button>
         </Link>

@@ -7,9 +7,9 @@ import type { Metadata } from "next"
 
 export const revalidate = 3600
 
-export const metadata: Metadata = { title: "RA — Research", description: "Research assistance experience and contributions." }
+export const metadata: Metadata = { title: "Research Assistantships", description: "Research experience and research assistantships." }
 
-export default async function ResearchingPage() {
+export default async function ResearchAssistantshipsPage() {
   const items = await prisma.researchingAssistant.findMany({
     where: { status: "published" },
     orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
@@ -21,7 +21,7 @@ export default async function ResearchingPage() {
         <div className="max-w-4xl">
           <ScrollReveal>
             <Badge variant="default" className="mb-5 text-xs px-3 py-1"><FlaskConical size={12} className="mr-1.5" /> Research Experience</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">RA</span> <span className="text-fog/50 font-normal">— Researching Assistance</span></h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">Research Assistantships</span></h1>
             <p className="text-lg text-mist mb-12 max-w-2xl">Research projects and laboratories where I have contributed as a research assistant.</p>
           </ScrollReveal>
 

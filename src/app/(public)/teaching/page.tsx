@@ -7,9 +7,9 @@ import type { Metadata } from "next"
 
 export const revalidate = 3600
 
-export const metadata: Metadata = { title: "TA — Teaching", description: "Teaching assistance experience." }
+export const metadata: Metadata = { title: "Teaching Assistantships", description: "Teaching experience and teaching assistantships." }
 
-export default async function TeachingPage() {
+export default async function TeachingAssistantshipsPage() {
   const items = await prisma.teachingAssistant.findMany({
     where: { status: "published" },
     orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
@@ -21,7 +21,7 @@ export default async function TeachingPage() {
         <div className="max-w-4xl">
           <ScrollReveal>
             <Badge variant="default" className="mb-5 text-xs px-3 py-1"><GraduationCap size={12} className="mr-1.5" /> Teaching Experience</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">TA</span> <span className="text-fog/50 font-normal">— Teaching Assistance</span></h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">Teaching Assistantships</span></h1>
             <p className="text-lg text-mist mb-12 max-w-2xl">Courses I have had the privilege of serving as a teaching assistant.</p>
           </ScrollReveal>
 

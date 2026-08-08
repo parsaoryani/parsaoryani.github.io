@@ -1,8 +1,11 @@
+import { notFound } from "next/navigation"
 import { getDevMailLog } from "@/lib/email"
 
 export const dynamic = "force-dynamic"
 
 export default async function DevMailPage() {
+  if (process.env.NODE_ENV === "production") notFound()
+
   const entries = await getDevMailLog()
 
   return (

@@ -66,7 +66,7 @@ export default async function ContactPage() {
               <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-6">
                   <Send size={16} className="text-cyan" />
-                  <h2 className="text-lg font-semibold text-gradient">Send a Message</h2>
+                  <h2 className="text-lg font-semibold text-gradient">Send a message</h2>
                 </div>
                 <ContactForm />
               </div>

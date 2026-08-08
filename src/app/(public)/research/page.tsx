@@ -66,7 +66,7 @@ export default async function ResearchPage() {
         {publications.length === 0 && (
           <div className="text-center py-20">
             <BookOpen size={40} className="mx-auto text-slate-700 mb-4" />
-            <p className="text-mist font-mono text-sm">No publications yet. Check back soon.</p>
+            <p className="text-mist font-mono text-sm">Research updates will appear here. In the meantime, view my research experience or Scholar profile.</p>
           </div>
         )}
       </Container>

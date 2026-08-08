@@ -52,7 +52,7 @@ export default function EditResearchingPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Edit Researching Assistance</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Research Experience</h1>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2"><Label htmlFor="topic">Research Topic *</Label><Input id="topic" name="topic" required defaultValue={item.topic} /></div>
