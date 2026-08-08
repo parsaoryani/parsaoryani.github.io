@@ -2,6 +2,7 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
 import { PublicationCard } from "@/components/content/publication-card"
 import { Badge } from "@/components/ui/badge"
+import { SectionHeader } from "@/components/ui/section-header"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllPublications } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
@@ -30,20 +31,18 @@ export default async function ResearchPage() {
       <Container>
         <ScrollReveal>
           <div className="max-w-3xl mb-16">
-          <Badge variant="default" className="mb-5 text-xs px-3 py-1">
-            <Sparkles size={12} className="mr-1.5" /> Publications
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient">Research</span>
-          </h1>
-          <div className="space-y-4">
+            <Badge variant="default" size="lg" className="mb-5">
+              <Sparkles size={12} className="mr-1.5" /> Publications
+            </Badge>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-gradient">Research</span>
+            </h1>
             <p className="text-lg text-mist leading-relaxed">
               My research agenda centers on the security and reliability of decentralized
               and intelligent systems. I investigate how cryptographic primitives, formal
               verification, and adversarial machine learning can converge to build systems
               that are both autonomous and trustworthy.
             </p>
-          </div>
           </div>
         </ScrollReveal>
 

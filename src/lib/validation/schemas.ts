@@ -72,6 +72,7 @@ export const projectSchema = z.object({
 export const teachingSchema = z.object({
   slug: z.string().min(1).max(200),
   course: z.string().min(1).max(300),
+  level: z.enum(["graduate", "undergraduate"]).default("graduate"),
   university: z.string().min(1).max(200),
   professor: z.string().min(1).max(200),
   startDate: z.string(),

@@ -25,21 +25,21 @@ export const ProjectCard = memo(function ProjectCard({ project }: ProjectCardPro
   return (
     <Link href={`/projects/${project.slug}`} className="block group">
       <MouseGlow glowColor="indigo" intensity={0.06}>
-        <Card glow className="h-full transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(124,108,255,0.2)]">
+        <Card glow glowColor="indigo" className="h-full">
           <CardContent className="p-6 h-full flex flex-col">
             <div className="flex items-center gap-3 mb-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-cyan/10 to-indigo/10 border border-cyan/10 group-hover:border-cyan/30 group-hover:from-cyan/20 group-hover:to-indigo/20 transition-all duration-500">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-cyan/10 to-indigo/10 border border-cyan/10 group-hover:border-indigo/30 group-hover:from-cyan/20 group-hover:to-indigo/20 transition-all duration-500">
                 <FolderGit2 size={15} className="text-cyan group-hover:text-indigo transition-colors duration-500" />
               </div>
               <span className="font-mono text-xs text-ash">{project.year}</span>
               {project.role && (
-                <Badge variant={roleColors[project.role] || "outline"} className="text-[10px] px-2 py-0.5 group-hover:border-current/30 transition-colors">
+                <Badge variant={roleColors[project.role] || "outline"} size="sm" className="group-hover:border-current/30 transition-colors">
                   {project.role}
                 </Badge>
               )}
             </div>
 
-            <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-indigo transition-colors duration-300">
+            <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-indigo transition-colors duration-300">
               {project.title}
             </h3>
 
@@ -50,7 +50,7 @@ export const ProjectCard = memo(function ProjectCard({ project }: ProjectCardPro
             {techStack && techStack.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {techStack.map((tech) => (
-                  <Badge key={tech} variant="ghost" className="text-[10px] px-2 py-0.5 group-hover:border-indigo/30 group-hover:bg-indigo/5 transition-colors">
+                  <Badge key={tech} variant="ghost" size="sm" className="group-hover:border-indigo/30 group-hover:bg-indigo/5 transition-colors">
                     {tech}
                   </Badge>
                 ))}

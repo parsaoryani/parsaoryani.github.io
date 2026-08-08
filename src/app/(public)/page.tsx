@@ -5,6 +5,7 @@ import { ProjectCard } from "@/components/content/project-card"
 import { SkillCluster } from "@/components/content/skill-cluster"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { SectionHeader } from "@/components/ui/section-header"
 import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
@@ -56,13 +57,13 @@ export default async function HomePage() {
         <Container className="relative z-10 pt-24">
           <div className="max-w-4xl">
             <div className="animate-in">
-              <Badge variant="outline" className="mb-6 text-xs px-4 py-1.5 border-cyan/20 text-cyan bg-cyan/5">
+              <Badge variant="outline" size="lg" className="mb-6 border-cyan/20 text-cyan bg-cyan/5">
                 <Sparkles size={12} className="mr-1.5" />
                 M.Sc. Computer Engineering — Sharif University of Technology
               </Badge>
             </div>
 
-<h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight mb-6">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight mb-6">
               {titleLines.map((line, i) => (
                 <Fragment key={i}>
                   {i > 0 && <br />}
@@ -82,20 +83,33 @@ export default async function HomePage() {
             </p>
 
             <div className="animate-in animate-in-delay-3 flex flex-wrap items-center gap-3">
-              {[
-                { href: "https://scholar.google.com", label: "Google Scholar", icon: GraduationCap, variant: "secondary" as const },
-                { href: "https://github.com/parsaoryani", label: "GitHub", icon: Code2, variant: "secondary" as const },
-                { href: "/cv", label: "View CV", icon: FileText, variant: "default" as const },
-                { href: "mailto:parsa.oryani82@sharif.edu", label: "Email", icon: Mail, variant: "outline" as const },
-              ].map((link) => (
-                <Link key={link.label} href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined}>
-                  <Button variant={link.variant} size="default" className="font-mono text-xs gap-2">
-                    <link.icon size={14} />
-                    {link.label}
-                    {link.href.startsWith("http") && <ArrowUpRight size={12} />}
-                  </Button>
-                </Link>
-              ))}
+              <Link href="/cv">
+                <Button variant="default" size="lg" className="font-mono text-xs gap-2">
+                  <FileText size={14} />
+                  View CV
+                </Button>
+              </Link>
+              <Link href="mailto:parsa.oryani82@sharif.edu">
+                <Button variant="secondary" size="lg" className="font-mono text-xs gap-2">
+                  <Mail size={14} />
+                  Email me
+                </Button>
+              </Link>
+              <div className="w-px h-6 bg-slate-700 mx-1 hidden sm:block" />
+              <Link href="https://scholar.google.com" target="_blank">
+                <Button variant="outline" size="default" className="font-mono text-xs gap-2">
+                  <GraduationCap size={14} />
+                  Scholar
+                  <ArrowUpRight size={12} />
+                </Button>
+              </Link>
+              <Link href="https://github.com/parsaoryani" target="_blank">
+                <Button variant="outline" size="default" className="font-mono text-xs gap-2">
+                  <Code2 size={14} />
+                  GitHub
+                  <ArrowUpRight size={12} />
+                </Button>
+              </Link>
             </div>
 
             <div className="animate-in animate-in-delay-4 mt-16 flex items-center gap-6 text-xs text-ash font-mono">
@@ -131,22 +145,18 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
           <Container className="relative">
             <ScrollReveal>
-              <div className="flex items-end justify-between mb-12">
-                <div>
-                  <Badge variant="default" className="mb-4 text-xs px-3 py-1">Featured Research</Badge>
-                  <h2 className="text-3xl md:text-4xl font-bold">
-                    <span className="text-gradient">Latest Publications</span>
-                  </h2>
-                  <p className="text-mist mt-2 text-sm">Selected papers from top-tier venues</p>
-                </div>
-                <Link
-                  href="/research"
-                  className="hidden md:flex items-center gap-1.5 text-sm text-cyan hover:text-cyan-deep transition-colors font-mono group"
-                >
-                  View all research
-                  <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </div>
+              <SectionHeader
+                badge={<Badge variant="default">Featured Research</Badge>}
+                title="Latest Publications"
+                accent="cyan"
+                description="Selected papers from top-tier venues"
+                action={
+                  <Link href="/research" className="hidden md:flex items-center gap-1.5 text-sm text-cyan hover:text-cyan-deep transition-colors font-mono group">
+                    View all research
+                    <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </Link>
+                }
+              />
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {pubData.map((pub: PublicationWithTags, i: number) => (
@@ -172,35 +182,29 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-void via-emerald/[0.01] to-void pointer-events-none" />
           <Container className="relative">
             <ScrollReveal>
-              <div className="flex items-end justify-between mb-12">
-                <div>
-                  <Badge variant="default" className="mb-4 text-xs px-3 py-1">
-                    <Sparkles size={12} className="mr-1.5" /> Experience
-                  </Badge>
-                  <h2 className="text-3xl md:text-4xl font-bold">
-                    <span className="text-gradient">Selected Experience</span>
-                  </h2>
-                  <p className="text-mist mt-2 text-sm">Recent research and teaching roles</p>
-                </div>
-                <Link
-                  href="/research-assistance"
-                  className="hidden md:flex items-center gap-1.5 text-sm text-emerald hover:text-emerald/80 transition-colors font-mono group"
-                >
-                  View all experience
-                  <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </div>
+              <SectionHeader
+                badge={<Badge variant="success"><Sparkles size={12} className="mr-1.5" /> Experience</Badge>}
+                title="Selected Experience"
+                accent="emerald"
+                description="Recent research and teaching roles"
+                action={
+                  <Link href="/research-assistance" className="hidden md:flex items-center gap-1.5 text-sm text-emerald hover:text-emerald/80 transition-colors font-mono group">
+                    View all experience
+                    <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </Link>
+                }
+              />
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2">
               {researchData && (
                 <ScrollReveal key={researchData.id} direction="up" className="h-full">
-                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-emerald/30 transition-colors">
+                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-emerald/30 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="px-2.5 py-1 rounded-full bg-emerald/5 border border-emerald/10 text-emerald group-hover:bg-emerald/10 group-hover:border-emerald/20 transition-colors">
                         <span className="font-mono text-[10px] font-medium uppercase tracking-wider">Research Experience</span>
                       </span>
                     </div>
-                    <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-emerald transition-colors duration-300">
+                    <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-emerald transition-colors duration-300">
                       {researchData.topic}
                     </h3>
                     <p className="text-sm text-mist mb-3 flex-1">
@@ -230,13 +234,13 @@ export default async function HomePage() {
               )}
               {teachingData && (
                 <ScrollReveal key={teachingData.id} direction="up" delay={100} className="h-full">
-                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-amber/30 transition-colors">
+                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-amber/30 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="px-2.5 py-1 rounded-full bg-amber/5 border border-amber/10 text-amber group-hover:bg-amber/10 group-hover:border-amber/20 transition-colors">
                         <span className="font-mono text-[10px] font-medium uppercase tracking-wider">Teaching Experience</span>
                       </span>
                     </div>
-                    <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-amber transition-colors duration-300">
+                    <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-amber transition-colors duration-300">
                       {teachingData.course}
                     </h3>
                     <p className="text-sm text-mist mb-3 flex-1">
@@ -282,22 +286,18 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-void via-indigo/[0.01] to-void pointer-events-none" />
           <Container className="relative">
             <ScrollReveal>
-              <div className="flex items-end justify-between mb-12">
-                <div>
-                  <Badge variant="secondary" className="mb-4 text-xs px-3 py-1">Engineering</Badge>
-                  <h2 className="text-3xl md:text-4xl font-bold">
-                    <span className="text-gradient">Featured Projects</span>
-                  </h2>
-                  <p className="text-mist mt-2 text-sm">System design case studies with real impact</p>
-                </div>
-                <Link
-                  href="/projects"
-                  className="hidden md:flex items-center gap-1.5 text-sm text-indigo hover:text-indigo/80 transition-colors font-mono group"
-                >
-                  View all projects
-                  <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </div>
+              <SectionHeader
+                badge={<Badge variant="secondary">Engineering</Badge>}
+                title="Featured Projects"
+                accent="indigo"
+                description="System design case studies with real impact"
+                action={
+                  <Link href="/projects" className="hidden md:flex items-center gap-1.5 text-sm text-indigo hover:text-indigo/80 transition-colors font-mono group">
+                    View all projects
+                    <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </Link>
+                }
+              />
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {projData.map((project: ProjectWithTags, i: number) => (
@@ -322,13 +322,12 @@ export default async function HomePage() {
         <Section className="relative">
           <Container>
             <ScrollReveal>
-              <div className="mb-12">
-                <Badge variant="default" className="mb-4 text-xs px-3 py-1">Expertise</Badge>
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  <span className="text-gradient">Skills & Technologies</span>
-                </h2>
-                <p className="text-mist mt-2 text-sm">Deep expertise across blockchain, ML, and security domains</p>
-              </div>
+              <SectionHeader
+                badge={<Badge variant="default">Expertise</Badge>}
+                title="Skills & Technologies"
+                accent="cyan"
+                description="Deep expertise across blockchain, ML, and security domains"
+              />
             </ScrollReveal>
             <ScrollReveal direction="up" delay={150}>
               <SkillCluster categories={skillData} />
@@ -336,6 +335,66 @@ export default async function HomePage() {
           </Container>
         </Section>
       )}
+
+      {/* About Preview */}
+      <Section className="relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
+        <Container className="relative">
+          <ScrollReveal>
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-8 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
+              <div className="flex-1">
+                <Badge variant="outline" size="lg" className="mb-3 border-cyan/20 text-cyan bg-cyan/5">About</Badge>
+                <h2 className="text-2xl font-bold mb-2">
+                  <span className="text-gradient">Parsa Oryani</span>
+                </h2>
+                <p className="text-sm text-mist leading-relaxed max-w-xl">
+                  M.Sc. Computer Engineering at Sharif University of Technology, researching the intersection of security, privacy, and machine learning.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link href="/about">
+                  <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
+                    Learn more <ChevronRight size={14} />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </ScrollReveal>
+        </Container>
+      </Section>
+
+      {/* Contact CTA */}
+      <Section className="relative">
+        <Container>
+          <ScrollReveal>
+            <div className="text-center py-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                <span className="text-gradient">Get in Touch</span>
+              </h2>
+              <p className="text-mist text-sm mb-6 max-w-lg mx-auto">
+                Open to PhD positions, research collaborations, and interesting problems in security and ML.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Link href="mailto:parsa.oryani82@sharif.edu">
+                  <Button variant="default" size="lg" className="font-mono text-xs gap-2">
+                    <Mail size={14} /> Email me
+                  </Button>
+                </Link>
+                <Link href="https://scholar.google.com" target="_blank">
+                  <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
+                    <GraduationCap size={14} /> Google Scholar
+                  </Button>
+                </Link>
+                <Link href="https://github.com/parsaoryani" target="_blank">
+                  <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
+                    <Code2 size={14} /> GitHub
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </ScrollReveal>
+        </Container>
+      </Section>
     </>
   )
 }

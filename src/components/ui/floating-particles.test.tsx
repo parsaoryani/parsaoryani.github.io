@@ -1,21 +1,23 @@
 import { describe, expect, it } from "vitest"
-import { render } from "@testing-library/react"
+import { render, waitFor } from "@testing-library/react"
 import { FloatingParticles } from "@/components/ui/floating-particles"
 
 describe("FloatingParticles", () => {
-  it("renders the requested number of particles with animation classes", () => {
+  it("renders the requested number of particles with animation styles", async () => {
     const { container } = render(<FloatingParticles count={5} color="cyan" size="sm" />)
 
     const wrapper = container.firstChild as HTMLElement
     expect(wrapper).toHaveAttribute("aria-hidden", "true")
 
-    const particles = wrapper.querySelectorAll(".animate-float-slow")
-    expect(particles).toHaveLength(5)
+    await waitFor(() => {
+      const particles = wrapper.querySelectorAll("div > div")
+      expect(particles).toHaveLength(5)
+    })
 
-    const first = particles[0] as HTMLElement
+    const first = wrapper.querySelector("div > div") as HTMLElement
     expect(first.style.left).toMatch(/%$/)
     expect(first.style.top).toMatch(/%$/)
-    expect(first.style.animationDuration).toMatch(/s$/)
+    expect(first.style.animation).toContain("float-slow")
   })
 
   it("applies the given className to the wrapper", () => {
@@ -25,6 +27,7 @@ describe("FloatingParticles", () => {
 
   it("renders zero particles when count is zero", () => {
     const { container } = render(<FloatingParticles count={0} />)
-    expect(container.querySelectorAll(".animate-float-slow")).toHaveLength(0)
+    const wrapper = container.firstChild as HTMLElement
+    expect(wrapper.children).toHaveLength(0)
   })
 })

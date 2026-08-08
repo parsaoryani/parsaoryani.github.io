@@ -1,25 +1,41 @@
 import * as React from "react"
 import { cn } from "@/lib/utils/cn"
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { glow?: boolean }>(
-  ({ className, glow, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        "group relative rounded-xl border border-slate-700/50 bg-slate-900/80 backdrop-blur-sm transition-all duration-500",
-        glow
-          ? "hover:border-cyan/20 hover:shadow-[0_0_30px_-10px_rgba(56,225,196,0.15)]"
-          : "hover:border-slate-600/50",
-        className
-      )}
-      {...props}
-    >
-      {glow && (
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-cyan/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-      )}
-      <div className="relative z-10">{props.children}</div>
-    </div>
-  )
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { glow?: boolean; glowColor?: "cyan" | "indigo" | "emerald" }>(
+  ({ className, glow, glowColor = "cyan", ...props }, ref) => {
+    const glowShadows = {
+      cyan: "hover:border-cyan/20 hover:shadow-[0_0_30px_-10px_rgba(56,225,196,0.15)]",
+      indigo: "hover:border-indigo/20 hover:shadow-[0_0_30px_-10px_rgba(155,138,255,0.15)]",
+      emerald: "hover:border-emerald/20 hover:shadow-[0_0_30px_-10px_rgba(63,185,80,0.15)]",
+    }
+    const glowGradients = {
+      cyan: "from-cyan/[0.03] to-transparent",
+      indigo: "from-indigo/[0.03] to-transparent",
+      emerald: "from-emerald/[0.03] to-transparent",
+    }
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "group relative rounded-xl border border-slate-700/50 bg-slate-900/80 backdrop-blur-sm transition-all duration-500",
+          "hover:-translate-y-0.5 hover:shadow-xl",
+          glow
+            ? glowShadows[glowColor]
+            : "hover:border-slate-600/50",
+          className
+        )}
+        {...props}
+      >
+        {glow && (
+          <div className={cn(
+            "absolute inset-0 rounded-xl bg-gradient-to-b to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none",
+            glowGradients[glowColor]
+          )} />
+        )}
+        <div className="relative z-10">{props.children}</div>
+      </div>
+    )
+  }
 )
 Card.displayName = "Card"
 

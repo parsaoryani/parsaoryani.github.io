@@ -28,7 +28,7 @@ export const PublicationCard = memo(function PublicationCard({ publication, show
   return (
     <Link href={`/research/${publication.slug}`} className="block group">
       <MouseGlow glowColor="cyan" intensity={0.06}>
-        <Card glow className="h-full transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(56,225,196,0.2)]">
+        <Card glow glowColor="cyan" className="h-full">
           <CardContent className="p-6 h-full flex flex-col">
             <div className="flex items-center gap-3 mb-3">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan/5 border border-cyan/10 text-cyan group-hover:bg-cyan/10 group-hover:border-cyan/20 transition-colors">
@@ -40,7 +40,7 @@ export const PublicationCard = memo(function PublicationCard({ publication, show
               <span className="font-mono text-xs text-ash">{publication.year}</span>
             </div>
 
-            <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-cyan transition-colors duration-300">
+            <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-cyan transition-colors duration-300">
               {publication.title}
             </h3>
 
@@ -67,7 +67,7 @@ export const PublicationCard = memo(function PublicationCard({ publication, show
 
             <div className="flex flex-wrap gap-1.5 mb-4">
               {publication.tags.map((pt) => (
-                <Badge key={pt.tagId} variant="secondary" className="text-[10px] px-2 py-0.5 group-hover:border-cyan/30 group-hover:bg-cyan/5 transition-colors">
+                <Badge key={pt.tagId} variant="secondary" size="sm" className="group-hover:border-cyan/30 group-hover:bg-cyan/5 transition-colors">
                   {pt.tag.label}
                 </Badge>
               ))}

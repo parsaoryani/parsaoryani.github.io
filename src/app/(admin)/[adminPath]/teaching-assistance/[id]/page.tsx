@@ -9,7 +9,7 @@ import { EditorLayout, type Breadcrumb } from "@/components/admin/editor-layout"
 import { FieldGroup, SectionHeader } from "@/components/admin/field-group"
 
 interface TAItem {
-  id: string; slug: string; course: string; university: string; professor: string
+  id: string; slug: string; course: string; level: string; university: string; professor: string
   startDate: string; endDate: string | null; description: string | null
   highlights: string[]; technologies: string | null; status: string
   createdAt: string; updatedAt: string
@@ -47,6 +47,7 @@ export default function EditTeachingPage() {
     const data = {
       course: fd.get("course") as string,
       slug: fd.get("slug") as string,
+      level: fd.get("level") as string || "graduate",
       university: fd.get("university") as string,
       professor: fd.get("professor") as string,
       startDate: fd.get("startDate") as string,
@@ -109,6 +110,14 @@ export default function EditTeachingPage() {
         <FieldGroup label="Course" required>
           <Input name="course" required defaultValue={item.course} />
         </FieldGroup>
+        <FieldGroup label="Level" required>
+          <select name="level" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue={item.level}>
+            <option value="graduate">Graduate</option>
+            <option value="undergraduate">Undergraduate</option>
+          </select>
+        </FieldGroup>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
         <FieldGroup label="Slug" required>
           <Input name="slug" required defaultValue={item.slug} />
         </FieldGroup>

@@ -391,3 +391,73 @@ Working document with findings: `docs/PERSONAL_SITE_UX_IA_REVIEW.md`
 - [x] **Audit log filtering**: By action type with clear-filter link.
 - [x] **Empty states**: For sessions and audit log.
 - [x] **Session expiry**: Displayed alongside creation date.
+
+### UX-07 — About Page Anchors ✅
+
+- [x] **Timeline anchor**: `#timeline` on the timeline section wrapper.
+- [x] **Recognition anchor**: `#recognition` wrapping awards, talks, service, publications.
+- [x] **Skills anchor**: `#skills` on the skills section.
+- [x] **Nav links verified**: `/about#timeline`, `/about#recognition` in desktop + mobile nav.
+
+### UX-10 — Homepage About Preview + Contact CTA ✅
+
+- [x] **About preview card**: Name, role summary, "Learn more" CTA linking to /about.
+- [x] **Contact CTA section**: "Get in Touch" heading, email + Scholar + GitHub buttons.
+
+### UX-16 — CV Print Styles ✅
+
+- [x] **@media print**: Hides header, footer, nav, particles. White background, dark text.
+- [x] **Links**: Underlined with href shown in parentheses. Email/mailto links hidden.
+- [x] **Backgrounds**: Glass, glow, grid utilities disabled for clean print.
+
+### UX-13 — Progressive Disclosure on About Timeline ✅
+
+- [x] **Courses**: Already use `<details>` element for collapsible course lists.
+
+### FloatingParticles Hydration Fix ✅
+
+- [x] **Root cause**: `Math.random()` produces different values on server vs client, causing hydration mismatch. `isClient` false during SSR produced `animation: "none"` which mismatched client.
+- [x] **Fix**: Particles now generate in `useEffect` (client-only). Empty container renders during SSR. No hydration mismatch.
+- [x] **Test update**: Updated `floating-particles.test.tsx` to use `waitFor` for async particle rendering.
+
+### Teaching Assistantship — Graduate/Undergraduate Level ✅
+
+- [x] **Schema**: `TeachingAssistant.level` field (`String @default("graduate")`).
+- [x] **Validation**: Zod `teachingSchema` accepts `"graduate"` or `"undergraduate"`.
+- [x] **Admin editors**: Level dropdown on both edit and new pages.
+- [x] **Public teaching page**: Cyan badge displaying "Graduate" or "Undergraduate" next to each entry.
+- [x] **Migration**: `add-teaching-level` migration applied, database re-seeded.
+
+### Nav Order — Experience After Research ✅
+
+- [x] **Desktop nav**: Research → Experience ▾ → Projects → About → Contact → CV
+- [x] **Mobile nav**: Same order with Experience expanded by default.
+- [x] **JSX restructured**: Main nav split into Research link, Experience dropdown, then remaining links.
+
+### UI/UX Improvements — Visual Elevation ✅
+
+- [x] **Card hover lift**: `translateY(-0.5)` + `shadow-xl` on publication, project, experience, about preview, CV hero cards.
+- [x] **Card differentiation**: Publication cards use `glowColor="cyan"`, project cards use `glowColor="indigo"`.
+- [x] **Typography scale**: Card titles bumped from `text-base` to `text-lg`.
+- [x] **Badge size variants**: Added `sm`/`default`/`lg` sizes via CVA. Replaced inline `text-[10px] px-2 py-0.5` overrides with `size="sm"`.
+- [x] **SectionHeader component**: Decorative accent line under section titles. Used on homepage (Research, Experience, Projects, Skills) and About page (Timeline, Recognition, Skills).
+- [x] **Hero CTA polish**: Primary "View CV" and "Email me" use `size="lg"`. Divider separates primary from secondary actions. Scholar/GitHub as outline secondary.
+- [x] **About page**: Photo frame uses `border-glow` gradient border. Timeline dots colored per type (cyan=education, indigo=experience, emerald=award, amber=talk).
+- [x] **TimelineEvent component**: Extracted reusable component with colored markers and connecting lines.
+- [x] **Loading skeletons**: `Skeleton` and `CardSkeleton` components in `src/components/ui/skeleton.tsx`.
+- [x] **All list pages**: Teaching, research-assistance, CV, research, projects pages updated with `Badge size="lg"` and hover lift.
+
+**New components:**
+- `src/components/ui/section-header.tsx` — Reusable section title with accent line
+- `src/components/ui/skeleton.tsx` — Loading skeleton primitives
+
+**Verification:** `tsc --noEmit` clean, 50 Vitest tests pass, production build succeeds.
+
+**Commits:**
+- `4845a71` — UX-03 (load failure vs empty content)
+- `cc1e108` — UX-11/12/17 (experience restructure + publication actions)
+- `9a88587` — UX-20/21/22 (contrast + form a11y + touch targets)
+- `e2bd90b` — UX-39/40/41 (dashboard + messages + security)
+- `98f23e5` — UX-18/23 (project filtering + motion hardening)
+- `42b3144` — docs update
+- (pending) — UX-07/10/16 + nav order + teaching level + UI improvements + hydration fix

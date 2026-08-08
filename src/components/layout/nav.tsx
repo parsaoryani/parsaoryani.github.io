@@ -14,6 +14,8 @@ const mainNavLinks = [
   { href: "/contact", label: "Contact" },
 ]
 
+// Experience dropdown is inserted after Research via JSX ordering below
+
 const experienceLinks = [
   { href: "/research-assistance", label: "Research Experience" },
   { href: "/teaching", label: "Teaching Experience" },
@@ -114,26 +116,26 @@ export function Nav() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-          {mainNavLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300",
-                isActive(link.href)
-                  ? "text-cyan bg-cyan/5"
-                  : "text-mist hover:text-fog hover:bg-slate-800/50"
-              )}
-              aria-current={isActive(link.href) ? "page" : undefined}
-            >
-              {isActive(link.href) && (
-                <span className="absolute inset-0 rounded-full border border-cyan/20 shadow-[0_0_15px_-5px_rgba(56,225,196,0.3)]" />
-              )}
-              <span className="relative z-10">{link.label}</span>
-            </Link>
-          ))}
+          {/* Research */}
+          <Link
+            href="/research"
+            className={cn(
+              "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300",
+              isActive("/research")
+                ? "text-cyan bg-cyan/5"
+                : "text-mist hover:text-fog hover:bg-slate-800/50"
+            )}
+            aria-current={isActive("/research") ? "page" : undefined}
+          >
+            {isActive("/research") && (
+              <span className="absolute inset-0 rounded-full border border-cyan/20 shadow-[0_0_15px_-5px_rgba(56,225,196,0.3)]" />
+            )}
+            <span className="relative z-10">Research</span>
+          </Link>
 
+          {/* Experience dropdown */}
           <div ref={experienceRef} className="relative">
+
             <button
               ref={experienceTriggerRef}
               type="button"
@@ -189,6 +191,26 @@ export function Nav() {
             )}
           </div>
 
+          {/* Projects, About, Contact */}
+          {mainNavLinks.filter(l => l.href !== "/research").map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300",
+                isActive(link.href)
+                  ? "text-cyan bg-cyan/5"
+                  : "text-mist hover:text-fog hover:bg-slate-800/50"
+              )}
+              aria-current={isActive(link.href) ? "page" : undefined}
+            >
+              {isActive(link.href) && (
+                <span className="absolute inset-0 rounded-full border border-cyan/20 shadow-[0_0_15px_-5px_rgba(56,225,196,0.3)]" />
+              )}
+              <span className="relative z-10">{link.label}</span>
+            </Link>
+          ))}
+
           <div className="ml-3 pl-3 border-l border-slate-700">
             <Link href="/cv" aria-label="View CV">
               <Button
@@ -221,25 +243,22 @@ export function Nav() {
           aria-label="Mobile menu"
         >
           <nav className="flex flex-col p-4 gap-1">
-            {mainNavLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={handleMobileLinkClick}
-                className={cn(
-                  "px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                  isActive(link.href)
-                    ? "text-cyan bg-cyan/5 border border-cyan/20"
-                    : "text-mist hover:text-fog hover:bg-slate-800/50"
-                )}
-                aria-current={isActive(link.href) ? "page" : undefined}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {/* Research */}
+            <Link
+              href="/research"
+              onClick={handleMobileLinkClick}
+              className={cn(
+                "px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                isActive("/research")
+                  ? "text-cyan bg-cyan/5 border border-cyan/20"
+                  : "text-mist hover:text-fog hover:bg-slate-800/50"
+              )}
+              aria-current={isActive("/research") ? "page" : undefined}
+            >
+              Research
+            </Link>
 
-            <div className="border-t border-slate-700/50 my-2" />
-
+            {/* Experience (expanded by default) */}
             <button
               type="button"
               onClick={handleExperienceTriggerClick}
@@ -285,6 +304,26 @@ export function Nav() {
                 ))}
               </div>
             )}
+
+            <div className="border-t border-slate-700/50 my-2" />
+
+            {/* Projects, About, Contact */}
+            {mainNavLinks.filter(l => l.href !== "/research").map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={handleMobileLinkClick}
+                className={cn(
+                  "px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                  isActive(link.href)
+                    ? "text-cyan bg-cyan/5 border border-cyan/20"
+                    : "text-mist hover:text-fog hover:bg-slate-800/50"
+                )}
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            ))}
 
             <Link href="/cv" onClick={handleMobileLinkClick} className="mt-2">
               <Button

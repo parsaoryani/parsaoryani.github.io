@@ -52,9 +52,9 @@ export default async function CVPage() {
       <Container>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-14 p-8 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-14 p-8 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
             <div>
-              <Badge variant="default" className="mb-4 text-xs px-3 py-1">
+              <Badge variant="default" size="lg" className="mb-4">
                 <Sparkles size={12} className="mr-1.5" /> Curriculum Vitae
               </Badge>
               <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gradient">Parsa Oryani</h1>

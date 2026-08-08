@@ -25,7 +25,7 @@ export default async function ResearchAssistantshipsPage() {
       <Container>
         <div className="max-w-4xl">
           <ScrollReveal>
-            <Badge variant="default" className="mb-5 text-xs px-3 py-1"><FlaskConical size={12} className="mr-1.5" /> Research Experience</Badge>
+            <Badge variant="default" size="lg" className="mb-5"><FlaskConical size={12} className="mr-1.5" /> Research Experience</Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">Research Assistantships</span></h1>
             <p className="text-lg text-mist mb-12 max-w-2xl">Research projects and laboratories where I have contributed as a research assistant.</p>
           </ScrollReveal>
@@ -35,7 +35,7 @@ export default async function ResearchAssistantshipsPage() {
           <div className="space-y-6">
             {items.map((item, i) => (
               <ScrollReveal key={item.id} direction="up" delay={i * 80}>
-                <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all">
+                <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
                   {/* Context: topic, lab, supervisor, dates */}
                   <div className="flex items-start gap-4">
                     <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-indigo/10 to-cyan/10 border border-indigo/10 shrink-0 mt-1">

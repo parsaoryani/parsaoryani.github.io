@@ -37,7 +37,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
       <Container>
         <ScrollReveal>
           <div className="max-w-3xl mb-12">
-            <Badge variant="secondary" className="mb-5 text-xs px-3 py-1">
+            <Badge variant="secondary" size="lg" className="mb-5">
               <Sparkles size={12} className="mr-1.5" /> Case Studies
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">

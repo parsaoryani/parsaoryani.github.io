@@ -20,6 +20,7 @@ export default function NewTeachingPage() {
     const data = {
       course: form.get("course") as string,
       slug: form.get("slug") as string,
+      level: form.get("level") as string || "graduate",
       university: form.get("university") as string,
       professor: form.get("professor") as string,
       startDate: form.get("startDate") as string,
@@ -46,6 +47,15 @@ export default function NewTeachingPage() {
       <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2"><Label htmlFor="course">Course *</Label><Input id="course" name="course" required placeholder="e.g. Advanced Algorithms" /></div>
+          <div className="space-y-2">
+            <Label htmlFor="level">Level *</Label>
+            <select id="level" name="level" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue="graduate">
+              <option value="graduate">Graduate</option>
+              <option value="undergraduate">Undergraduate</option>
+            </select>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2"><Label htmlFor="slug">Slug *</Label><Input id="slug" name="slug" required placeholder="advanced-algorithms-ta" /></div>
         </div>
         <div className="grid grid-cols-2 gap-4">

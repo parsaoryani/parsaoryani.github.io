@@ -345,6 +345,7 @@ model TeachingAssistant {
   id          String       @id @default(cuid())
   slug        String       @unique
   course      String
+  level       String       @default("graduate")
   university  String
   professor   String
   startDate   DateTime
