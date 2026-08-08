@@ -9,6 +9,19 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
+  const url = new URL(request.url)
+  const action = url.searchParams.get("action")
+
+  // Revision history
+  if (action === "revisions") {
+    const revisions = await prisma.revision.findMany({
+      where: { entityType: "publication", entityId: id },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    })
+    return NextResponse.json(revisions)
+  }
+
   const publication = await prisma.publication.findUnique({
     where: { id },
     include: { tags: { include: { tag: true } } },
@@ -48,6 +61,17 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     await prisma.$transaction(async (tx) => {
+      // Save revision before updating
+      await tx.revision.create({
+        data: {
+          entityType: "publication",
+          entityId: id,
+          data: existing,
+          version: existing.version,
+          userId: session.user.id,
+        },
+      })
+
       await tx.publicationTag.deleteMany({ where: { publicationId: id } })
 
       await tx.publication.update({
@@ -61,7 +85,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             ? { create: tagIds.map((tagId: string) => ({ tagId })) }
             : undefined,
         },
-        include: { tags: { include: { tag: true } } },
       })
     })
 
@@ -91,22 +114,78 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
   try {
     const { id } = await params
+    const url = new URL(request.url)
+    const action = url.searchParams.get("action") || "trash"
+
+    const existing = await prisma.publication.findUnique({ where: { id } })
+    if (!existing) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 })
+    }
+
+    if (action === "restore") {
+      // Restore from trash
+      await prisma.publication.update({
+        where: { id },
+        data: { deletedAt: null },
+      })
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "publication.restore",
+          ip: (await headers()).get("x-forwarded-for") || "unknown",
+          metadata: { id },
+        },
+      })
+      return NextResponse.json({ success: true })
+    }
+
+    if (action === "unpublish") {
+      await prisma.publication.update({
+        where: { id },
+        data: { status: "draft" },
+      })
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "publication.unpublish",
+          ip: (await headers()).get("x-forwarded-for") || "unknown",
+          metadata: { id },
+        },
+      })
+      return NextResponse.json({ success: true })
+    }
+
+    if (action === "archive") {
+      await prisma.publication.update({
+        where: { id },
+        data: { status: "draft", deletedAt: new Date() },
+      })
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "publication.archive",
+          ip: (await headers()).get("x-forwarded-for") || "unknown",
+          metadata: { id },
+        },
+      })
+      return NextResponse.json({ success: true })
+    }
+
+    // Default: soft delete (trash)
     await prisma.publication.update({
       where: { id },
       data: { deletedAt: new Date() },
     })
-
     await prisma.auditLog.create({
       data: {
         userId: session.user.id,
-        action: "publication.delete",
+        action: "publication.trash",
         ip: (await headers()).get("x-forwarded-for") || "unknown",
         metadata: { id },
       },
     })
-
     return NextResponse.json({ success: true })
   } catch {
-    return NextResponse.json({ error: "Failed to delete publication" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to perform action" }, { status: 500 })
   }
 }

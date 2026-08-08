@@ -311,6 +311,19 @@ model PendingTwoFactorChallenge {
   @@index([userId])
 }
 
+model Revision {
+  id         String   @id @default(cuid())
+  entityType String   // "publication" | "project" | "teaching" | "researching"
+  entityId   String
+  data       Json
+  version    Int
+  userId     String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
 model ContactMessage {
   id        String                @id @default(cuid())
   name      String
@@ -341,8 +354,10 @@ model TeachingAssistant {
   technologies String?
   status      EntryStatus  @default(draft)
   sortOrder   Int          @default(0)
+  version     Int          @default(1)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
 }
 
 model ResearchingAssistant {
@@ -359,6 +374,8 @@ model ResearchingAssistant {
   technologies String?
   status      EntryStatus  @default(draft)
   sortOrder   Int          @default(0)
+  version     Int          @default(1)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
 }
