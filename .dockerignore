@@ -7,3 +7,9 @@ docs
 *.md
 .vscode
 .vercel
+backups
+.mail-dev
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+coverage

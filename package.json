@@ -10,16 +10,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "npx tsx scripts/seed.ts",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "db:reset": "bash scripts/db/reset.sh",
+    "db:backup": "bash scripts/db/backup.sh",
+    "deploy:preview": "bash scripts/deploy/preview.sh",
+    "deploy:prod": "bash scripts/deploy/production.sh",
+    "setup": "bash scripts/setup.sh",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "npx tsx scripts/seed.ts"

@@ -1,0 +1,88 @@
+# ---------------------------------------------------------------------------
+# docker-compose.yml — Full local development stack
+#
+# Usage:
+#   docker compose up              # Start all services
+#   docker compose up -d           # Start in background
+#   docker compose down            # Stop all services
+#   docker compose logs -f app     # Follow app logs
+#   docker compose exec app sh     # Shell into app container
+#   docker compose exec db psql -U siteuser -d personal_site  # Database shell
+#
+# First run:
+#   docker compose up -d
+#   docker compose exec app npx prisma migrate deploy
+#   docker compose exec app npx tsx scripts/seed.ts
+# ---------------------------------------------------------------------------
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: personal_site
+      POSTGRES_USER: siteuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local_dev_password}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U siteuser -d personal_site"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
+
+  # ---------------------------------------------------------------------------
+  # Next.js Application
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: "postgresql://siteuser:${DB_PASSWORD:-local_dev_password}@db:5432/personal_site"
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      NEXT_PUBLIC_SITE_URL: "http://localhost:${APP_PORT:-3000}"
+      ADMIN_PATH: ${ADMIN_PATH:-x7k2-console}
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    command: >
+      sh -c "npx prisma migrate deploy && node server.js"
+
+  # ---------------------------------------------------------------------------
+  # MailDev (Development only)
+  # ---------------------------------------------------------------------------
+  maildev:
+    image: maildev/maildev
+    restart: unless-stopped
+    ports:
+      - "${MAILDEV_WEB_PORT:-1080}:1080"
+      - "${MAILDEV_SMTP_PORT:-1025}:1025"
+    profiles:
+      - dev
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
