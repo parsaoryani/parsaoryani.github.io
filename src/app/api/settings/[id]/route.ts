@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db/prisma"
 import { getSession } from "@/lib/auth/auth"
 import { headers } from "next/headers"
+import { revalidatePath } from "next/cache"
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession()
@@ -21,6 +22,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await prisma.auditLog.create({
       data: { userId: session.user.id, action: "setting.update", ip, metadata: { id, key: setting.key } },
     })
+
+    revalidatePath("/")
 
     return NextResponse.json(setting)
   } catch {
