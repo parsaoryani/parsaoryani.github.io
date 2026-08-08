@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useSyncExternalStore } from "react"
+import { useRef, useState, useEffect, useSyncExternalStore } from "react"
 import { cn } from "@/lib/utils/cn"
 
 interface FloatingParticlesProps {
@@ -69,19 +69,27 @@ export function FloatingParticles({
   const containerRef = useRef<HTMLDivElement>(null)
   const isClient = useIsClient()
   const [particles] = useState<Particle[]>(() => generateParticles(count, color, size))
+  const [isPaused, setIsPaused] = useState(false)
+
+  useEffect(() => {
+    const handleVisibility = () => setIsPaused(document.hidden)
+    document.addEventListener("visibilitychange", handleVisibility)
+    return () => document.removeEventListener("visibilitychange", handleVisibility)
+  }, [])
 
   return (
     <div
       ref={containerRef}
       className={cn("absolute inset-0 overflow-hidden pointer-events-none", className)}
       aria-hidden="true"
+      style={isPaused ? { animationPlayState: "paused" } : undefined}
     >
       {isClient &&
         particles.map((p) => (
           <div
             key={p.id}
             className={cn(
-              "absolute rounded-full animate-float-slow",
+              "absolute rounded-full",
               p.colorClass,
               `opacity-${Math.round(p.opacity * 100)}`
             )}
@@ -90,8 +98,7 @@ export function FloatingParticles({
               top: `${p.y}%`,
               width: `${p.size}px`,
               height: `${p.size}px`,
-              animationDuration: `${p.duration}s`,
-              animationDelay: `${p.delay}s`,
+              animation: isPaused ? "none" : `float-slow ${p.duration}s ease-in-out ${p.delay}s infinite`,
             }}
           />
         ))}

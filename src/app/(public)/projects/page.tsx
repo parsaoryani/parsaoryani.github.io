@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllProjects, getAllTags } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
+import Link from "next/link"
 import type { Metadata } from "next"
 import { FolderGit2, Sparkles } from "lucide-react"
 
@@ -54,6 +55,21 @@ export default async function ProjectsPage({ searchParams }: Props) {
         )}
 
         {tags.length > 0 && <TagFilter tags={tags} activeTag={tag} />}
+
+        {/* Result count and clear filter */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-sm text-mist font-mono">
+            {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""}
+            {tag && (
+              <span>
+                {" "}tagged &ldquo;{tags.find((t) => t.slug === tag)?.label || tag}&rdquo;
+                <Link href="/projects" className="ml-2 text-cyan hover:underline">
+                  Clear filter
+                </Link>
+              </span>
+            )}
+          </p>
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project, i) => (

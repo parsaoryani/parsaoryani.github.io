@@ -301,4 +301,15 @@
       transition: none !important;
     }
   }
+
+  /* No-JavaScript: ensure content is visible */
+  @media (scripting: none) {
+    .scroll-reveal,
+    .scroll-reveal-left,
+    .scroll-reveal-right,
+    .scroll-reveal-scale {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
 }
