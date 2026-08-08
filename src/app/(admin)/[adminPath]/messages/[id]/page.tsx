@@ -38,7 +38,7 @@ export default function MessageDetailPage() {
   }
 
   async function handleDelete() {
-    if (!confirm("Delete this message?")) return
+    if (!confirm("Delete this message? This action cannot be undone.")) return
     const res = await fetch(`/api/messages/${params.id}`, { method: "DELETE" })
     if (!res.ok) return
     router.push("..")
@@ -78,8 +78,19 @@ export default function MessageDetailPage() {
           </div>
 
           <p className="text-xs text-[var(--text-tertiary)] font-mono">
-            {new Date(msg.createdAt).toLocaleString()} &middot; IP: {msg.ip}
+            {new Date(msg.createdAt).toLocaleString()}
           </p>
+
+          {/* IP hidden by default under disclosure */}
+          <details className="mt-3 group">
+            <summary className="cursor-pointer text-xs text-[var(--text-tertiary)] font-mono hover:text-[var(--text-secondary)] transition-colors">
+              Technical details
+            </summary>
+            <div className="mt-2 p-3 rounded bg-slate-800/50 text-xs font-mono text-[var(--text-tertiary)] space-y-1">
+              <p>IP: {msg.ip || "Unknown"}</p>
+              <p>Received: {new Date(msg.createdAt).toISOString()}</p>
+            </div>
+          </details>
         </div>
 
         <div className="flex flex-wrap gap-2">
