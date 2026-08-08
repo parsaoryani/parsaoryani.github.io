@@ -32,10 +32,17 @@ function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps
     deletedAt: null,
     tags: [
       {
-        id: "pt1",
         projectId: "pr1",
         tagId: "tg1",
-        tag: { id: "tg1", slug: "blockchain", label: "Blockchain", sortOrder: 0 },
+        tag: {
+          id: "tg1",
+          slug: "blockchain",
+          label: "Blockchain",
+          description: null,
+          color: null,
+          createdAt: BASE_DATE,
+          updatedAt: BASE_DATE,
+        },
       },
     ],
     ...overrides,

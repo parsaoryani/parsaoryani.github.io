@@ -3,11 +3,11 @@ import { render, waitFor } from "@testing-library/react"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 
 function observers() {
-  return (globalThis as { __intersectionObservers: unknown[] }).__intersectionObservers
+  return (globalThis as unknown as { __intersectionObservers: unknown[] }).__intersectionObservers
 }
 
 beforeEach(() => {
-  ;(globalThis as { __intersectionObservers: unknown[] }).__intersectionObservers = []
+  ;(globalThis as unknown as { __intersectionObservers: unknown[] }).__intersectionObservers = []
 })
 
 function triggerIntersect() {

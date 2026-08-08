@@ -38,10 +38,17 @@ function publication(overrides: Partial<PubProps["publication"]> = {}): PubProps
     deletedAt: null,
     tags: [
       {
-        id: "pt1",
         publicationId: "p1",
         tagId: "tg1",
-        tag: { id: "tg1", slug: "security", label: "Security", sortOrder: 0 },
+        tag: {
+          id: "tg1",
+          slug: "security",
+          label: "Security",
+          description: null,
+          color: null,
+          createdAt: BASE_DATE,
+          updatedAt: BASE_DATE,
+        },
       },
     ],
     ...overrides,

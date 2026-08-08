@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, waitFor, fireEvent } from "@testing-library/react"
 import { SettingsEditor } from "./editor"
 
@@ -80,11 +80,12 @@ describe("SettingsEditor", () => {
     const editBox = container.querySelectorAll("textarea")[2] as HTMLTextAreaElement
     expect(editBox).toBeDefined()
     fireEvent.change(editBox, { target: { value: '{"text": "bye"}' } })
-    fireEvent.click(screen.getAllByRole("button", { name: "Save" })[0])
+    fireEvent.click(screen.getAllByRole("button", { name: "Save" })[0]!)
 
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1))
-    expect(vi.mocked(fetch).mock.calls[0][0]).toBe("/api/settings/s3")
-    const init = vi.mocked(fetch).mock.calls[0][1] as RequestInit
+    const call = vi.mocked(fetch).mock.calls[0]!
+    expect(call[0]).toBe("/api/settings/s3")
+    const init = call[1] as RequestInit
     expect(JSON.parse(init.body as string)).toEqual({ value: { text: "bye" } })
     expect(routerRefresh).toHaveBeenCalled()
   })
@@ -96,10 +97,11 @@ describe("SettingsEditor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Edit" }))
     const editBox = container.querySelectorAll("textarea")[2] as HTMLTextAreaElement
     fireEvent.change(editBox, { target: { value: "not json" } })
-    fireEvent.click(screen.getAllByRole("button", { name: "Save" })[0])
+    fireEvent.click(screen.getAllByRole("button", { name: "Save" })[0]!)
 
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1))
-    const init = vi.mocked(fetch).mock.calls[0][1] as RequestInit
+    const call = vi.mocked(fetch).mock.calls[0]!
+    const init = call[1] as RequestInit
     expect(JSON.parse(init.body as string)).toEqual({ value: "not json" })
   })
 })

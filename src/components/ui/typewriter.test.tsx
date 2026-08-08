@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
+import { describe, expect, it, vi, beforeEach, afterEach, beforeAll } from "vitest"
 import { render, act } from "@testing-library/react"
 import { TypewriterText, type TypewriterSegment } from "@/components/ui/typewriter"
 
@@ -7,19 +7,16 @@ const SEGMENTS: TypewriterSegment[] = [
   { text: "world", className: "text-cyan" },
 ]
 
-const REDUCED_MEDIA: Pick<MediaQueryList, "matches"> & {
-  media: string
-  addEventListener: (event: string, cb: unknown) => void
-  removeEventListener: (event: string, cb: unknown) => void
-} = {
+const REDUCED_MEDIA = {
   matches: true,
   media: "(prefers-reduced-motion: reduce)",
   addEventListener: () => {},
   removeEventListener: () => {},
-} as MQLTypeAlias
+} satisfies Partial<MediaQueryList>
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface MQLTypeAlias extends MediaQueryList {}
+beforeAll(() => {
+  vi.spyOn(window, "matchMedia").mockReturnValue(REDUCED_MEDIA as unknown as MediaQueryList)
+})
 
 beforeEach(() => {
   vi.useFakeTimers()
