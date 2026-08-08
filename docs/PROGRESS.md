@@ -95,3 +95,133 @@
 - [ ] Set up custom domain
 - [ ] Configure CI/CD with GitHub Actions
 - [ ] Set up Lighthouse CI budget
+
+---
+
+## Phase 10: Bug Fixes — Admin Panel CSP, Data Mutation, Error Handling & Port Configuration
+
+_Contributed by opencode (deepseek-v4-flash-free) — July 11, 2026_
+
+### 10.1) CSP Missing `'unsafe-eval'` Blocking JavaScript in Dev Mode
+
+**Root cause:** The `Content-Security-Policy` header in `next.config.ts` included `'unsafe-inline'` but not `'unsafe-eval'`. Next.js in development mode (especially with Turbopack) uses `eval()` for React DevTools debugging features. The browser blocked all `eval()` calls due to CSP, which prevented ALL JavaScript execution on admin pages — including form event handlers, buttons, and fetch requests.
+
+**Fix:** Added `'unsafe-eval'` to the `script-src` directive.
+- **File:** `next.config.ts` line 18
+
+```diff
+- "script-src 'self' 'unsafe-inline'",
++ "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+```
+
+---
+
+### 10.2) Wrong Port in `NEXT_PUBLIC_SITE_URL` — Connection Refused
+
+**Root cause:** `NEXT_PUBLIC_SITE_URL` in `.env` was set to `http://localhost:3001`, but the dev server was on a different port (3000 was taken by another project, 3001 belonged to Docker). This caused "localhost refused to connect" errors whenever the app used this variable for redirects (e.g. logout) or metadata generation.
+
+This variable was used in: metadata, sitemap, robots.txt, JSON-LD, and the logout redirect route.
+
+**Fix:** Removed the hardcoded port from `.env` (leave it for production only). Changed the logout route to derive the origin from the actual request URL instead of the env var.
+- **Files changed:** `.env`, `.env.example`, `src/lib/env.ts`, `src/app/api/auth/logout/route.ts`
+
+```diff
+// logout/route.ts — use request origin instead of NEXT_PUBLIC_SITE_URL
+- return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"))
++ const origin = new URL(request.url).origin
++ return NextResponse.redirect(new URL("/", origin))
+```
+
+---
+
+### 10.3) Missing Fallback in JSON-LD Structured Data
+
+**Root cause:** In `src/lib/seo/json-ld.ts`, the `url` field in the Person schema read directly from `process.env.NEXT_PUBLIC_SITE_URL` with no fallback. When the env var was unset, `undefined` was emitted into the JSON-LD output, producing invalid structured data.
+
+**Fix:** Added a `"https://parsaoryani.me"` fallback.
+- **File:** `src/lib/seo/json-ld.ts` line 12
+
+```diff
+- url: process.env.NEXT_PUBLIC_SITE_URL,
++ url: process.env.NEXT_PUBLIC_SITE_URL || "https://parsaoryani.me",
+```
+
+---
+
+### 10.4) Hardcoded Admin Path in Sidebar Component
+
+**Root cause:** The `AdminSidebar` component in `src/components/admin/sidebar.tsx` hardcoded the string `"x7k2-console"` to locate the admin segment in the URL pathname. If the `ADMIN_PATH` env var was changed, the sidebar would break entirely — all nav links would be wrong.
+
+**Fix:** Pass `adminPath` from the layout (which has access to `params`) to the sidebar as a prop.
+- **Files changed:**
+  - `src/app/(admin)/[adminPath]/layout.tsx` — made async, awaits `params`, passes `adminPath` prop
+  - `src/components/admin/sidebar.tsx` — uses prop instead of hardcoded string
+
+---
+
+### 10.5) Silently Swallowed Fetch Errors in 8 Admin Components
+
+**Root cause:** Eight admin components called `fetch()` then immediately called `router.refresh()` without checking `res.ok`. The page would refresh appearing to have saved, but the data was never actually changed. The user would see a flash but no mutation happened.
+
+**Components fixed:**
+
+| Component | File | Operations Fixed |
+|---|---|---|
+| SkillsManager | `skills/skills-manager.tsx` | Add/edit/delete category & skill — all 5 CRUD ops |
+| SettingsEditor | `settings/editor.tsx` | Save setting |
+| MessageStatusButton | `messages/actions.tsx` | Toggle message status |
+| MessageDeleteButton | `messages/actions.tsx` | Delete message |
+| MessageDetailPage | `messages/[id]/page.tsx` | Update status & delete message |
+| ContactEditor | `components/admin/contact-editor.tsx` | Save all contact settings (`Promise.all` with `.every(r => r.ok)`) |
+| PublicationsDeleteButton | `publications/delete-button.tsx` | Delete publication |
+| TimelineDeleteButton | `timeline/delete-button.tsx` | Delete timeline event |
+| TagsDeleteButton | `tags/delete-button.tsx` | Delete tag |
+
+**Fix pattern:**
+```diff
+- await fetch(url, { method: "POST", ... })
+- router.refresh()
++ const res = await fetch(url, { method: "POST", ... })
++ if (!res.ok) { /* show error */ return }
++ router.refresh()
+```
+
+---
+
+### 10.6) Unhelpful Zod Validation Error Messages (8 Forms)
+
+**Root cause:** When Zod validation failed server-side, the API returned field-level errors as an object (e.g. `{ "title": ["Required"], "year": ["Expected number"] }`). But the client code only checked `typeof err.error === "string"` — if it was an object, it showed the generic "Validation failed" with no indication of which field was wrong.
+
+**Forms fixed:**
+- `projects/[id]/page.tsx` — Edit project
+- `projects/new/page.tsx` — New project
+- `publications/[id]/page.tsx` — Edit publication
+- `publications/new/page.tsx` — New publication
+- `teaching-assistance/[id]/page.tsx` — Edit TA entry
+- `teaching-assistance/new/page.tsx` — New TA entry
+- `researching-assistance/[id]/page.tsx` — Edit RA entry
+- `researching-assistance/new/page.tsx` — New RA entry
+
+**Fix pattern:**
+```diff
+- setError(typeof err.error === "string" ? err.error : "Validation failed")
++ setError(typeof err.error === "string" ? err.error : Object.values(err.error).flat().join("; ") || "Validation failed")
+```
+
+Now users see e.g. "title: Required; year: Expected number, received string" instead of opaque "Validation failed".
+
+---
+
+### 10.7) Technical Summary
+
+**Overall impact:** After these fixes, the admin panel:
+1. No longer throws `eval() is not supported` in the browser console
+2. All CRUD operations actually execute and surface errors to the user
+3. Zod validation errors show exactly which fields need correction
+4. Sidebar works correctly regardless of `ADMIN_PATH` env var value
+5. Logout redirects to the correct port
+6. SEO metadata has proper fallbacks
+
+**Tools used:** opencode (deepseek-v4-flash-free) with TypeScript compiler verification, grep, read, edit, bash, task, glob, and websearch.
+
+**Duration:** July 11, 2026 — ~30 minutes

@@ -19,20 +19,20 @@ npm run db:seed
 npm run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001).
+Open [http://localhost:4321](http://localhost:4321).
 
 ---
 
 ## External Access (Tunnel / Sharing Dev Server)
 
-While the dev server runs on `localhost:3001`, use **localtunnel** to share it with anyone:
+While the dev server runs on `localhost:4321`, use **localtunnel** to share it with anyone:
 
 ```bash
 # Install once
 npm install -g localtunnel
 
 # Start tunnel (run in a separate terminal)
-npx localtunnel --port 3001
+npx localtunnel --port 4321
 ```
 
 This prints a URL like `https://rare-bananas-happen.loca.lt`. Share this URL.
@@ -42,7 +42,7 @@ This prints a URL like `https://rare-bananas-happen.loca.lt`. Share this URL.
 - If the tunnel stops responding, restart it with:
   ```bash
   pkill -f localtunnel
-npx localtunnel --port 3001
+npx localtunnel --port 4321
   ```
 - First visit may show a captcha interstitial — click through
 - Admin path is appended: `https://rare-bananas-happen.loca.lt/x7k2-console/login`
@@ -52,10 +52,10 @@ npx localtunnel --port 3001
 
 ```bash
 # localhost.run (no install)
-ssh -R 80:localhost:3001 nokey@localhost.run
+ssh -R 80:localhost:4321 nokey@localhost.run
 
 # ngrok (free account required)
-ngrok http 3001
+ngrok http 4321
 ```
 
 ### Production Deployment (Vercel)
@@ -74,7 +74,7 @@ Set environment variables in Vercel dashboard. Use a managed PostgreSQL (Neon, S
 The admin panel is at an obscured route defined by `ADMIN_PATH` in `.env`.
 
 **Default credentials (from seed):**
-- URL: `http://localhost:3001/x7k2-console` (or tunnel URL + `/x7k2-console`)
+- URL: `http://localhost:4321/x7k2-console` (or tunnel URL + `/x7k2-console`)
 - Email: `admin@parsaoryani.com`
 - Password: `admin123456`
 
@@ -363,7 +363,7 @@ This confirms the full pipeline works before you buy a domain and configure Rese
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start dev server (localhost:3001) |
+| `npm run dev` | Start dev server (localhost:4321) |
 | `npm run build` | Production build |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
@@ -371,7 +371,7 @@ This confirms the full pipeline works before you buy a domain and configure Rese
 | `npx prisma generate` | Regenerate Prisma client |
 | `npx prisma studio` | Open Prisma Studio (DB browser) |
 | `npm run db:seed` | Seed database with sample data |
-| `npx localtunnel --port 3001` | Share dev server externally |
+| `npx localtunnel --port 4321` | Share dev server externally |
 
 ---
 
@@ -382,7 +382,7 @@ This confirms the full pipeline works before you buy a domain and configure Rese
 | `DATABASE_URL` | *required* | PostgreSQL connection string |
 | `JWT_SECRET` | `dev-secret-change-in-production` | Secret for JWT signing |
 | `ADMIN_PATH` | `x7k2-console` | Obscured admin route segment |
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3001` | Public site URL for SEO/metadata |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:4321` | Public site URL for SEO/metadata |
 | `RESEND_API_KEY` | - | **Required for email.** Resend API key (sign up at resend.com, verify domain) |
 | `SITE_DOMAIN` | `parsaoryani.me` | Your custom domain — used to derive email addresses (`contact@`, `parsa@`) |
 | `R2_ACCESS_KEY_ID` | - | (Optional) Cloudflare R2 access key |
@@ -411,7 +411,7 @@ This confirms the full pipeline works before you buy a domain and configure Rese
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | Admin login succeeds but redirects back to login | Cookie rejected by browser (missing `Secure` flag on HTTPS) | Run `pkill -f "next dev"` and restart — cookie now uses `Secure=true` |
-| Admin panel shows "Loading..." indefinitely | Tunnel dropped | Restart localtunnel: `pkill -f localtunnel && npx localtunnel --port 3001` |
+| Admin panel shows "Loading..." indefinitely | Tunnel dropped | Restart localtunnel: `pkill -f localtunnel && npx localtunnel --port 4321` |
 | Contact page shows old data after editing settings | Page is using cached version | Static generation — rebuild with `npm run build` or set `force-dynamic` (already done) |
 | "New Publication" form shows "Validation failed" | Missing required field | Ensure Title, Slug, Venue, Year are all filled |
 | Delete button does nothing | API error (console shows 401) | Session expired — re-login |
