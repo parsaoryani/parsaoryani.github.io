@@ -9,6 +9,7 @@ import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
 import { getFeaturedPublications, getFeaturedProjects, getSkillCategories, getLatestResearchExperience, getLatestTeachingExperience } from "@/lib/db/queries"
+import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { prisma } from "@/lib/db/prisma"
 import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
 import Link from "next/link"
@@ -23,17 +24,24 @@ export const revalidate = 3600
 
 export default async function HomePage() {
   const [publications, projects, skillCategories, homeTitle, homeDescription, latestResearch, latestTeaching] = await Promise.all([
-    getFeaturedPublications().catch(() => []),
-    getFeaturedProjects().catch(() => []),
-    getSkillCategories().catch(() => []),
+    safeQuery(getFeaturedPublications(), "featured publications"),
+    safeQuery(getFeaturedProjects(), "featured projects"),
+    safeQuery(getSkillCategories(), "skill categories"),
     prisma.siteSetting.findUnique({ where: { key: "home_title" } }),
     prisma.siteSetting.findUnique({ where: { key: "home_description" } }),
-    getLatestResearchExperience().catch(() => null),
-    getLatestTeachingExperience().catch(() => null),
+    safeQuery(getLatestResearchExperience(), "latest research experience"),
+    safeQuery(getLatestTeachingExperience(), "latest teaching experience"),
   ])
 
   const titleLines = parseHomeTitle(homeTitle?.value)
   const description = parseHomeDescription(homeDescription?.value)
+
+  const pubData = publications.data ?? []
+  const projData = projects.data ?? []
+  const skillData = skillCategories.data ?? []
+  const researchData = latestResearch.data
+  const teachingData = latestTeaching.data
+  const hasLoadError = publications.error || projects.error || skillCategories.error
 
   return (
     <>
@@ -108,8 +116,17 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      {/* Load Error Banner */}
+      {hasLoadError && (
+        <Section>
+          <Container>
+            <QueryErrorFallback error="Some content could not be loaded. The page may be incomplete." />
+          </Container>
+        </Section>
+      )}
+
       {/* Featured Research */}
-      {publications.length > 0 && (
+      {pubData.length > 0 && (
         <Section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
           <Container className="relative">
@@ -132,7 +149,7 @@ export default async function HomePage() {
               </div>
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {publications.map((pub: PublicationWithTags, i: number) => (
+              {pubData.map((pub: PublicationWithTags, i: number) => (
                 <ScrollReveal key={pub.id} direction="up" delay={i * 100} className="h-full">
                   <PublicationCard publication={pub} />
                 </ScrollReveal>
@@ -150,7 +167,7 @@ export default async function HomePage() {
       )}
 
       {/* Selected Experience */}
-      {(latestResearch || latestTeaching) && (
+      {(researchData || teachingData) && (
         <Section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-emerald/[0.01] to-void pointer-events-none" />
           <Container className="relative">
@@ -175,8 +192,8 @@ export default async function HomePage() {
               </div>
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2">
-              {latestResearch && (
-                <ScrollReveal key={latestResearch.id} direction="up" className="h-full">
+              {researchData && (
+                <ScrollReveal key={researchData.id} direction="up" className="h-full">
                   <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-emerald/30 transition-colors">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="px-2.5 py-1 rounded-full bg-emerald/5 border border-emerald/10 text-emerald group-hover:bg-emerald/10 group-hover:border-emerald/20 transition-colors">
@@ -184,20 +201,20 @@ export default async function HomePage() {
                       </span>
                     </div>
                     <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-emerald transition-colors duration-300">
-                      {latestResearch.topic}
+                      {researchData.topic}
                     </h3>
                     <p className="text-sm text-mist mb-3 flex-1">
-                      {latestResearch.lab}, {latestResearch.university}
+                      {researchData.lab}, {researchData.university}
                     </p>
                     <p className="font-mono text-xs text-ash mb-4">
-                      {new Date(latestResearch.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
-                      {latestResearch.endDate
-                        ? `— ${new Date(latestResearch.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
+                      {new Date(researchData.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
+                      {researchData.endDate
+                        ? `— ${new Date(researchData.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
                         : "— Present"}
                     </p>
-                    {latestResearch.outcomes && (
+                    {researchData.outcomes && (
                       <p className="text-sm text-mist/80 mb-4 line-clamp-2 leading-relaxed">
-                        {String(latestResearch.outcomes)}
+                        {String(researchData.outcomes)}
                       </p>
                     )}
                     <div className="flex items-center gap-3 pt-4 border-t border-slate-700/50">
@@ -211,8 +228,8 @@ export default async function HomePage() {
                   </article>
                 </ScrollReveal>
               )}
-              {latestTeaching && (
-                <ScrollReveal key={latestTeaching.id} direction="up" delay={100} className="h-full">
+              {teachingData && (
+                <ScrollReveal key={teachingData.id} direction="up" delay={100} className="h-full">
                   <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-amber/30 transition-colors">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="px-2.5 py-1 rounded-full bg-amber/5 border border-amber/10 text-amber group-hover:bg-amber/10 group-hover:border-amber/20 transition-colors">
@@ -220,20 +237,20 @@ export default async function HomePage() {
                       </span>
                     </div>
                     <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-amber transition-colors duration-300">
-                      {latestTeaching.course}
+                      {teachingData.course}
                     </h3>
                     <p className="text-sm text-mist mb-3 flex-1">
-                      {latestTeaching.university}
+                      {teachingData.university}
                     </p>
                     <p className="font-mono text-xs text-ash mb-4">
-                      {new Date(latestTeaching.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
-                      {latestTeaching.endDate
-                        ? `— ${new Date(latestTeaching.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
+                      {new Date(teachingData.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
+                      {teachingData.endDate
+                        ? `— ${new Date(teachingData.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
                         : "— Present"}
                     </p>
-                    {latestTeaching.highlights && (
+                    {teachingData.highlights && (
                       <p className="text-sm text-mist/80 mb-4 line-clamp-2 leading-relaxed">
-                        {String(latestTeaching.highlights)}
+                        {String(teachingData.highlights)}
                       </p>
                     )}
                     <div className="flex items-center gap-3 pt-4 border-t border-slate-700/50">
@@ -260,7 +277,7 @@ export default async function HomePage() {
       )}
 
       {/* Featured Projects */}
-      {projects.length > 0 && (
+      {projData.length > 0 && (
         <Section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-indigo/[0.01] to-void pointer-events-none" />
           <Container className="relative">
@@ -283,7 +300,7 @@ export default async function HomePage() {
               </div>
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project: ProjectWithTags, i: number) => (
+              {projData.map((project: ProjectWithTags, i: number) => (
                 <ScrollReveal key={project.id} direction="up" delay={i * 100} className="h-full">
                   <ProjectCard project={project} />
                 </ScrollReveal>
@@ -301,7 +318,7 @@ export default async function HomePage() {
       )}
 
       {/* Skills */}
-      {skillCategories.length > 0 && (
+      {skillData.length > 0 && (
         <Section className="relative">
           <Container>
             <ScrollReveal>
@@ -314,7 +331,7 @@ export default async function HomePage() {
               </div>
             </ScrollReveal>
             <ScrollReveal direction="up" delay={150}>
-              <SkillCluster categories={skillCategories} />
+              <SkillCluster categories={skillData} />
             </ScrollReveal>
           </Container>
         </Section>

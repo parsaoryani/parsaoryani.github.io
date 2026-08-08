@@ -4,6 +4,7 @@ import { PublicationCard } from "@/components/content/publication-card"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllPublications } from "@/lib/db/queries"
+import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import type { Metadata } from "next"
 import { BookOpen, Sparkles } from "lucide-react"
 
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
 }
 
 export default async function ResearchPage() {
-  const publications: Awaited<ReturnType<typeof getAllPublications>> = await getAllPublications().catch(() => [])
+  const result = await safeQuery(getAllPublications(), "publications")
+  const publications = result.data ?? []
 
   const groupedByYear = publications.reduce<Record<number, typeof publications>>((acc, pub) => {
     if (!acc[pub.year]) acc[pub.year] = []
@@ -44,6 +46,10 @@ export default async function ResearchPage() {
           </div>
           </div>
         </ScrollReveal>
+
+        {result.error && (
+          <QueryErrorFallback error={result.error} className="mb-8" />
+        )}
 
         {years.map((year) => (
           <ScrollReveal key={year} direction="up" className="mb-16 last:mb-0">

@@ -3,6 +3,7 @@ import { Section } from "@/components/layout/container"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getTimelineEvents, getSkillCategories, getAllPublications, getAllResearchExperience, getAllTeachingExperience } from "@/lib/db/queries"
+import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, Mic, HeartHandshake, Sparkles, Code2, UserCheck, Mail, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -31,13 +32,20 @@ const typeIcons: Record<string, typeof GraduationCap> = {
 }
 
 export default async function CVPage() {
-  const [events, skillCategories, publications, researchExperience, teachingExperience] = await Promise.all([
-    getTimelineEvents().catch(() => []),
-    getSkillCategories().catch(() => []),
-    getAllPublications().catch(() => []),
-    getAllResearchExperience().catch(() => []),
-    getAllTeachingExperience().catch(() => []),
+  const [eventsResult, skillCategoriesResult, publicationsResult, researchResult, teachingResult] = await Promise.all([
+    safeQuery(getTimelineEvents(), "timeline events"),
+    safeQuery(getSkillCategories(), "skill categories"),
+    safeQuery(getAllPublications(), "publications"),
+    safeQuery(getAllResearchExperience(), "research experience"),
+    safeQuery(getAllTeachingExperience(), "teaching experience"),
   ])
+  const events = eventsResult.data ?? []
+  const skillCategories = skillCategoriesResult.data ?? []
+  const publications = publicationsResult.data ?? []
+  const researchExperience = researchResult.data ?? []
+  const teachingExperience = teachingResult.data ?? []
+
+  const hasLoadError = eventsResult.error || skillCategoriesResult.error || publicationsResult.error || researchResult.error || teachingResult.error
 
   return (
     <Section className="pt-32">
@@ -80,6 +88,10 @@ export default async function CVPage() {
               </Button>
             </Link>
           </div>
+
+          {hasLoadError && (
+            <QueryErrorFallback error="Some CV sections could not be loaded. The page may be incomplete." className="mb-8" />
+          )}
 
           <div className="space-y-12">
             {/* Education */}

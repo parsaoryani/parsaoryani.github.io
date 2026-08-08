@@ -5,6 +5,7 @@ import { TagFilter } from "@/components/content/tag-filter"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllProjects, getAllTags } from "@/lib/db/queries"
+import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import type { Metadata } from "next"
 import { FolderGit2, Sparkles } from "lucide-react"
 
@@ -19,10 +20,12 @@ interface Props {
 
 export default async function ProjectsPage({ searchParams }: Props) {
   const { tag } = await searchParams
-  const [projects, tags] = await Promise.all([
-    getAllProjects().catch(() => []),
-    getAllTags().catch(() => []),
+  const [projectsResult, tagsResult] = await Promise.all([
+    safeQuery(getAllProjects(), "projects"),
+    safeQuery(getAllTags(), "tags"),
   ])
+  const projects = projectsResult.data ?? []
+  const tags = tagsResult.data ?? []
 
   const filteredProjects = tag
     ? projects.filter((p) => p.tags.some((pt) => pt.tag.slug === tag))
@@ -46,6 +49,10 @@ export default async function ProjectsPage({ searchParams }: Props) {
           </div>
         </ScrollReveal>
 
+        {(projectsResult.error || tagsResult.error) && (
+          <QueryErrorFallback error="Some content could not be loaded. The page may be incomplete." className="mb-8" />
+        )}
+
         {tags.length > 0 && <TagFilter tags={tags} activeTag={tag} />}
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -56,7 +63,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
           ))}
         </div>
 
-        {filteredProjects.length === 0 && (
+        {filteredProjects.length === 0 && !projectsResult.error && (
           <div className="text-center py-20">
             <FolderGit2 size={40} className="mx-auto text-slate-700 mb-4" />
             <p className="text-mist font-mono text-sm">

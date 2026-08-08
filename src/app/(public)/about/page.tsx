@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { prisma } from "@/lib/db/prisma"
 import { getTimelineEvents, getSkillCategories } from "@/lib/db/queries"
+import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { Sparkles, GraduationCap, Briefcase, Award, Mic, HeartHandshake, Camera, BookOpen, Award as AwardIcon, FileText, Star, Link as LinkIcon } from "lucide-react"
 import Image from "next/image"
 import type { Metadata } from "next"
@@ -56,11 +57,13 @@ const typeConfig: Record<string, { icon: typeof GraduationCap; label: string; co
 }
 
 export default async function AboutPage() {
-  const [events, skillCategories, photoSetting] = await Promise.all([
-    getTimelineEvents().catch(() => []),
-    getSkillCategories().catch(() => []),
+  const [eventsResult, skillCategoriesResult, photoSetting] = await Promise.all([
+    safeQuery(getTimelineEvents(), "timeline events"),
+    safeQuery(getSkillCategories(), "skill categories"),
     prisma.siteSetting.findUnique({ where: { key: "profile_photo" } }),
   ])
+  const events = eventsResult.data ?? []
+  const skillCategories = skillCategoriesResult.data ?? []
 
   const photo = photoSetting?.value as { url?: string; alt?: string } | null
 
@@ -113,6 +116,10 @@ export default async function AboutPage() {
           </div>
           </div>
         </ScrollReveal>
+
+        {(eventsResult.error || skillCategoriesResult.error) && (
+          <QueryErrorFallback error="Some background content could not be loaded." className="mb-8" />
+        )}
 
         <div className="mb-20">
           <ScrollReveal>
