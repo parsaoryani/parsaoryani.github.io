@@ -270,6 +270,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   auditLogs     AuditLog[]
+  pendingTwoFactorChallenges PendingTwoFactorChallenge[]
 }
 
 model Session {
@@ -294,6 +295,18 @@ model AuditLog {
   userAgent  String?
   metadata   Json?
   createdAt  DateTime @default(now())
+}
+
+model PendingTwoFactorChallenge {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeHash String @unique
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model ContactMessage {

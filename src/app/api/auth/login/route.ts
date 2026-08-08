@@ -4,6 +4,10 @@ import { verifyPassword, createSession } from "@/lib/auth/auth"
 import { loginSchema } from "@/lib/validation/schemas"
 import { headers } from "next/headers"
 import { checkRateLimit } from "@/lib/rate-limit"
+import { createHash, randomBytes } from "crypto"
+
+const CHALLENGE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+const MAX_CHALLENGE_ATTEMPTS = 5
 
 export async function POST(request: Request) {
   try {
@@ -60,11 +64,23 @@ export async function POST(request: Request) {
     }
 
     if (user.totpEnabled) {
-      const sessionToken = await createSession(user.id, ip, userAgent)
+      // Create a pending 2FA challenge (NOT a real session)
+      const challengeToken = randomBytes(32).toString("hex")
+      const challengeHash = createHash("sha256").update(challengeToken).digest("hex")
+      const expiresAt = new Date(Date.now() + CHALLENGE_TTL_MS)
+
+      // Invalidate any existing challenge for this user
+      await prisma.pendingTwoFactorChallenge.deleteMany({ where: { userId: user.id } })
+
+      await prisma.pendingTwoFactorChallenge.create({
+        data: { userId: user.id, challengeHash, expiresAt },
+      })
+
       await prisma.auditLog.create({
         data: { userId: user.id, action: "login.2fa_required", ip },
       })
-      return NextResponse.json({ requires2fa: true, sessionToken }, { status: 200 })
+
+      return NextResponse.json({ requires2fa: true, challengeToken }, { status: 200 })
     }
 
     await prisma.user.update({

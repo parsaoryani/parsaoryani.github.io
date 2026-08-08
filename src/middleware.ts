@@ -2,9 +2,12 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
+const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || "https://parsaoryani.me"
+
+const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"])
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, origin } = request.nextUrl
 
   // Admin routes - check session cookie exists (skip login page)
   if (
@@ -16,6 +19,18 @@ export function middleware(request: NextRequest) {
       const loginUrl = new URL(`/${ADMIN_PATH}/login`, request.url)
       loginUrl.searchParams.set("redirect", pathname)
       return NextResponse.redirect(loginUrl)
+    }
+  }
+
+  // Origin validation for cookie-authenticated mutating requests in production
+  if (
+    process.env.NODE_ENV === "production" &&
+    MUTATING_METHODS.has(request.method) &&
+    request.cookies.has("session_token")
+  ) {
+    const requestOrigin = request.headers.get("origin")
+    if (!requestOrigin || new URL(requestOrigin).origin !== new URL(SITE_ORIGIN).origin) {
+      return NextResponse.json({ error: "Invalid origin" }, { status: 403 })
     }
   }
 
