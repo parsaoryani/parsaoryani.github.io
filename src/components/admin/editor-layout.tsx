@@ -45,7 +45,7 @@ export function EditorLayout({
   const router = useRouter()
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
-  const initialSnapshot = useRef<string>("")
+  const [initialSnapshot, setInitialSnapshot] = useState("")
   const [currentSnapshot, setCurrentSnapshot] = useState("")
 
   // Track dirty state via form content snapshots
@@ -56,8 +56,12 @@ export function EditorLayout({
   }, [])
 
   useEffect(() => {
-    initialSnapshot.current = takeSnapshot()
-    setCurrentSnapshot(takeSnapshot())
+    const timer = window.setTimeout(() => {
+      const snapshot = takeSnapshot()
+      setInitialSnapshot(snapshot)
+      setCurrentSnapshot(snapshot)
+    }, 0)
+    return () => window.clearTimeout(timer)
   }, [takeSnapshot])
 
   useEffect(() => {
@@ -67,7 +71,7 @@ export function EditorLayout({
     return () => clearInterval(interval)
   }, [takeSnapshot])
 
-  const isDirty = dirty || (initialSnapshot.current !== currentSnapshot && currentSnapshot !== "")
+  const isDirty = dirty || (initialSnapshot !== currentSnapshot && currentSnapshot !== "")
 
   // Warn before leaving with unsaved changes
   useEffect(() => {

@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Website
 
-## Getting Started
+Personal academic and engineering portfolio for Parsa Oryani. The site has a public research portfolio and a private, session-protected admin CMS for managing editorial content.
 
-First, run the development server:
+## Start here
 
 ```bash
+npm install
+npx prisma generate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:4321](http://localhost:4321) with your browser to see the result.
+Open `http://localhost:4321`. Database setup, seed data, admin usage, tunnels, and deployment are documented in [docs/guides/USAGE.md](docs/guides/USAGE.md) and [DEPLOY.md](DEPLOY.md).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start the local Next.js server on port 4321 |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Run TypeScript without emitting files |
+| `npm test -- --run` | Run the Vitest suite once |
+| `npm run build` | Create a production build |
+| `npm run db:generate` | Generate the Prisma client |
+| `npm run db:push` | Push the Prisma schema to a development database |
+| `npm run db:migrate` | Create/apply a development migration |
+| `npm run db:seed` | Seed development content and the admin account |
+| `npm run db:backup` / `db:restore` | Back up or restore database data |
+| `npm run deploy:preview` / `deploy:prod` | Run the repository deployment scripts |
 
-## Learn More
+## Repository map
 
-To learn more about Next.js, take a look at the following resources:
+```text
+src/
+  app/                 Next.js routes, route groups, API handlers, metadata
+    (public)/          Public website routes
+    (admin)/           Admin route group and dynamic ADMIN_PATH segment
+    api/               Server-side API route handlers
+  components/          Reusable UI and feature presentation modules
+    ui/                Design-system primitives
+    layout/            Site shell: navigation, footer, container
+    content/           Public content components
+    admin/             Admin-only editors and management components
+  lib/                 Deep domain modules and infrastructure adapters
+    auth/              Sessions, passwords, TOTP, authorization helpers
+    db/                Prisma client and read/query modules
+    validation/        Shared Zod validation schemas
+    content/           Profile/content adapters
+    home/              Homepage view-model helpers
+    utils/              Small general-purpose utilities
+  styles/              Global CSS and design tokens
+  types/               Shared application types
+  test/                Vitest and Testing Library setup
+prisma/                Schema and database migrations
+scripts/               Seed, database, deployment, and setup scripts
+public/                Static assets served as-is
+docs/                  Guides, reviews, status notes, and implementation plans
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Organization rules
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Keep framework-owned route folders inside `src/app`; do not flatten route groups or rename dynamic segments for cosmetic reasons.
+- Put reusable visual modules in `src/components`; keep route-specific helpers next to their route.
+- Put domain behavior behind small, testable interfaces in `src/lib`; keep database and authentication access out of presentational components.
+- Use kebab-case for file names and named exports for reusable modules.
+- Keep operational scripts in `scripts/db`, `scripts/deploy`, or `scripts/setup.sh`.
+- Put durable documentation in the taxonomy described by [docs/README.md](docs/README.md).
 
-## Deploy on Vercel
+## Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [Documentation index](docs/README.md)
+- [Architecture guide](docs/guides/ARCHITECTURE.md)
+- [Usage and admin guide](docs/guides/USAGE.md)
+- [Deployment guide](DEPLOY.md)
+- [Public/admin UX review](docs/reviews/PERSONAL_SITE_UX_IA_REVIEW.md)
+- [Project progress](docs/status/PROGRESS.md)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Verification before handoff
+
+Run the same checks used for changes to the repository:
+
+```bash
+npm run lint
+npm run typecheck
+npm test -- --run
+npm run build
+```
+
+The build may require the configured database and environment variables described in `.env.example`.

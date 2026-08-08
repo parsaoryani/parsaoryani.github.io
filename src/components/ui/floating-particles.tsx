@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useMemo, useRef, useState, useEffect } from "react"
 import { cn } from "@/lib/utils/cn"
 
 interface FloatingParticlesProps {
@@ -57,12 +57,8 @@ export function FloatingParticles({
   size = "md",
 }: FloatingParticlesProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [particles, setParticles] = useState<Particle[]>([])
+  const particles = useMemo(() => generateParticles(count, color, size), [count, color, size])
   const [isPaused, setIsPaused] = useState(false)
-
-  useEffect(() => {
-    setParticles(generateParticles(count, color, size))
-  }, [count, color, size])
 
   useEffect(() => {
     const handleVisibility = () => setIsPaused(document.hidden)

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma"
 import { getSession } from "@/lib/auth/auth"
 import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
 
 interface Props {
   searchParams: Promise<{ action?: string }>
@@ -77,12 +78,12 @@ export default async function AdminSecurityPage({ searchParams }: Props) {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Audit Log</h2>
             {actionFilter && (
-              <a
+              <Link
                 href="/security"
                 className="text-xs font-mono text-[var(--accent)] hover:underline"
               >
                 Clear filter
-              </a>
+              </Link>
             )}
           </div>
           <div className="space-y-1">

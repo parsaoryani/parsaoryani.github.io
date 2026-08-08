@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# setup-and-run.sh
+# Local project setup
 #
 # One-shot setup + dev runner for the personal-website project.
 # Covers everything needed before `npm run dev`:

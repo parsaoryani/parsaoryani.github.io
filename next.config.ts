@@ -4,6 +4,10 @@ const isProd = process.env.NODE_ENV === "production"
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Keep Turbopack rooted at this application when a parent workspace has another lockfile.
+  turbopack: {
+    root: process.cwd(),
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

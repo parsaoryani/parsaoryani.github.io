@@ -11,7 +11,6 @@ import {
   Timeline,
   Tags,
   Wrench,
-  MessageSquare,
   Mail,
   Inbox,
   Camera,
@@ -87,7 +86,6 @@ function NavGroup({
   base: string
   currentSection: string
 }) {
-  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(true)
 
   const isActive = (href: string) => {
@@ -156,7 +154,8 @@ export function AdminSidebar({ adminPath }: { adminPath: string }) {
 
   // Close the mobile drawer when navigating
   useEffect(() => {
-    setMobileOpen(false)
+    const timer = window.setTimeout(() => setMobileOpen(false), 0)
+    return () => window.clearTimeout(timer)
   }, [pathname])
 
   return (

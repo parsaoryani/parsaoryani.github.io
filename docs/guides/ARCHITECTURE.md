@@ -1,116 +1,94 @@
-# Architecture Document
+# Architecture guide
 
 ## Overview
 
-Personal portfolio website for Parsa Oryani — a PhD applicant in Blockchain & AI Security.
-Built with Next.js 14+ App Router, TypeScript, Tailwind CSS, PostgreSQL via Prisma.
+This is a Next.js 16 App Router portfolio for Parsa Oryani. The public application renders research, projects, experience, biography, CV, and contact content. The private admin application edits that content through server-validated routes and Prisma-backed records.
 
 ## Stack
 
-- **Framework:** Next.js 16 (App Router, TypeScript strict)
-- **Styling:** Tailwind CSS v4 + CSS custom properties for design tokens
-- **Database:** PostgreSQL + Prisma 6 ORM
-- **Auth:** Server sessions + Argon2id password hashing + TOTP 2FA
-- **Deployment:** Vercel + Neon + Cloudflare (recommended)
+- **Framework:** Next.js 16 App Router with TypeScript strict mode
+- **UI:** React 19, Tailwind CSS v4, CSS custom properties, Framer Motion
+- **Database:** PostgreSQL through Prisma 6
+- **Authentication:** bcryptjs password hashing, server sessions, optional TOTP 2FA
+- **Validation:** Zod schemas shared by API and form boundaries
+- **Testing:** Vitest, Testing Library, jsdom
+- **Deployment:** Vercel or the repository Docker/deployment scripts
 
-## Directory Structure
+## Runtime boundaries
 
-```
-src/
-  app/
-    (public)/           # Public route group — SSG + ISR
-      page.tsx          # Homepage
-      research/         # Publications list + deep-dives
-      projects/         # Project gallery + case studies
-      about/            # Bio, profile photo, timeline grouped by category, skills
-      cv/               # Interactive CV + PDF download
-      contact/          # Contact form
-    (admin)/            # Admin route group — hidden, auth-gated
-      [adminPath]/      # Dynamic segment matches ADMIN_PATH env var
-        login/          # Login page with 2FA
-        page.tsx        # Dashboard
-        publications/   # CRUD
-        projects/       # CRUD
-        timeline/       # Timeline CRUD (grouped by type)
-        teaching-assistance/  # TA CRUD
-        researching-assistance/  # RA CRUD
-        skills/         # Manage skills
-        tags/           # Manage tags
-        messages/       # View contact messages
-        contact/        # Contact page editor
-        photo/          # Profile photo editor
-        settings/       # Site settings
-        security/       # Audit log + sessions
-    api/                # Route handlers
-      auth/             # Login, logout, 2FA verification
-      contact/          # Contact form submission
-      revalidate/       # ISR webhook
-    sitemap.ts          # Generated sitemap
-    robots.ts           # Generated robots.txt
-  components/
-    ui/                 # Primitives (Button, Badge, Card, Input, Textarea, Label)
-    layout/             # Nav, Footer, Container, Section
-    content/            # PublicationCard, ProjectCard, SkillCluster, TagFilter, ContactForm
-    admin/              # Admin-specific components
-  lib/
-    db/                 # Prisma client + query functions
-    auth/               # Auth helpers (sessions, passwords, 2FA, JWT)
-    validation/         # Zod schemas (shared frontend/backend)
-    seo/                # Metadata + JSON-LD builders
-    utils/              # cn() utility, etc.
-prisma/
-  schema.prisma         # Database schema (16 models)
-scripts/
-  seed.ts               # Database seed with sample data
+```text
+src/app/
+  (public)/                 Public route group; page composition and metadata
+  (admin)/[adminPath]/      Admin route group; owner-only management screens
+  api/                      Server route handlers and mutation boundaries
+  layout.tsx                Root metadata, fonts, and global shell
+  sitemap.ts / robots.ts    Search-engine output
+
+src/components/
+  ui/                       Reusable design-system primitives
+  layout/                   Header, footer, container, client shell
+  content/                  Public content cards, filters, and forms
+  admin/                    Admin editors, lists, and management controls
+
+src/lib/
+  auth/                     Session, password, TOTP, and authorization helpers
+  db/                       Prisma client, query functions, and result helpers
+  validation/               Input schemas at API/form seams
+  content/                  Profile and editorial content adapters
+  home/                     Homepage-specific view-model logic
+  utils/                    Small shared utilities
+
+prisma/                     Schema and migrations
+scripts/                    Seed, database, deployment, and setup commands
+docs/                       Guides, reviews, status notes, and plans
 ```
 
-## Rendering Strategy
+Next.js route directories are framework-owned. Keep route groups such as `(public)` and `(admin)`, and keep the obscured `[adminPath]` segment aligned with `ADMIN_PATH`. Do not move reusable code into route folders merely to shorten an import; route-specific code belongs beside the route, while shared behavior belongs behind a `src/lib` or `src/components` interface.
 
-| Route        | Strategy |
-|-------------|----------|
-| /, /research, /projects, /about, /cv, /blog | SSG + ISR |
-| /contact submit, /api/*, admin pages | Dynamic/Server |
-| [slug] pages | SSG + ISR (generateStaticParams) |
+## Public route families
 
-## Design System
+| Route family | Responsibility |
+|---|---|
+| `/` | Research-first introduction, selected publications/projects/experience, and primary actions |
+| `/research` and `/research/[slug]` | Publication index and scholarly detail pages |
+| `/projects` and `/projects/[slug]` | Filterable project index and case studies |
+| `/research-assistance` | Research assistantship experience |
+| `/teaching` | Teaching assistantship experience |
+| `/about` | Biography, education, timeline, recognition, courses, and skills |
+| `/cv` | HTML CV and PDF action |
+| `/contact` | Contact form and contact methods |
 
-- **Palette:** Deep Slate + Signal Cyan (`#0A0E14` / `#38E1C4`)
-- **Fonts:** Inter (UI) + Source Serif 4 (long-form) + JetBrains Mono (code/metadata)
-- **Tokens:** CSS custom properties (--bg-base, --accent, --text-primary, etc.)
-- **Type scale:** Major third 1.25, 16px base
+## Admin and API
 
-## Database (18 models + 1 enum)
+Admin screens live below `src/app/(admin)/[adminPath]`. They preserve the existing public/admin capability set while grouping navigation by Content, Inbox, Media, and System. API handlers live under `src/app/api/<domain>` and are the mutation seam: they validate input, authorize the session, update Prisma records, and revalidate affected public paths.
 
-Publication, Project, Tag, PublicationTag, ProjectTag, TimelineEvent,
-SkillCategory, Skill, Media, User, Session, AuditLog, ContactMessage, SiteSetting,
-TeachingAssistant, ResearchingAssistant, EntryStatus (draft | published)
+The current domain API families are auth, contact, courses, messages, photo/profile, preview, projects, publications, research/teaching experience, settings, skills, tags, timeline, upload, and revalidation. Keep API route names stable unless a versioned migration is intentionally planned.
+
+## Data model
+
+The Prisma schema currently defines 18 models and 9 enums, including publications, projects, tags and join records, timeline/courses/resources, skills, media, users/sessions/audit logs, pending 2FA challenges, revisions, contact messages, site settings, and teaching/research experience. `prisma/schema.prisma` is the source of truth; migrations under `prisma/migrations` are append-only deployment history.
+
+## Rendering and caching
+
+- Public index/detail pages use Next.js server rendering with route-level revalidation where declared.
+- Publication and project detail pages provide `generateStaticParams` for known slugs.
+- Admin pages and mutation APIs remain dynamic and session-protected.
+- `/api/revalidate` is the explicit cache-invalidation seam after content mutations.
+- Draft/private records must never enter public queries, sitemap output, or structured data.
 
 ## Security
 
-- Obscured admin route via env var (ADMIN_PATH)
-- Admin link shown in public nav only after auth (handled by middleware)
-- Argon2id password hashing
-- TOTP 2FA with backup codes
-- Server-side sessions (httpOnly, Secure, SameSite=Strict)
-- Rate limiting (5 attempts / 15 min with lockout)
-- Audit logging for all auth events
-- CSP, HSTS, X-Frame-Options security headers
-- robots.txt disallows admin + /api
-- Uniform 404 for unauthorized admin access
+- `ADMIN_PATH` obscures the admin URL but is not an authorization mechanism.
+- Server-side session validation is required for admin pages and mutations.
+- Cookies are httpOnly and use secure production settings.
+- Password attempts and sensitive mutations are rate-limited/audited where configured.
+- `robots.ts` disallows the admin path and `/api` from crawlers.
+- Security claims and accessibility conformance must be verified against the running application; this document does not substitute for an audit.
 
-## Key Features
+## Change discipline
 
-- Research publications with one-click BibTeX, PDF, arXiv, Code links
-- Project case studies (Problem → Approach → Architecture → Results → Retrospective)
-- Filterable project gallery with URL-synced tag filtering
-- Interactive CV with PDF download
-- TA & RA management with separate admin CRUD and public pages
-- Profile photo management via admin panel
-- Contact form with validation
-- Full admin CRUD for all content types
-- Timeline organized by event type with grouped sections
-- JSON-LD structured data (Person, ScholarlyArticle)
-- Dynamic OG metadata
-- WCAG AA accessible
-- Email sending via Resend (contact form notification + confirmation)
-- Receiving email via Cloudflare Email Routing / ImprovMX (optional)
+1. Find the existing module and its callers before moving it.
+2. Preserve route/API names and public URLs unless the change includes redirects and migration tests.
+3. Prefer a deep domain module with a small interface over duplicating query/auth logic in pages.
+4. Add or update focused tests at the changed interface.
+5. Run lint, typecheck, tests, and build before claiming the change is complete.

@@ -1,5 +1,7 @@
 # Implementation Progress
 
+> This is a historical implementation log. File paths and capability names in older entries describe the repository at the time of that entry; use the current [architecture guide](../guides/ARCHITECTURE.md), [usage guide](../guides/USAGE.md), and [UX review](../reviews/PERSONAL_SITE_UX_IA_REVIEW.md) for the current structure.
+
 ## Phase 1: Foundations ✅
 - [x] Next.js 16 project with TypeScript strict
 - [x] Tailwind CSS v4 with CSS custom properties
@@ -232,7 +234,7 @@ Now users see e.g. "title: Required; year: Expected number, received string" ins
 
 _Contributed by opencode (deepseek-v4-flash-free) — August 8, 2026_
 
-Working document with findings: `docs/PERSONAL_SITE_UX_IA_REVIEW.md`
+Working document with findings: `docs/reviews/PERSONAL_SITE_UX_IA_REVIEW.md`
 
 ### Category 1 — Public Site IA & Accessibility ✅
 
