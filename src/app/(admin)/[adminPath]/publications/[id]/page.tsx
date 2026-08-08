@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils/cn"
+import { EditorLayout, type Breadcrumb } from "@/components/admin/editor-layout"
+import { FieldGroup, SectionHeader } from "@/components/admin/field-group"
 import { Plus, Trash2, GripVertical } from "lucide-react"
 
 interface Author {
@@ -38,25 +39,34 @@ interface Publication {
   authors: Author[]
   contributions: string[]
   tags: { tag: { id: string; label: string } }[]
+  createdAt: string
+  updatedAt: string
 }
+
+const breadcrumbs: Breadcrumb[] = [
+  { label: "Admin", href: "/x7k2-console" },
+  { label: "Publications", href: "/x7k2-console/publications" },
+  { label: "Edit" },
+]
 
 export default function EditPublicationPage() {
   const router = useRouter()
   const params = useParams()
   const [pub, setPub] = useState<Publication | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [authors, setAuthors] = useState<Author[]>([{ name: "", isMe: false }])
+  const [contributions, setContributions] = useState<string[]>([""])
 
   useEffect(() => {
     fetch(`/api/publications/${params.id}`)
       .then((r) => r.json())
       .then((data) => {
-        setPub({
-          ...data,
-          authors: (data.authors || []) as Author[],
-          contributions: (data.contributions || []) as string[],
-        })
+        setPub(data)
+        setAuthors((data.authors || []).map((a: { name?: string; isMe?: boolean }) => ({ name: a.name ?? "", isMe: a.isMe ?? false })))
+        setContributions(data.contributions || [""])
         setLoading(false)
       })
       .catch(() => {
@@ -66,67 +76,62 @@ export default function EditPublicationPage() {
   }, [params.id])
 
   function addAuthor() {
-    setPub((p) => (p ? { ...p, authors: [...p.authors, { name: "", isMe: false }] } : null))
+    setAuthors([...authors, { name: "", isMe: false }])
   }
 
   function removeAuthor(index: number) {
-    setPub((p) => (p ? { ...p, authors: p.authors.filter((_, i) => i !== index) } : null))
+    setAuthors(authors.filter((_, i) => i !== index))
   }
 
   function updateAuthor(index: number, field: "name" | "isMe", value: string | boolean) {
-    setPub((p) => {
-      if (!p) return null
-      const authors = [...p.authors]
-      authors[index] = { ...authors[index], [field]: value } as Author
-      return { ...p, authors }
-    })
+    const next = [...authors]
+    next[index] = { ...next[index], [field]: value } as Author
+    setAuthors(next)
   }
 
   function addContribution() {
-    setPub((p) => (p ? { ...p, contributions: [...p.contributions, ""] } : null))
+    setContributions([...contributions, ""])
   }
 
   function removeContribution(index: number) {
-    setPub((p) => (p ? { ...p, contributions: p.contributions.filter((_, i) => i !== index) } : null))
+    setContributions(contributions.filter((_, i) => i !== index))
   }
 
   function updateContribution(index: number, value: string) {
-    setPub((p) => {
-      if (!p) return null
-      const contributions = [...p.contributions]
-      contributions[index] = value
-      return { ...p, contributions }
-    })
+    const next = [...contributions]
+    next[index] = value
+    setContributions(next)
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  async function handleSave() {
     setError(null)
+    setFieldErrors(null)
     setSubmitting(true)
 
-    const form = new FormData(e.currentTarget)
+    const form = document.querySelector("form")!
+    const fd = new FormData(form)
     const data = {
-      title: form.get("title") as string,
-      slug: form.get("slug") as string,
-      venue: form.get("venue") as string,
-      venueType: form.get("venueType") as string,
-      year: parseInt(form.get("year") as string),
-      status: form.get("status") as string,
-      abstract: (form.get("abstract") as string) || undefined,
-      tldr: (form.get("tldr") as string) || undefined,
-      doi: (form.get("doi") as string) || undefined,
-      arxivId: (form.get("arxivId") as string) || undefined,
-      pdfUrl: (form.get("pdfUrl") as string) || undefined,
-      codeUrl: (form.get("codeUrl") as string) || undefined,
-      projectUrl: (form.get("projectUrl") as string) || undefined,
-      bibtex: (form.get("bibtex") as string) || undefined,
-      citationCount: form.get("citationCount") ? parseInt(form.get("citationCount") as string) : undefined,
-      featured: form.get("featured") === "on",
-      sortOrder: form.get("sortOrder") ? parseInt(form.get("sortOrder") as string) : 0,
-      ogImageUrl: (form.get("ogImageUrl") as string) || undefined,
+      title: fd.get("title") as string,
+      slug: fd.get("slug") as string,
+      venue: fd.get("venue") as string,
+      venueType: fd.get("venueType") as string,
+      year: parseInt(fd.get("year") as string),
+      status: fd.get("status") as string,
+      abstract: (fd.get("abstract") as string) || undefined,
+      tldr: (fd.get("tldr") as string) || undefined,
+      doi: (fd.get("doi") as string) || undefined,
+      arxivId: (fd.get("arxivId") as string) || undefined,
+      pdfUrl: (fd.get("pdfUrl") as string) || undefined,
+      codeUrl: (fd.get("codeUrl") as string) || undefined,
+      projectUrl: (fd.get("projectUrl") as string) || undefined,
+      bibtex: (fd.get("bibtex") as string) || undefined,
+      citationCount: fd.get("citationCount") ? parseInt(fd.get("citationCount") as string) : undefined,
+      featured: fd.get("featured") === "on",
+      sortOrder: fd.get("sortOrder") ? parseInt(fd.get("sortOrder") as string) : 0,
+      ogImageUrl: (fd.get("ogImageUrl") as string) || undefined,
       version: pub?.version ?? 1,
-      authors: (pub?.authors || []).map((a: { name?: string; isMe?: boolean }) => ({ name: a.name ?? "", isMe: a.isMe ?? false })) as Author[],
-      contributions: pub?.contributions || [],
+      authors,
+      contributions: contributions.filter((c) => c.trim()),
       tagIds: [],
     }
 
@@ -138,13 +143,20 @@ export default function EditPublicationPage() {
       })
       if (!res.ok) {
         const err = await res.json()
-        setError(typeof err.error === "string" ? err.error : Object.values(err.error).flat().join("; ") || "Validation failed")
+        if (typeof err.error === "object") {
+          setFieldErrors(err.error)
+        } else {
+          setError(err.error || "Save failed")
+        }
         return
       }
-      router.push("..")
+      const updated = await res.json()
+      setPub(updated)
+      setAuthors((updated.authors || []).map((a: { name?: string; isMe?: boolean }) => ({ name: a.name ?? "", isMe: a.isMe ?? false })))
+      setContributions(updated.contributions || [""])
       router.refresh()
     } catch {
-      setError("Failed to update publication")
+      setError("Failed to save publication")
     } finally {
       setSubmitting(false)
     }
@@ -166,201 +178,150 @@ export default function EditPublicationPage() {
   if (!pub) return <p className="text-sm text-[var(--danger)]">Not found</p>
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Edit Publication</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl">
-        <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
-          <Input id="title" name="title" required defaultValue={pub.title} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="slug">Slug *</Label>
-          <Input id="slug" name="slug" required defaultValue={pub.slug} />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="venue">Venue *</Label>
-            <Input id="venue" name="venue" required defaultValue={pub.venue} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="venueType">Venue Type</Label>
-            <select
-              id="venueType"
-              name="venueType"
-              className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog"
-              defaultValue={pub.venueType}
-            >
-              <option value="conference">Conference</option>
-              <option value="journal">Journal</option>
-              <option value="workshop">Workshop</option>
-              <option value="preprint">Preprint</option>
-              <option value="poster">Poster</option>
-              <option value="talk">Talk</option>
-              <option value="thesis">Thesis</option>
-            </select>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="year">Year *</Label>
-            <Input id="year" name="year" type="number" required defaultValue={pub.year} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <select
-              id="status"
-              name="status"
-              className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog"
-              defaultValue={pub.status}
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-            </select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="sortOrder">Sort Order</Label>
-            <Input id="sortOrder" name="sortOrder" type="number" defaultValue={pub.sortOrder} />
-          </div>
-        </div>
+    <EditorLayout
+      title={pub.title}
+      breadcrumbs={breadcrumbs}
+      status={pub.status as "draft" | "published"}
+      version={pub.version}
+      savedAt={pub.updatedAt}
+      error={error}
+      fieldErrors={fieldErrors}
+      submitting={submitting}
+      onDelete={handleDelete}
+      onSave={handleSave}
+    >
+      <FieldGroup label="Title" required>
+        <Input name="title" required defaultValue={pub.title} />
+      </FieldGroup>
+      <FieldGroup label="Slug" required>
+        <Input name="slug" required defaultValue={pub.slug} />
+      </FieldGroup>
+      <div className="grid grid-cols-2 gap-4">
+        <FieldGroup label="Venue" required>
+          <Input name="venue" required defaultValue={pub.venue} />
+        </FieldGroup>
+        <FieldGroup label="Venue Type">
+          <select name="venueType" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue={pub.venueType}>
+            <option value="conference">Conference</option>
+            <option value="journal">Journal</option>
+            <option value="workshop">Workshop</option>
+            <option value="preprint">Preprint</option>
+            <option value="poster">Poster</option>
+            <option value="talk">Talk</option>
+            <option value="thesis">Thesis</option>
+          </select>
+        </FieldGroup>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <FieldGroup label="Year" required>
+          <Input name="year" type="number" required defaultValue={pub.year} />
+        </FieldGroup>
+        <FieldGroup label="Status">
+          <select name="status" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue={pub.status}>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </FieldGroup>
+        <FieldGroup label="Sort Order">
+          <Input name="sortOrder" type="number" defaultValue={pub.sortOrder} />
+        </FieldGroup>
+      </div>
 
-        <div className="space-y-2 border-t border-[var(--border)] pt-4">
-          <Label className="font-semibold">Authors (ordered)</Label>
-          {pub.authors.map((author, idx) => (
-            <div key={idx} className="flex items-center gap-2">
-              <GripVertical size={16} className="text-[var(--text-tertiary)] cursor-grab" />
-              <div className="flex-1 space-y-1">
-                <Input
-                  placeholder={`Author ${idx + 1} name`}
-                  defaultValue={author.name}
-                  onChange={(e) => updateAuthor(idx, "name", e.target.value)}
-                />
-                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                  <input
-                    type="checkbox"
-                    defaultChecked={author.isMe}
-                    onChange={(e) => updateAuthor(idx, "isMe", e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-cyan"
-                  />
-                  Is me
-                </label>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => removeAuthor(idx)}
-                disabled={pub.authors.length <= 1}
-                aria-label={`Remove author ${idx + 1}`}
-              >
-                <Trash2 size={14} />
-              </Button>
-            </div>
-          ))}
-          <Button type="button" variant="outline" size="sm" onClick={addAuthor}>
-            <Plus size={14} className="mr-1" /> Add Author
-          </Button>
-        </div>
-
-        <div className="space-y-2 border-t border-[var(--border)] pt-4">
-          <Label className="font-semibold">Contributions (ordered list)</Label>
-          {pub.contributions.map((contrib, idx) => (
-            <div key={idx} className="flex items-center gap-2">
-              <GripVertical size={16} className="text-[var(--text-tertiary)] cursor-grab" />
-              <Input
-                placeholder={`Contribution ${idx + 1}`}
-                defaultValue={contrib}
-                onChange={(e) => updateContribution(idx, e.target.value)}
-                className="flex-1"
+      <SectionHeader title="Authors" description="Ordered list of authors" />
+      {authors.map((author, idx) => (
+        <div key={idx} className="flex items-center gap-2">
+          <GripVertical size={16} className="text-[var(--text-tertiary)]" />
+          <div className="flex-1 space-y-1">
+            <Input
+              placeholder={`Author ${idx + 1} name`}
+              value={author.name}
+              onChange={(e) => updateAuthor(idx, "name", e.target.value)}
+            />
+            <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+              <input
+                type="checkbox"
+                checked={author.isMe}
+                onChange={(e) => updateAuthor(idx, "isMe", e.target.checked)}
+                className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-cyan"
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => removeContribution(idx)}
-                disabled={pub.contributions.length <= 1}
-                aria-label={`Remove contribution ${idx + 1}`}
-              >
-                <Trash2 size={14} />
-              </Button>
-            </div>
-          ))}
-          <Button type="button" variant="outline" size="sm" onClick={addContribution}>
-            <Plus size={14} className="mr-1" /> Add Contribution
+              Is me
+            </label>
+          </div>
+          <Button type="button" variant="ghost" size="sm" onClick={() => removeAuthor(idx)} disabled={authors.length <= 1} aria-label={`Remove author ${idx + 1}`}>
+            <Trash2 size={14} />
           </Button>
         </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={addAuthor}>
+        <Plus size={14} className="mr-1" /> Add Author
+      </Button>
 
-        <div className="space-y-2">
-          <Label htmlFor="abstract">Abstract</Label>
-          <Textarea id="abstract" name="abstract" rows={4} defaultValue={pub.abstract || ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="tldr">TL;DR</Label>
-          <Input id="tldr" name="tldr" defaultValue={pub.tldr || ""} />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="doi">DOI</Label>
-            <Input id="doi" name="doi" defaultValue={pub.doi || ""} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="arxivId">arXiv ID</Label>
-            <Input id="arxivId" name="arxivId" defaultValue={pub.arxivId || ""} />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="pdfUrl">PDF URL</Label>
-            <Input id="pdfUrl" name="pdfUrl" type="url" defaultValue={pub.pdfUrl || ""} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="codeUrl">Code URL</Label>
-            <Input id="codeUrl" name="codeUrl" type="url" defaultValue={pub.codeUrl || ""} />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="projectUrl">Project URL</Label>
-            <Input id="projectUrl" name="projectUrl" type="url" defaultValue={pub.projectUrl || ""} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="citationCount">Citation Count</Label>
-            <Input id="citationCount" name="citationCount" type="number" min="0" defaultValue={pub.citationCount || ""} />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="bibtex">BibTeX</Label>
-          <Textarea id="bibtex" name="bibtex" rows={6} className="font-mono text-xs" defaultValue={pub.bibtex || ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="ogImageUrl">OG Image URL</Label>
-          <Input id="ogImageUrl" name="ogImageUrl" type="url" defaultValue={pub.ogImageUrl || ""} placeholder="https://..." />
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            id="featured"
-            name="featured"
-            type="checkbox"
-            className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-cyan"
-            defaultChecked={pub.featured}
+      <SectionHeader title="Contributions" description="Ordered list of contributions" />
+      {contributions.map((contrib, idx) => (
+        <div key={idx} className="flex items-center gap-2">
+          <GripVertical size={16} className="text-[var(--text-tertiary)]" />
+          <Input
+            placeholder={`Contribution ${idx + 1}`}
+            value={contrib}
+            onChange={(e) => updateContribution(idx, e.target.value)}
+            className="flex-1"
           />
-          <Label htmlFor="featured">Featured on homepage</Label>
-        </div>
-        <input type="hidden" name="version" value={pub.version} />
-        {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
-        <div className="flex items-center justify-between">
-          <div className="flex gap-3">
-            <Button type="submit" disabled={submitting}>
-              {submitting ? "Saving..." : "Save Changes"}
-            </Button>
-            <Button type="button" variant="ghost" onClick={() => router.back()}>
-              Cancel
-            </Button>
-          </div>
-          <Button type="button" variant="danger" onClick={handleDelete}>
-            Delete
+          <Button type="button" variant="ghost" size="sm" onClick={() => removeContribution(idx)} disabled={contributions.length <= 1} aria-label={`Remove contribution ${idx + 1}`}>
+            <Trash2 size={14} />
           </Button>
         </div>
-      </form>
-    </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={addContribution}>
+        <Plus size={14} className="mr-1" /> Add Contribution
+      </Button>
+
+      <SectionHeader title="Abstract & Summary" />
+      <FieldGroup label="Abstract">
+        <Textarea name="abstract" rows={4} defaultValue={pub.abstract || ""} />
+      </FieldGroup>
+      <FieldGroup label="TL;DR">
+        <Input name="tldr" defaultValue={pub.tldr || ""} />
+      </FieldGroup>
+
+      <SectionHeader title="Identifiers & Links" />
+      <div className="grid grid-cols-2 gap-4">
+        <FieldGroup label="DOI">
+          <Input name="doi" defaultValue={pub.doi || ""} />
+        </FieldGroup>
+        <FieldGroup label="arXiv ID">
+          <Input name="arxivId" defaultValue={pub.arxivId || ""} />
+        </FieldGroup>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <FieldGroup label="PDF URL">
+          <Input name="pdfUrl" type="url" defaultValue={pub.pdfUrl || ""} />
+        </FieldGroup>
+        <FieldGroup label="Code URL">
+          <Input name="codeUrl" type="url" defaultValue={pub.codeUrl || ""} />
+        </FieldGroup>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <FieldGroup label="Project URL">
+          <Input name="projectUrl" type="url" defaultValue={pub.projectUrl || ""} />
+        </FieldGroup>
+        <FieldGroup label="Citation Count">
+          <Input name="citationCount" type="number" min="0" defaultValue={pub.citationCount || ""} />
+        </FieldGroup>
+      </div>
+
+      <SectionHeader title="BibTeX" />
+      <FieldGroup label="BibTeX Entry">
+        <Textarea name="bibtex" rows={6} className="font-mono text-xs" defaultValue={pub.bibtex || ""} />
+      </FieldGroup>
+
+      <SectionHeader title="SEO & Display" />
+      <FieldGroup label="OG Image URL" hint="Social media share image">
+        <Input name="ogImageUrl" type="url" defaultValue={pub.ogImageUrl || ""} placeholder="https://..." />
+      </FieldGroup>
+      <div className="flex items-center gap-2">
+        <input id="featured" name="featured" type="checkbox" className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-cyan" defaultChecked={pub.featured} />
+        <Label htmlFor="featured">Featured on homepage</Label>
+      </div>
+    </EditorLayout>
   )
 }
