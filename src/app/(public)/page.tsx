@@ -8,22 +8,28 @@ import { Badge } from "@/components/ui/badge"
 import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
-import { getFeaturedPublications, getFeaturedProjects, getSkillCategories } from "@/lib/db/queries"
+import { getFeaturedPublications, getFeaturedProjects, getSkillCategories, getLatestResearchExperience, getLatestTeachingExperience } from "@/lib/db/queries"
 import { prisma } from "@/lib/db/prisma"
 import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
 import Link from "next/link"
 import { Fragment } from "react"
 import { ArrowUpRight, FileText, Code2, Mail, GraduationCap, ChevronRight, Sparkles } from "lucide-react"
+import type { Publication, ResearchingAssistant, TeachingAssistant, Project, PublicationTag, Tag, ProjectTag } from "@prisma/client"
+
+type PublicationWithTags = Publication & { tags: (PublicationTag & { tag: Tag })[] }
+type ProjectWithTags = Project & { tags: (ProjectTag & { tag: Tag })[] }
 
 export const revalidate = 3600
 
 export default async function HomePage() {
-  const [publications, projects, skillCategories, homeTitle, homeDescription] = await Promise.all([
+  const [publications, projects, skillCategories, homeTitle, homeDescription, latestResearch, latestTeaching] = await Promise.all([
     getFeaturedPublications().catch(() => []),
     getFeaturedProjects().catch(() => []),
     getSkillCategories().catch(() => []),
     prisma.siteSetting.findUnique({ where: { key: "home_title" } }),
     prisma.siteSetting.findUnique({ where: { key: "home_description" } }),
+    getLatestResearchExperience().catch(() => null),
+    getLatestTeachingExperience().catch(() => null),
   ])
 
   const titleLines = parseHomeTitle(homeTitle?.value)
@@ -71,7 +77,7 @@ export default async function HomePage() {
               {[
                 { href: "https://scholar.google.com", label: "Google Scholar", icon: GraduationCap, variant: "secondary" as const },
                 { href: "https://github.com/parsaoryani", label: "GitHub", icon: Code2, variant: "secondary" as const },
-                { href: "/cv", label: "Download CV", icon: FileText, variant: "default" as const },
+                { href: "/cv", label: "View CV", icon: FileText, variant: "default" as const },
                 { href: "mailto:parsa.oryani82@sharif.edu", label: "Email", icon: Mail, variant: "outline" as const },
               ].map((link) => (
                 <Link key={link.label} href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined}>
@@ -126,7 +132,7 @@ export default async function HomePage() {
               </div>
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {publications.map((pub, i) => (
+              {publications.map((pub: PublicationWithTags, i: number) => (
                 <ScrollReveal key={pub.id} direction="up" delay={i * 100} className="h-full">
                   <PublicationCard publication={pub} />
                 </ScrollReveal>
@@ -136,6 +142,116 @@ export default async function HomePage() {
               <Link href="/research">
                 <Button variant="outline" size="sm" className="font-mono text-xs gap-1.5">
                   View all research <ArrowUpRight size={10} />
+                </Button>
+              </Link>
+            </div>
+          </Container>
+        </Section>
+      )}
+
+      {/* Selected Experience */}
+      {(latestResearch || latestTeaching) && (
+        <Section className="relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-void via-emerald/[0.01] to-void pointer-events-none" />
+          <Container className="relative">
+            <ScrollReveal>
+              <div className="flex items-end justify-between mb-12">
+                <div>
+                  <Badge variant="default" className="mb-4 text-xs px-3 py-1">
+                    <Sparkles size={12} className="mr-1.5" /> Experience
+                  </Badge>
+                  <h2 className="text-3xl md:text-4xl font-bold">
+                    <span className="text-gradient">Selected Experience</span>
+                  </h2>
+                  <p className="text-mist mt-2 text-sm">Recent research and teaching roles</p>
+                </div>
+                <Link
+                  href="/research-assistance"
+                  className="hidden md:flex items-center gap-1.5 text-sm text-emerald hover:text-emerald/80 transition-colors font-mono group"
+                >
+                  View all experience
+                  <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
+              </div>
+            </ScrollReveal>
+            <div className="grid gap-6 md:grid-cols-2">
+              {latestResearch && (
+                <ScrollReveal key={latestResearch.id} direction="up" className="h-full">
+                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-emerald/30 transition-colors">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2.5 py-1 rounded-full bg-emerald/5 border border-emerald/10 text-emerald group-hover:bg-emerald/10 group-hover:border-emerald/20 transition-colors">
+                        <span className="font-mono text-[10px] font-medium uppercase tracking-wider">Research Experience</span>
+                      </span>
+                    </div>
+                    <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-emerald transition-colors duration-300">
+                      {latestResearch.topic}
+                    </h3>
+                    <p className="text-sm text-mist mb-3 flex-1">
+                      {latestResearch.lab}, {latestResearch.university}
+                    </p>
+                    <p className="font-mono text-xs text-ash mb-4">
+                      {new Date(latestResearch.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
+                      {latestResearch.endDate
+                        ? `— ${new Date(latestResearch.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
+                        : "— Present"}
+                    </p>
+                    {latestResearch.outcomes && (
+                      <p className="text-sm text-mist/80 mb-4 line-clamp-2 leading-relaxed">
+                        {String(latestResearch.outcomes)}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-3 pt-4 border-t border-slate-700/50">
+                      <Link
+                        href="/research-assistance"
+                        className="flex items-center gap-1 text-xs text-emerald hover:text-emerald-deep transition-colors font-mono"
+                      >
+                        View all <ArrowUpRight size={10} />
+                      </Link>
+                    </div>
+                  </article>
+                </ScrollReveal>
+              )}
+              {latestTeaching && (
+                <ScrollReveal key={latestTeaching.id} direction="up" delay={100} className="h-full">
+                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-amber/30 transition-colors">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2.5 py-1 rounded-full bg-amber/5 border border-amber/10 text-amber group-hover:bg-amber/10 group-hover:border-amber/20 transition-colors">
+                        <span className="font-mono text-[10px] font-medium uppercase tracking-wider">Teaching Experience</span>
+                      </span>
+                    </div>
+                    <h3 className="text-base font-semibold leading-snug mb-2 group-hover:text-amber transition-colors duration-300">
+                      {latestTeaching.course}
+                    </h3>
+                    <p className="text-sm text-mist mb-3 flex-1">
+                      {latestTeaching.university}
+                    </p>
+                    <p className="font-mono text-xs text-ash mb-4">
+                      {new Date(latestTeaching.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
+                      {latestTeaching.endDate
+                        ? `— ${new Date(latestTeaching.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
+                        : "— Present"}
+                    </p>
+                    {latestTeaching.highlights && (
+                      <p className="text-sm text-mist/80 mb-4 line-clamp-2 leading-relaxed">
+                        {String(latestTeaching.highlights)}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-3 pt-4 border-t border-slate-700/50">
+                      <Link
+                        href="/teaching"
+                        className="flex items-center gap-1 text-xs text-amber hover:text-amber-deep transition-colors font-mono"
+                      >
+                        View all <ArrowUpRight size={10} />
+                      </Link>
+                    </div>
+                  </article>
+                </ScrollReveal>
+              )}
+            </div>
+            <div className="mt-8 text-center md:hidden">
+              <Link href="/research-assistance">
+                <Button variant="outline" size="sm" className="font-mono text-xs gap-1.5">
+                  View all experience <ArrowUpRight size={10} />
                 </Button>
               </Link>
             </div>
@@ -167,7 +283,7 @@ export default async function HomePage() {
               </div>
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project, i) => (
+              {projects.map((project: ProjectWithTags, i: number) => (
                 <ScrollReveal key={project.id} direction="up" delay={i * 100} className="h-full">
                   <ProjectCard project={project} />
                 </ScrollReveal>

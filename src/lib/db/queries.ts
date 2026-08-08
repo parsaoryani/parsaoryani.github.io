@@ -76,6 +76,34 @@ export async function getSkillCategories() {
   })
 }
 
+export async function getLatestResearchExperience() {
+  return prisma.researchingAssistant.findFirst({
+    where: { status: "published" },
+    orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
+  })
+}
+
+export async function getLatestTeachingExperience() {
+  return prisma.teachingAssistant.findFirst({
+    where: { status: "published" },
+    orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
+  })
+}
+
+export async function getAllResearchExperience() {
+  return prisma.researchingAssistant.findMany({
+    where: { status: "published" },
+    orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
+  })
+}
+
+export async function getAllTeachingExperience() {
+  return prisma.teachingAssistant.findMany({
+    where: { status: "published" },
+    orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
+  })
+}
+
 export async function getSiteSetting(key: string) {
   const setting = await prisma.siteSetting.findUnique({ where: { key } })
   return setting?.value ?? null

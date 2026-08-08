@@ -1,12 +1,31 @@
 import Link from "next/link"
-import { Code2, UserCheck, Mail, ExternalLink, GraduationCap, ArrowUpRight } from "lucide-react"
+import { Code2, UserCheck, Mail, ExternalLink, GraduationCap, ArrowUpRight, FileText, Briefcase, Award, Mic, HeartHandshake, BookOpen } from "lucide-react"
 
 const socialLinks = [
   { href: "https://github.com/parsaoryani", label: "GitHub", icon: Code2 },
   { href: "https://www.linkedin.com/in/parsa-oryani/", label: "LinkedIn", icon: UserCheck },
-  { href: "https://scholar.google.com/citations?user=YOUR_ID", label: "Scholar", icon: GraduationCap },
+  { href: "https://scholar.google.com/citations?user=YOUR_ID", label: "Google Scholar", icon: GraduationCap },
   { href: "mailto:parsa.oryani82@sharif.edu", label: "Email", icon: Mail },
 ]
+
+const footerNav = {
+  work: [
+    { label: "Research", href: "/research" },
+    { label: "Projects", href: "/projects" },
+  ],
+  background: [
+    { label: "Research Experience", href: "/research-assistance" },
+    { label: "Teaching Experience", href: "/teaching" },
+    { label: "About", href: "/about" },
+    { label: "Education & Career", href: "/about#timeline" },
+    { label: "Awards, Talks & Service", href: "/about#recognition" },
+    { label: "CV / PDF", href: "/cv" },
+  ],
+  connect: [
+    { label: "Contact", href: "/contact", external: false },
+    ...socialLinks.map((s) => ({ label: s.label, href: s.href, external: true })),
+  ],
+}
 
 export function Footer() {
   return (
@@ -23,15 +42,28 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4">Navigation</h3>
+            <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4">Work & Experience</h3>
             <div className="flex flex-col gap-2">
-              {["Research", "Projects", "About", "Contact"].map((item) => (
+              {footerNav.work.map((item) => (
                 <Link
-                  key={item}
-                  href={`/${item.toLowerCase()}`}
+                  key={item.href}
+                  href={item.href}
                   className="text-sm text-mist hover:text-cyan transition-colors flex items-center gap-1 group"
                 >
-                  {item}
+                  {item.label}
+                  <ArrowUpRight size={10} className="opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
+                </Link>
+              ))}
+            </div>
+            <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4 mt-8">Background</h3>
+            <div className="flex flex-col gap-2">
+              {footerNav.background.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm text-mist hover:text-cyan transition-colors flex items-center gap-1 group"
+                >
+                  {item.label}
                   <ArrowUpRight size={10} className="opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
                 </Link>
               ))}
@@ -39,17 +71,17 @@ export function Footer() {
           </div>
           <div>
             <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4">Connect</h3>
-            <div className="flex flex-wrap gap-3">
-              {socialLinks.map((link) => (
+            <div className="flex flex-col gap-2">
+              {footerNav.connect.map((item) => (
                 <Link
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700/50 hover:border-cyan/30 hover:bg-slate-800/80 transition-all duration-300"
+                  key={item.href}
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  className="text-sm text-mist hover:text-cyan transition-colors flex items-center gap-1 group"
                 >
-                  <link.icon size={14} className="text-mist group-hover:text-cyan transition-colors" />
-                  <span className="text-xs text-mist group-hover:text-fog transition-colors">{link.label}</span>
+                  {item.label}
+                  <ArrowUpRight size={10} className="opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
                 </Link>
               ))}
             </div>

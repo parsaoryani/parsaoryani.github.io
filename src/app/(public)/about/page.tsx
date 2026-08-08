@@ -46,12 +46,13 @@ interface CourseShape {
   links?: CourseLinkShape[]
 }
 
-const typeConfig: Record<string, { icon: typeof GraduationCap; label: string; color: string }> = {
-  education: { icon: GraduationCap, label: "Education", color: "text-cyan" },
-  experience: { icon: Briefcase, label: "Experience", color: "text-indigo" },
-  award: { icon: Award, label: "Award", color: "text-emerald" },
-  talk: { icon: Mic, label: "Talk", color: "text-amber" },
-  service: { icon: HeartHandshake, label: "Service", color: "text-mist" },
+const typeConfig: Record<string, { icon: typeof GraduationCap; label: string; color: string; anchor: string }> = {
+  education: { icon: GraduationCap, label: "Education", color: "text-cyan", anchor: "education" },
+  experience: { icon: Briefcase, label: "Experience", color: "text-indigo", anchor: "experience" },
+  award: { icon: Award, label: "Award", color: "text-emerald", anchor: "awards" },
+  talk: { icon: Mic, label: "Talk", color: "text-amber", anchor: "talks" },
+  service: { icon: HeartHandshake, label: "Service", color: "text-mist", anchor: "service" },
+  publication_milestone: { icon: AwardIcon, label: "Publication Milestone", color: "text-amber", anchor: "publications" },
 }
 
 export default async function AboutPage() {
@@ -125,7 +126,7 @@ export default async function AboutPage() {
               return (
                 <a
                   key={type}
-                  href={`#tl-${type}`}
+                  href={`#${config.anchor}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700/50 text-xs font-mono hover:border-cyan/50 transition-colors"
                 >
                   <Icon size={12} className={config.color} />
@@ -142,7 +143,7 @@ export default async function AboutPage() {
             if (typeEvents.length === 0) return null
 
             return (
-              <ScrollReveal key={type} direction="left" className="mb-14" id={`tl-${type}`}>
+              <ScrollReveal key={type} direction="left" className="mb-14" id={config.anchor}>
                 <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                   <Icon size={16} className={config.color} />
                   <span className={config.color}>{config.label}</span>
@@ -180,11 +181,12 @@ export default async function AboutPage() {
                         </ul>
                       )}
                       {event.type === "education" && event.courses && event.courses.length > 0 && (
-                        <div className="mt-4 space-y-3">
-                          <h4 className="text-xs font-semibold font-mono text-cyan uppercase tracking-wider flex items-center gap-1.5">
+                        <details className="mt-4 space-y-3 group">
+                          <summary className="cursor-pointer text-xs font-semibold font-mono text-cyan uppercase tracking-wider flex items-center gap-1.5">
                             <BookOpen size={11} /> Courses ({event.courses.length})
-                          </h4>
-                          <div className="space-y-3 ml-2 border-l border-slate-700/50 pl-4">
+                            <span className="ml-auto text-ash transition-transform duration-200 group-open:rotate-180">▸</span>
+                          </summary>
+                          <div className="space-y-3 ml-2 border-l border-slate-700/50 pl-4 mt-3 animate-in slide-in-from-top-2">
                             {event.courses.map((course: CourseShape) => (
                               <div key={course.id} className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3 hover:border-cyan/20 transition-colors">
                                 <div className="flex items-start justify-between gap-3">
@@ -232,7 +234,7 @@ export default async function AboutPage() {
                               </div>
                             ))}
                           </div>
-                        </div>
+                        </details>
                       )}
                     </div>
                   ))}
