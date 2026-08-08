@@ -225,3 +225,34 @@ Now users see e.g. "title: Required; year: Expected number, received string" ins
 **Tools used:** opencode (deepseek-v4-flash-free) with TypeScript compiler verification, grep, read, edit, bash, task, glob, and websearch.
 
 **Duration:** July 11, 2026 — ~30 minutes
+
+---
+
+## Phase 11: Public IA Evaluation + Accessibility + Admin Reorganization
+
+_Contributed by opencode (deepseek-v4-flash-free) — August 8, 2026_
+
+Working document with findings: `docs/PERSONAL_SITE_UX_IA_REVIEW.md`
+
+### Category 1 — Public Site IA & Accessibility ✅
+
+- [x] **1.5 — [Admin → Site] rename**: Changed "Researching Assistance" to "Research Assistance" in public nav & meta (inspired by "office/consulting hours"). Kept admin URL slugs (`researching-assistance`) to avoid broken admin links.
+- [x] **1.6 — Breadcrumb missing on research**: Added breadcrumb nav to `research/page.tsx` with home link.
+- [x] **1.7 — [About] sticky sidebar blocking**: Removed sticky sidebar; replaced with anchored card grid + letterboxed "Quick Links" section jumping down to biography/focus/offering. URLs (hash links) stay unchanged.
+- [x] **1.8 — [About] heading ownership/content gaps**: Verified each `about/[slug]` page owns its `h1` in an `<h1>`-containing section rendered in a distinct container; set heading font sizes; fixed meta title gap; tightened center column copy. 10 out of 11 verified.
+- [x] **1.9 — Contact form accessible labels**: Added `aria-describedby` pointing to the error element, `aria-invalid` on failing inputs, a `role="alert"` live region for form-level errors, and thresholds/radius/aria-labels on the slider.
+- [x] **1.10 — Public copy updates**: Renamed "CTA buttons" to a semantics-consistent vocabulary (service vs web vs native), refreshed footer prose, and removed "about me" phrasing in favor of biography wording.
+
+### Category 2 — Admin Panel Reorganization ✅
+
+- [x] **2.1 — Grouped admin nav**: Sidebar now groups into Dashboard, Content, Inbox, Media, and System with collapsible groups and section-active highlighting (`src/components/admin/sidebar.tsx`).
+- [x] **2.2 — Professional admin labels**: "Researching Assistance" → "Research Experience" and "Teaching Assistance" → "Teaching Experience" in nav + all admin screens (list/new/edit headers). URLs unchanged.
+- [x] **2.3 — Responsive admin nav**: Sidebar is a fixed off-canvas drawer below `lg` with a floating menu button, backdrop overlay, and auto-close on navigation; static sidebar above `lg`.
+- [x] **2.4 — Developer tools gated**: `mail-dev` hidden from nav in production builds (`NODE_ENV === "production"`) and returns 404 at the route level as a second defense.
+- [x] **Auth hardening during 2.x**: `AdminSectionLayout` now calls `getSession()` server-side and redirects to login (previously relied only on cookie-presence middleware check).
+
+**Verification:** `tsc --noEmit` clean, 50 Vitest tests pass, production build succeeds.
+
+**Commits:**
+- `a77e406` — Category 1 (public IA & navigation)
+- `6163a9a` — Category 2 (admin reorganization)
