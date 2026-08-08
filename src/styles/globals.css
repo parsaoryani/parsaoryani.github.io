@@ -7,20 +7,20 @@
   --color-slate-700: #2A3446;
   --color-fog: #E6EDF3;
   --color-mist: #9BA7B4;
-  --color-ash: #5C6675;
+  --color-ash: #7B8794;
   --color-cyan: #38E1C4;
   --color-cyan-deep: #25B8A0;
-  --color-indigo: #7C6CFF;
+  --color-indigo: #9B8AFF;
   --color-emerald: #3FB950;
   --color-amber: #D29922;
   --color-coral: #F85149;
 }
 
 :root {
-  --border: #2A3446;
+  --border: #3A4856;
   --bg-elevated: #111722;
   --text-secondary: #9BA7B4;
-  --text-tertiary: #5C6675;
+  --text-tertiary: #7B8794;
   --accent: #38E1C4;
   --danger: #F85149;
 }

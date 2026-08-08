@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { contactFormSchema, type ContactFormData } from "@/lib/validation/schemas"
@@ -14,6 +14,7 @@ export function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [announcement, setAnnouncement] = useState<string>("")
+  const formRef = useRef<HTMLFormElement>(null)
 
   const {
     register,
@@ -21,6 +22,7 @@ export function ContactForm() {
     formState: { errors, isSubmitting },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
+    mode: "onBlur",
   })
 
   function announce(message: string) {
@@ -44,6 +46,11 @@ export function ContactForm() {
       const errMsg = "Something went wrong. Please try again later."
       setError(errMsg)
       announce(errMsg)
+      // Focus the first invalid field on server error
+      setTimeout(() => {
+        const firstError = formRef.current?.querySelector<HTMLElement>("[aria-invalid='true']")
+        firstError?.focus()
+      }, 100)
     }
   }
 
@@ -66,7 +73,7 @@ export function ContactForm() {
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only" id="form-announcement">
         {announcement}
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+      <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
         <div className="grid sm:grid-cols-2 gap-5">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-sm text-mist font-mono text-xs uppercase tracking-wider">Name</Label>
