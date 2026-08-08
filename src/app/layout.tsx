@@ -22,6 +22,7 @@ const sourceSerif = Source_Serif_4({
 })
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:4321"
+const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Parsa Oryani",
+    url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
@@ -43,9 +45,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  other: {
+    "admin-path": ADMIN_PATH,
+  },
 }
-
-const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
 
 export default function RootLayout({
   children,
