@@ -9,7 +9,7 @@ export function personSchema() {
     familyName: "Oryani",
     alumniOf: "Sharif University of Technology",
     jobTitle: "M.Sc. Computer Engineering",
-    url: process.env.NEXT_PUBLIC_SITE_URL,
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://parsaoryani.me",
     sameAs: [
       "https://github.com/parsaoryani",
       "https://scholar.google.com/citations?user=YOUR_ID",

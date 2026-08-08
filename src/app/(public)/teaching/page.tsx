@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma"
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { GraduationCap, Calendar, User, Building2, Sparkles, ChevronRight } from "lucide-react"
 import type { Metadata } from "next"
 
@@ -18,13 +19,16 @@ export default async function TeachingPage() {
     <Section className="pt-32">
       <Container>
         <div className="max-w-4xl">
-          <Badge variant="default" className="mb-5 text-xs px-3 py-1"><GraduationCap size={12} className="mr-1.5" /> Teaching Experience</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">TA</span> <span className="text-fog/50 font-normal">— Teaching Assistance</span></h1>
-          <p className="text-lg text-mist mb-12 max-w-2xl">Courses I have had the privilege of serving as a teaching assistant.</p>
+          <ScrollReveal>
+            <Badge variant="default" className="mb-5 text-xs px-3 py-1"><GraduationCap size={12} className="mr-1.5" /> Teaching Experience</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">TA</span> <span className="text-fog/50 font-normal">— Teaching Assistance</span></h1>
+            <p className="text-lg text-mist mb-12 max-w-2xl">Courses I have had the privilege of serving as a teaching assistant.</p>
+          </ScrollReveal>
 
           <div className="space-y-6">
-            {items.map((item) => (
-              <div key={item.id} className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all">
+            {items.map((item, i) => (
+              <ScrollReveal key={item.id} direction="up" delay={i * 80}>
+                <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all">
                 <div className="flex items-start gap-4">
                   <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald/10 to-cyan/10 border border-emerald/10 shrink-0 mt-1">
                     <GraduationCap size={22} className="text-emerald" />
@@ -54,6 +58,7 @@ export default async function TeachingPage() {
                   </div>
                 </div>
               </div>
+              </ScrollReveal>
             ))}
             {items.length === 0 && <p className="text-sm text-mist font-mono">No teaching experience listed yet.</p>}
           </div>

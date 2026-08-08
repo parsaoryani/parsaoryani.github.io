@@ -21,7 +21,7 @@ const sourceSerif = Source_Serif_4({
   display: "swap",
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:4321"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -81,7 +81,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen font-sans text-fog antialiased">
-        <ClientLayout adminPath={ADMIN_PATH}>
+        <ClientLayout>
           {children}
         </ClientLayout>
       </body>

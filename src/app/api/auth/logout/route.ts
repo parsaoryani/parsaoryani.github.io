@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { destroySession } from "@/lib/auth/auth"
 
-export async function POST() {
+export async function POST(request: Request) {
   await destroySession()
-  return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"))
+  const origin = new URL(request.url).origin
+  return NextResponse.redirect(new URL("/", origin))
 }

@@ -58,6 +58,13 @@ export async function getAllTags() {
 export async function getTimelineEvents() {
   return prisma.timelineEvent.findMany({
     where: { visible: true },
+    include: {
+      courses: {
+        where: { timelineEvent: { type: "education" } },
+        include: { files: { orderBy: { sortOrder: "asc" } } },
+        orderBy: { sortOrder: "asc" },
+      },
+    },
     orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }],
   })
 }

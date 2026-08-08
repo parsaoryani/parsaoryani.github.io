@@ -1,9 +1,10 @@
 import { Container, Section } from "@/components/layout/container"
 import { SkillCluster } from "@/components/content/skill-cluster"
 import { Badge } from "@/components/ui/badge"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { prisma } from "@/lib/db/prisma"
 import { getTimelineEvents, getSkillCategories } from "@/lib/db/queries"
-import { Sparkles, GraduationCap, Briefcase, Award, Mic, HeartHandshake, Camera } from "lucide-react"
+import { Sparkles, GraduationCap, Briefcase, Award, Mic, HeartHandshake, Camera, BookOpen, Award as AwardIcon, FileText, Star, Link as LinkIcon } from "lucide-react"
 import Image from "next/image"
 import type { Metadata } from "next"
 
@@ -19,6 +20,30 @@ function formatDate(date: Date, endDate?: Date | null) {
   const start = date.toLocaleDateString("en-US", options)
   if (!endDate) return `${start} — Present`
   return `${start} — ${endDate.toLocaleDateString("en-US", options)}`
+}
+
+interface CourseFileShape {
+  id: string
+  name: string
+  url: string
+}
+
+interface CourseLinkShape {
+  id: string
+  type: string
+  name: string
+  url: string
+}
+
+interface CourseShape {
+  id: string
+  name: string
+  grade: string | null
+  exercises: string | null
+  projects: string | null
+  discussions: string | null
+  files: CourseFileShape[]
+  links?: CourseLinkShape[]
 }
 
 const typeConfig: Record<string, { icon: typeof GraduationCap; label: string; color: string }> = {
@@ -41,7 +66,8 @@ export default async function AboutPage() {
   return (
     <Section className="pt-32">
       <Container>
-        <div className="max-w-4xl mb-16">
+        <ScrollReveal>
+          <div className="max-w-4xl mb-16">
           <Badge variant="default" className="mb-5 text-xs px-3 py-1">
             <Sparkles size={12} className="mr-1.5" /> Background
           </Badge>
@@ -65,7 +91,7 @@ export default async function AboutPage() {
               </h1>
               <div className="space-y-4 text-mist leading-relaxed">
                 <p>
-                  I am a Master's student in Computer Engineering at Sharif University of Technology,
+                  I am a Master&apos;s student in Computer Engineering at Sharif University of Technology,
                   where my research focuses on the intersection of blockchain security, deep learning
                   robustness, and agentic AI safety. My work aims to build verifiably secure
                   decentralized systems through formal methods and cryptographic guarantees.
@@ -84,10 +110,13 @@ export default async function AboutPage() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        </ScrollReveal>
 
         <div className="mb-20">
-          <h2 className="text-2xl font-bold mb-6 text-gradient">Timeline</h2>
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold mb-6 text-gradient">Timeline</h2>
+          </ScrollReveal>
 
           <div className="flex flex-wrap gap-3 mb-10">
             {Object.entries(typeConfig).map(([type, config]) => {
@@ -113,7 +142,7 @@ export default async function AboutPage() {
             if (typeEvents.length === 0) return null
 
             return (
-              <div key={type} id={`tl-${type}`} className="mb-14">
+              <ScrollReveal key={type} direction="left" className="mb-14" id={`tl-${type}`}>
                 <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                   <Icon size={16} className={config.color} />
                   <span className={config.color}>{config.label}</span>
@@ -150,17 +179,74 @@ export default async function AboutPage() {
                           ))}
                         </ul>
                       )}
+                      {event.type === "education" && event.courses && event.courses.length > 0 && (
+                        <div className="mt-4 space-y-3">
+                          <h4 className="text-xs font-semibold font-mono text-cyan uppercase tracking-wider flex items-center gap-1.5">
+                            <BookOpen size={11} /> Courses ({event.courses.length})
+                          </h4>
+                          <div className="space-y-3 ml-2 border-l border-slate-700/50 pl-4">
+                            {event.courses.map((course: CourseShape) => (
+                              <div key={course.id} className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3 hover:border-cyan/20 transition-colors">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <h5 className="font-medium text-sm text-fog">{course.name}</h5>
+                                      {course.grade && (
+                                        <span className="px-2 py-0.5 text-xs font-mono rounded bg-emerald/10 text-emerald border border-emerald/20">{course.grade}</span>
+                                      )}
+                                    </div>
+                                    {course.exercises && (
+                                      <p className="text-xs text-mist/80 mt-1"><strong>Exercises:</strong> {course.exercises}</p>
+                                    )}
+                                    {course.projects && (
+                                      <p className="text-xs text-mist/80 mt-1"><strong>Projects:</strong> {course.projects}</p>
+                                    )}
+                                    {course.discussions && (
+                                      <p className="text-xs text-mist/80 mt-1"><strong>Discussions:</strong> {course.discussions}</p>
+                                    )}
+                                    {course.files && course.files.length > 0 && (
+                                      <div className="mt-2 flex flex-wrap gap-1.5">
+                                        {course.files.map((file: CourseFileShape) => (
+                                          <a key={file.id} href={file.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono rounded bg-slate-800/50 border border-slate-700/50 text-[var(--accent)] hover:bg-cyan/10 transition-colors">
+                                            <FileText size={10} /> {file.name}
+                                          </a>
+                                        ))}
+                                      </div>
+                                    )}
+                                    {course.links && course.links.length > 0 && (
+                                      <div className="mt-2 space-y-2">
+                                        {course.links.filter((l: CourseLinkShape) => l.type === "exercise").map((link: CourseLinkShape) => (
+                                          <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-emerald/10 border border-emerald/20 text-emerald hover:bg-emerald/20 transition-colors">
+                                            <LinkIcon size={10} /> {link.name}
+                                          </a>
+                                        ))}
+                                        {course.links.filter((l: CourseLinkShape) => l.type === "project").map((link: CourseLinkShape) => (
+                                          <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors">
+                                            <LinkIcon size={10} /> {link.name}
+                                          </a>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
-              </div>
+              </ScrollReveal>
             )
           })}
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold mb-10 text-gradient">Skills</h2>
-          <SkillCluster categories={skillCategories} />
+          <ScrollReveal direction="up">
+            <h2 className="text-2xl font-bold mb-10 text-gradient">Skills</h2>
+            <SkillCluster categories={skillCategories} />
+          </ScrollReveal>
         </div>
       </Container>
     </Section>

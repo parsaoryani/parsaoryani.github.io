@@ -366,6 +366,25 @@ async function main() {
     },
   })
 
+  await prisma.siteSetting.upsert({
+    where: { key: "home_title" },
+    update: {},
+    create: {
+      key: "home_title",
+      value: "Researching the\nSecurity of\nDecentralized & AI Systems",
+    },
+  })
+
+  await prisma.siteSetting.upsert({
+    where: { key: "home_description" },
+    update: {},
+    create: {
+      key: "home_description",
+      value:
+        "PhD applicant and researcher at the intersection of blockchain security, deep learning robustness, and agentic AI safety. Building verifiably secure decentralized systems through formal methods and cryptographic guarantees.",
+    },
+  })
+
   // Teaching Assistant entries
   await prisma.teachingAssistant.upsert({
     where: { slug: "advanced-algorithms-ta" },

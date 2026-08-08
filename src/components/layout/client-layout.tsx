@@ -4,17 +4,12 @@ import { usePathname } from "next/navigation"
 import { Nav } from "./nav"
 import { Footer } from "./footer"
 
-export function ClientLayout({ children, adminPath }: { children: React.ReactNode; adminPath: string }) {
+export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isAdmin = pathname.startsWith(`/${adminPath}`)
-
-  if (isAdmin) {
-    return <main>{children}</main>
-  }
 
   return (
     <>
-      <Nav adminPath={adminPath} />
+      <Nav />
       <main>{children}</main>
       <Footer />
     </>

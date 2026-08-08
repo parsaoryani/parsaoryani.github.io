@@ -14,16 +14,12 @@ const navLinks = [
   { href: "/research-assistance", label: "RA" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-  { href: "", label: "Admin" },
 ]
 
-export function Nav({ adminPath }: { adminPath?: string }) {
+export function Nav() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const resolvedLinks = navLinks.map((link) =>
-    link.label === "Admin" ? { ...link, href: `/${adminPath || "x7k2-console"}` } : link
-  )
   const isActive = (href: string) => {
     if (!href) return false
     return pathname === href || pathname.startsWith(href + "/")
@@ -56,7 +52,7 @@ export function Nav({ adminPath }: { adminPath?: string }) {
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
-          {resolvedLinks.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -98,7 +94,7 @@ export function Nav({ adminPath }: { adminPath?: string }) {
           {mobileOpen && (
         <div className="md:hidden glass border-t border-slate-700/50 animate-in">
           <nav className="flex flex-col p-4 gap-1">
-            {resolvedLinks.map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

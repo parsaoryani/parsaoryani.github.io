@@ -1,6 +1,7 @@
 import { Container, Section } from "@/components/layout/container"
 import { ContactForm } from "@/components/content/contact-form"
 import { Badge } from "@/components/ui/badge"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin, Send } from "lucide-react"
 import { prisma } from "@/lib/db/prisma"
 import Link from "next/link"
@@ -48,16 +49,19 @@ export default async function ContactPage() {
   return (
     <Section className="pt-32">
       <Container>
-        <div className="max-w-4xl">
-          <Badge variant="default" className="mb-5 text-xs px-3 py-1">
-            <Sparkles size={12} className="mr-1.5" /> Get in Touch
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-gradient">Contact</span>
-          </h1>
-          <p className="text-lg text-mist mb-12 max-w-2xl">{description}</p>
+        <ScrollReveal>
+          <div className="max-w-4xl">
+            <Badge variant="default" className="mb-5 text-xs px-3 py-1">
+              <Sparkles size={12} className="mr-1.5" /> Get in Touch
+            </Badge>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <span className="text-gradient">Contact</span>
+            </h1>
+            <p className="text-lg text-mist mb-12 max-w-2xl">{description}</p>
+          </div>
+        </ScrollReveal>
 
-          <div className="grid md:grid-cols-5 gap-10">
+        <div className="max-w-4xl grid md:grid-cols-5 gap-10">
             <div className="md:col-span-3">
               <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-6">
@@ -102,7 +106,6 @@ export default async function ContactPage() {
               </div>
             </div>
           </div>
-        </div>
       </Container>
     </Section>
   )

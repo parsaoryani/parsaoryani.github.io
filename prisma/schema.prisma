@@ -170,9 +170,56 @@ model TimelineEvent {
   visible      Boolean             @default(true)
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
+  courses      Course[]
 
   @@index([visible, startDate, sortOrder])
   @@index([type])
+}
+
+model Course {
+  id             String   @id @default(cuid())
+  timelineEventId String
+  timelineEvent  TimelineEvent @relation(fields: [timelineEventId], references: [id], onDelete: Cascade)
+  name           String
+  grade          String?
+  exercises      String?  @db.Text
+  projects       String?  @db.Text
+  discussions    String?  @db.Text
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  files          CourseFile[]
+  links          CourseLink[]
+
+  @@index([timelineEventId])
+}
+
+model CourseFile {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name      String
+  url       String
+  kind      String   @default("file") // file, pdf, image, code, etc.
+  size      Int?
+  mimeType  String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([courseId])
+}
+
+model CourseLink {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  type      String   // "exercise" | "project"
+  name      String   // custom display name
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([courseId, type])
 }
 
 model SkillCategory {

@@ -2,6 +2,7 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
 import { PublicationCard } from "@/components/content/publication-card"
 import { Badge } from "@/components/ui/badge"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllPublications } from "@/lib/db/queries"
 import type { Metadata } from "next"
 import { BookOpen, Sparkles } from "lucide-react"
@@ -25,7 +26,8 @@ export default async function ResearchPage() {
   return (
     <Section className="pt-32">
       <Container>
-        <div className="max-w-3xl mb-16">
+        <ScrollReveal>
+          <div className="max-w-3xl mb-16">
           <Badge variant="default" className="mb-5 text-xs px-3 py-1">
             <Sparkles size={12} className="mr-1.5" /> Publications
           </Badge>
@@ -40,10 +42,11 @@ export default async function ResearchPage() {
               that are both autonomous and trustworthy.
             </p>
           </div>
-        </div>
+          </div>
+        </ScrollReveal>
 
         {years.map((year) => (
-          <div key={year} className="mb-16 last:mb-0">
+          <ScrollReveal key={year} direction="up" className="mb-16 last:mb-0">
             <div className="flex items-center gap-3 mb-8">
               <span className="font-mono text-sm text-ash">Year</span>
               <h2 className="font-mono text-2xl font-bold text-gradient-accent">{year}</h2>
@@ -52,12 +55,12 @@ export default async function ResearchPage() {
             </div>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {groupedByYear[year]!.map((pub, i) => (
-                <div key={pub.id} className="animate-in" style={{ animationDelay: `${i * 0.08}s` }}>
+                <ScrollReveal key={pub.id} direction="up" delay={i * 80} className="h-full">
                   <PublicationCard publication={pub} showAbstract />
-                </div>
+                </ScrollReveal>
               ))}
             </div>
-          </div>
+          </ScrollReveal>
         ))}
 
         {publications.length === 0 && (

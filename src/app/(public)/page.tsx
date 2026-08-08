@@ -5,16 +5,29 @@ import { ProjectCard } from "@/components/content/project-card"
 import { SkillCluster } from "@/components/content/skill-cluster"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { FloatingParticles } from "@/components/ui/floating-particles"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { TypewriterText } from "@/components/ui/typewriter"
 import { getFeaturedPublications, getFeaturedProjects, getSkillCategories } from "@/lib/db/queries"
+import { prisma } from "@/lib/db/prisma"
+import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
 import Link from "next/link"
+import { Fragment } from "react"
 import { ArrowUpRight, FileText, Code2, Mail, GraduationCap, ChevronRight, Sparkles } from "lucide-react"
 
+export const revalidate = 3600
+
 export default async function HomePage() {
-  const [publications, projects, skillCategories] = await Promise.all([
+  const [publications, projects, skillCategories, homeTitle, homeDescription] = await Promise.all([
     getFeaturedPublications().catch(() => []),
     getFeaturedProjects().catch(() => []),
     getSkillCategories().catch(() => []),
+    prisma.siteSetting.findUnique({ where: { key: "home_title" } }),
+    prisma.siteSetting.findUnique({ where: { key: "home_description" } }),
   ])
+
+  const titleLines = parseHomeTitle(homeTitle?.value)
+  const description = parseHomeDescription(homeDescription?.value)
 
   return (
     <>
@@ -22,6 +35,7 @@ export default async function HomePage() {
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="absolute inset-0 bg-glow" />
+        <FloatingParticles count={18} className="opacity-60" />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan/5 rounded-full blur-[120px] animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-indigo/5 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
 
@@ -34,20 +48,23 @@ export default async function HomePage() {
               </Badge>
             </div>
 
-            <h1 className="animate-in animate-in-delay-1 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight mb-6">
-              <span className="text-gradient">Researching the</span>
-              <br />
-              <span className="text-gradient-accent">Security</span>{" "}
-              <span className="text-gradient">of</span>
-              <br />
-              <span className="text-gradient-accent">Decentralized</span>{" "}
-              <span className="text-gradient">&amp; AI Systems</span>
+<h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight mb-6">
+              {titleLines.map((line, i) => (
+                <Fragment key={i}>
+                  {i > 0 && <br />}
+                  <span className={i % 2 === 0 ? "text-gradient" : "text-gradient-accent"}>{line}</span>
+                </Fragment>
+              ))}
             </h1>
 
-            <p className="animate-in animate-in-delay-2 text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-10">
-              PhD applicant and researcher at the intersection of blockchain security,
-              deep learning robustness, and agentic AI safety. Building verifiably secure
-              decentralized systems through formal methods and cryptographic guarantees.
+            <p className="text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-10 min-h-[2em]">
+              <TypewriterText
+                speed={24}
+                startDelay={1000}
+                segments={[
+                  { text: description },
+                ]}
+              />
             </p>
 
             <div className="animate-in animate-in-delay-3 flex flex-wrap items-center gap-3">
@@ -90,27 +107,29 @@ export default async function HomePage() {
         <Section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
           <Container className="relative">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <Badge variant="default" className="mb-4 text-xs px-3 py-1">Featured Research</Badge>
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  <span className="text-gradient">Latest Publications</span>
-                </h2>
-                <p className="text-mist mt-2 text-sm">Selected papers from top-tier venues</p>
+            <ScrollReveal>
+              <div className="flex items-end justify-between mb-12">
+                <div>
+                  <Badge variant="default" className="mb-4 text-xs px-3 py-1">Featured Research</Badge>
+                  <h2 className="text-3xl md:text-4xl font-bold">
+                    <span className="text-gradient">Latest Publications</span>
+                  </h2>
+                  <p className="text-mist mt-2 text-sm">Selected papers from top-tier venues</p>
+                </div>
+                <Link
+                  href="/research"
+                  className="hidden md:flex items-center gap-1.5 text-sm text-cyan hover:text-cyan-deep transition-colors font-mono group"
+                >
+                  View all research
+                  <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
               </div>
-              <Link
-                href="/research"
-                className="hidden md:flex items-center gap-1.5 text-sm text-cyan hover:text-cyan-deep transition-colors font-mono group"
-              >
-                View all research
-                <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Link>
-            </div>
+            </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {publications.map((pub, i) => (
-                <div key={pub.id} className="animate-in" style={{ animationDelay: `${i * 0.1}s` }}>
+                <ScrollReveal key={pub.id} direction="up" delay={i * 100} className="h-full">
                   <PublicationCard publication={pub} />
-                </div>
+                </ScrollReveal>
               ))}
             </div>
             <div className="mt-8 text-center md:hidden">
@@ -129,27 +148,29 @@ export default async function HomePage() {
         <Section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-indigo/[0.01] to-void pointer-events-none" />
           <Container className="relative">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <Badge variant="secondary" className="mb-4 text-xs px-3 py-1">Engineering</Badge>
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  <span className="text-gradient">Featured Projects</span>
-                </h2>
-                <p className="text-mist mt-2 text-sm">System design case studies with real impact</p>
+            <ScrollReveal>
+              <div className="flex items-end justify-between mb-12">
+                <div>
+                  <Badge variant="secondary" className="mb-4 text-xs px-3 py-1">Engineering</Badge>
+                  <h2 className="text-3xl md:text-4xl font-bold">
+                    <span className="text-gradient">Featured Projects</span>
+                  </h2>
+                  <p className="text-mist mt-2 text-sm">System design case studies with real impact</p>
+                </div>
+                <Link
+                  href="/projects"
+                  className="hidden md:flex items-center gap-1.5 text-sm text-indigo hover:text-indigo/80 transition-colors font-mono group"
+                >
+                  View all projects
+                  <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
               </div>
-              <Link
-                href="/projects"
-                className="hidden md:flex items-center gap-1.5 text-sm text-indigo hover:text-indigo/80 transition-colors font-mono group"
-              >
-                View all projects
-                <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Link>
-            </div>
+            </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {projects.map((project, i) => (
-                <div key={project.id} className="animate-in" style={{ animationDelay: `${i * 0.1}s` }}>
+                <ScrollReveal key={project.id} direction="up" delay={i * 100} className="h-full">
                   <ProjectCard project={project} />
-                </div>
+                </ScrollReveal>
               ))}
             </div>
             <div className="mt-8 text-center md:hidden">
@@ -167,16 +188,18 @@ export default async function HomePage() {
       {skillCategories.length > 0 && (
         <Section className="relative">
           <Container>
-            <div className="mb-12">
-              <Badge variant="default" className="mb-4 text-xs px-3 py-1">Expertise</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold">
-                <span className="text-gradient">Skills & Technologies</span>
-              </h2>
-              <p className="text-mist mt-2 text-sm">Deep expertise across blockchain, ML, and security domains</p>
-            </div>
-            <div className="animate-in">
+            <ScrollReveal>
+              <div className="mb-12">
+                <Badge variant="default" className="mb-4 text-xs px-3 py-1">Expertise</Badge>
+                <h2 className="text-3xl md:text-4xl font-bold">
+                  <span className="text-gradient">Skills & Technologies</span>
+                </h2>
+                <p className="text-mist mt-2 text-sm">Deep expertise across blockchain, ML, and security domains</p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="up" delay={150}>
               <SkillCluster categories={skillCategories} />
-            </div>
+            </ScrollReveal>
           </Container>
         </Section>
       )}
