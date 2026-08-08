@@ -28,15 +28,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
     }
 
-    const { tagIds, ...data } = parsed.data
-    const maxOrder = await prisma.publication.aggregate({ _max: { sortOrder: true } })
+    const { tagIds, sortOrder: requestedOrder, ...data } = parsed.data
+    const finalOrder = requestedOrder ?? ((await prisma.publication.aggregate({ _max: { sortOrder: true } }))._max.sortOrder ?? 0) + 1
 
     const publication = await prisma.publication.create({
       data: {
         ...data,
         authors: data.authors || [],
         contributions: data.contributions || [],
-        sortOrder: (maxOrder._max.sortOrder ?? 0) + 1,
+        sortOrder: finalOrder,
         tags: tagIds?.length
           ? { create: tagIds.map((tagId: string) => ({ tagId })) }
           : undefined,

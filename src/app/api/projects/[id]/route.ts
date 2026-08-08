@@ -30,23 +30,34 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
     }
 
-    const { tagIds, ...data } = parsed.data
+    const { tagIds, version, ...data } = parsed.data
     const existing = await prisma.project.findUnique({ where: { id } })
     if (!existing || existing.deletedAt) {
       return NextResponse.json({ error: "Not found" }, { status: 404 })
     }
 
-    await prisma.projectTag.deleteMany({ where: { projectId: id } })
+    // Optimistic locking: version must match
+    if (existing.version !== version) {
+      return NextResponse.json(
+        { error: "Conflict: this record was modified by another session. Please refresh and try again." },
+        { status: 409 }
+      )
+    }
 
-    const project = await prisma.project.update({
-      where: { id },
-      data: {
-        ...data,
-        techStack: data.techStack || [],
-        tags: tagIds?.length
-          ? { create: tagIds.map((tagId: string) => ({ tagId })) }
-          : undefined,
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.projectTag.deleteMany({ where: { projectId: id } })
+
+      await tx.project.update({
+        where: { id },
+        data: {
+          ...data,
+          techStack: data.techStack || [],
+          version: { increment: 1 },
+          tags: tagIds?.length
+            ? { create: tagIds.map((tagId: string) => ({ tagId })) }
+            : undefined,
+        },
+      })
     })
 
     await prisma.auditLog.create({
@@ -58,7 +69,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       },
     })
 
-    return NextResponse.json(project)
+    const updated = await prisma.project.findUnique({ where: { id } })
+    return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: "Failed to update project" }, { status: 500 })
   }

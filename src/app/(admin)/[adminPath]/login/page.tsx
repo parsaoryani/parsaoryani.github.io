@@ -13,7 +13,7 @@ export default function AdminLoginPage() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [requires2fa, setRequires2fa] = useState(false)
-  const [sessionToken, setSessionToken] = useState("")
+  const [challengeToken, setChallengeToken] = useState("")
   const [totpToken, setTotpToken] = useState("")
 
   const {
@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       }
       if (json.requires2fa) {
         setRequires2fa(true)
-        setSessionToken(json.sessionToken)
+        setChallengeToken(json.challengeToken)
         return
       }
       window.location.assign(".")
@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/auth/verify-2fa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: totpToken, sessionToken }),
+        body: JSON.stringify({ token: totpToken, challengeToken }),
       })
       if (!res.ok) {
         setError("Invalid 2FA code")

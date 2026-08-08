@@ -33,25 +33,36 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
     }
 
-    const { tagIds, ...data } = parsed.data
+    const { tagIds, version, ...data } = parsed.data
     const existing = await prisma.publication.findUnique({ where: { id } })
     if (!existing || existing.deletedAt) {
       return NextResponse.json({ error: "Not found" }, { status: 404 })
     }
 
-    await prisma.publicationTag.deleteMany({ where: { publicationId: id } })
+    // Optimistic locking: version must match
+    if (existing.version !== version) {
+      return NextResponse.json(
+        { error: "Conflict: this record was modified by another session. Please refresh and try again." },
+        { status: 409 }
+      )
+    }
 
-    const publication = await prisma.publication.update({
-      where: { id },
-      data: {
-        ...data,
-        authors: data.authors || [],
-        contributions: data.contributions || [],
-        tags: tagIds?.length
-          ? { create: tagIds.map((tagId: string) => ({ tagId })) }
-          : undefined,
-      },
-      include: { tags: { include: { tag: true } } },
+    await prisma.$transaction(async (tx) => {
+      await tx.publicationTag.deleteMany({ where: { publicationId: id } })
+
+      await tx.publication.update({
+        where: { id },
+        data: {
+          ...data,
+          authors: data.authors || [],
+          contributions: data.contributions || [],
+          version: { increment: 1 },
+          tags: tagIds?.length
+            ? { create: tagIds.map((tagId: string) => ({ tagId })) }
+            : undefined,
+        },
+        include: { tags: { include: { tag: true } } },
+      })
     })
 
     await prisma.auditLog.create({
@@ -63,7 +74,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       },
     })
 
-    return NextResponse.json(publication)
+    const updated = await prisma.publication.findUnique({
+      where: { id },
+      include: { tags: { include: { tag: true } } },
+    })
+
+    return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: "Failed to update publication" }, { status: 500 })
   }

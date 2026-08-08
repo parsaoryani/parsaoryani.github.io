@@ -35,6 +35,7 @@ function publication(overrides: Partial<PubProps["publication"]> = {}): PubProps
     bibtex: null,
     citationCount: null,
     ogImageUrl: null,
+    version: 1,
     deletedAt: null,
     tags: [
       {

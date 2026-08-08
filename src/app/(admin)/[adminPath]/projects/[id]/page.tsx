@@ -17,10 +17,17 @@ interface Project {
   year: number
   problem: string | null
   approach: string | null
+  architecture: string | null
+  challenges: string | null
+  results: string | null
+  retrospective: string | null
   techStack: string[]
   repoUrl: string | null
   demoUrl: string | null
   featured: boolean
+  sortOrder: number
+  ogImageUrl: string | null
+  version: number
 }
 
 export default function EditProjectPage() {
@@ -59,13 +66,21 @@ export default function EditProjectPage() {
       year: parseInt(form.get("year") as string),
       problem: (form.get("problem") as string) || undefined,
       approach: (form.get("approach") as string) || undefined,
+      architecture: (form.get("architecture") as string) || undefined,
+      challenges: (form.get("challenges") as string) || undefined,
+      results: (form.get("results") as string) || undefined,
+      retrospective: (form.get("retrospective") as string) || undefined,
       repoUrl: (form.get("repoUrl") as string) || undefined,
       demoUrl: (form.get("demoUrl") as string) || undefined,
       featured: form.get("featured") === "on",
+      sortOrder: form.get("sortOrder") ? parseInt(form.get("sortOrder") as string) : 0,
+      ogImageUrl: (form.get("ogImageUrl") as string) || undefined,
       techStack: (form.get("techStack") as string)
         ?.split(",")
         .map((s) => s.trim())
         .filter(Boolean),
+      version: project?.version ?? 1,
+      tagIds: [],
     }
 
     try {
@@ -106,7 +121,7 @@ export default function EditProjectPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Edit Project</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
+      <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl">
         <div className="space-y-2">
           <Label htmlFor="title">Title *</Label>
           <Input id="title" name="title" required defaultValue={project.title} />
@@ -119,7 +134,7 @@ export default function EditProjectPage() {
           <Label htmlFor="summary">Summary *</Label>
           <Textarea id="summary" name="summary" required rows={2} defaultValue={project.summary} />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
             <Input id="role" name="role" defaultValue={project.role || ""} />
@@ -127,6 +142,10 @@ export default function EditProjectPage() {
           <div className="space-y-2">
             <Label htmlFor="year">Year *</Label>
             <Input id="year" name="year" type="number" required defaultValue={project.year} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="sortOrder">Sort Order</Label>
+            <Input id="sortOrder" name="sortOrder" type="number" defaultValue={project.sortOrder} />
           </div>
         </div>
         <div className="space-y-2">
@@ -141,20 +160,42 @@ export default function EditProjectPage() {
             <option value="published">Published</option>
           </select>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="problem">Problem</Label>
-          <Textarea id="problem" name="problem" rows={3} defaultValue={project.problem || ""} />
+
+        <div className="border-t border-[var(--border)] pt-4 space-y-6">
+          <h2 className="text-lg font-semibold">Case Study Sections</h2>
+          <div className="space-y-2">
+            <Label htmlFor="problem">Problem</Label>
+            <Textarea id="problem" name="problem" rows={3} defaultValue={project.problem || ""} placeholder="What problem were you solving?" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="approach">Approach</Label>
+            <Textarea id="approach" name="approach" rows={3} defaultValue={project.approach || ""} placeholder="How did you approach the problem?" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="architecture">Architecture</Label>
+            <Textarea id="architecture" name="architecture" rows={3} defaultValue={project.architecture || ""} placeholder="System architecture, data flow, key components" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="challenges">Challenges</Label>
+            <Textarea id="challenges" name="challenges" rows={3} defaultValue={project.challenges || ""} placeholder="Technical challenges and how you overcame them" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="results">Results</Label>
+            <Textarea id="results" name="results" rows={3} defaultValue={project.results || ""} placeholder="Outcomes, metrics, impact" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="retrospective">Retrospective</Label>
+            <Textarea id="retrospective" name="retrospective" rows={3} defaultValue={project.retrospective || ""} placeholder="What you'd do differently, lessons learned" />
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="approach">Approach</Label>
-          <Textarea id="approach" name="approach" rows={3} defaultValue={project.approach || ""} />
-        </div>
+
         <div className="space-y-2">
           <Label htmlFor="techStack">Tech Stack (comma-separated)</Label>
           <Input
             id="techStack"
             name="techStack"
             defaultValue={project.techStack?.join(", ") || ""}
+            placeholder="React, TypeScript, PostgreSQL, etc."
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -167,6 +208,10 @@ export default function EditProjectPage() {
             <Input id="demoUrl" name="demoUrl" type="url" defaultValue={project.demoUrl || ""} />
           </div>
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="ogImageUrl">OG Image URL</Label>
+          <Input id="ogImageUrl" name="ogImageUrl" type="url" defaultValue={project.ogImageUrl || ""} placeholder="https://..." />
+        </div>
         <div className="flex items-center gap-2">
           <input
             id="featured"
@@ -177,6 +222,7 @@ export default function EditProjectPage() {
           />
           <Label htmlFor="featured">Featured on homepage</Label>
         </div>
+        <input type="hidden" name="version" value={project.version} />
         {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
         <div className="flex items-center justify-between">
           <div className="flex gap-3">

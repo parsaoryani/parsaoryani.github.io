@@ -89,6 +89,7 @@ model Publication {
   featured      Boolean           @default(false)
   sortOrder     Int               @default(0)
   ogImageUrl    String?
+  version       Int               @default(1)
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   deletedAt     DateTime?
@@ -117,6 +118,7 @@ model Project {
   featured      Boolean        @default(false)
   sortOrder     Int            @default(0)
   ogImageUrl    String?
+  version       Int            @default(1)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   deletedAt     DateTime?

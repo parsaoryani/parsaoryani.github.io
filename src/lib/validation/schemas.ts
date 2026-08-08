@@ -38,7 +38,11 @@ export const publicationSchema = z.object({
   codeUrl: z.string().optional(),
   projectUrl: z.string().optional(),
   bibtex: z.string().optional(),
+  citationCount: z.number().int().min(0).optional(),
   featured: z.boolean().optional(),
+  sortOrder: z.number().int().optional(),
+  ogImageUrl: z.string().url().optional().or(z.literal("")),
+  version: z.number().int().min(1),
   tagIds: z.array(z.string()).optional(),
 })
 
@@ -59,6 +63,9 @@ export const projectSchema = z.object({
   repoUrl: z.string().optional(),
   demoUrl: z.string().optional(),
   featured: z.boolean().optional(),
+  sortOrder: z.number().int().optional(),
+  ogImageUrl: z.string().url().optional().or(z.literal("")),
+  version: z.number().int().min(1),
   tagIds: z.array(z.string()).optional(),
 })
 

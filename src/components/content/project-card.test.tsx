@@ -27,6 +27,7 @@ function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps
     repoUrl: null,
     demoUrl: null,
     ogImageUrl: null,
+    version: 1,
     createdAt: BASE_DATE,
     updatedAt: BASE_DATE,
     deletedAt: null,
