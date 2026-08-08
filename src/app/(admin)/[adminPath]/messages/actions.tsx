@@ -10,11 +10,12 @@ export function MessageStatusButton({ id, current }: { id: string; current: stri
   const next = current === "new" ? "read" : current === "read" ? "archived" : "read"
 
   async function toggle() {
-    await fetch(`/api/messages/${id}`, {
+    const res = await fetch(`/api/messages/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: next }),
     })
+    if (!res.ok) return
     router.refresh()
   }
 
@@ -30,7 +31,8 @@ export function MessageDeleteButton({ id }: { id: string }) {
 
   async function handleDelete() {
     if (!confirm("Delete this message?")) return
-    await fetch(`/api/messages/${id}`, { method: "DELETE" })
+    const res = await fetch(`/api/messages/${id}`, { method: "DELETE" })
+    if (!res.ok) return
     router.refresh()
   }
 

@@ -8,10 +8,9 @@ export function TagsDeleteButton({ id }: { id: string }) {
 
   async function handleDelete() {
     if (!confirm("Delete this tag? This removes it from all publications and projects.")) return
-    try {
-      const res = await fetch(`/api/tags/${id}`, { method: "DELETE" })
-      if (res.ok) router.refresh()
-    } catch {}
+    const res = await fetch(`/api/tags/${id}`, { method: "DELETE" })
+    if (!res.ok) return
+    router.refresh()
   }
 
   return (

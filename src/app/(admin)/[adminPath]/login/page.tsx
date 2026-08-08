@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
         setSessionToken(json.sessionToken)
         return
       }
-      window.location.href = "."
+      window.location.assign(".")
     } catch {
       setError("Connection error. Try again.")
     }
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
         setError("Invalid 2FA code")
         return
       }
-      window.location.href = "."
+      window.location.assign(".")
     } catch {
       setError("Connection error.")
     }
@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
             <p className="text-sm text-[var(--text-secondary)] mb-6">
               Authenticate to manage content.
             </p>
-            <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
+            <form onSubmit={handleSubmit(onLogin)} className="space-y-4" noValidate>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" {...register("email")} />

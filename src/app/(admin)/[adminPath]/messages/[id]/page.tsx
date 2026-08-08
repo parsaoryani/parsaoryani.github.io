@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import type { ContactMessage } from "@prisma/client"
 
 const statusColors: Record<string, "default" | "secondary" | "warning" | "outline"> = {
   new: "default",
@@ -15,7 +16,7 @@ const statusColors: Record<string, "default" | "secondary" | "warning" | "outlin
 export default function MessageDetailPage() {
   const router = useRouter()
   const params = useParams()
-  const [msg, setMsg] = useState<any>(null)
+  const [msg, setMsg] = useState<ContactMessage | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -25,19 +26,21 @@ export default function MessageDetailPage() {
       .catch(() => setLoading(false))
   }, [params.id])
 
-  async function updateStatus(status: string) {
-    await fetch(`/api/messages/${params.id}`, {
+  async function updateStatus(status: ContactMessage["status"]) {
+    const res = await fetch(`/api/messages/${params.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     })
+    if (!res.ok) return
     router.refresh()
-    setMsg({ ...msg, status })
+    setMsg((prev) => (prev ? { ...prev, status } : prev))
   }
 
   async function handleDelete() {
     if (!confirm("Delete this message?")) return
-    await fetch(`/api/messages/${params.id}`, { method: "DELETE" })
+    const res = await fetch(`/api/messages/${params.id}`, { method: "DELETE" })
+    if (!res.ok) return
     router.push("..")
     router.refresh()
   }

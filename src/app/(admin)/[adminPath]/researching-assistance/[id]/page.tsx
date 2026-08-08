@@ -37,7 +37,7 @@ export default function EditResearchingPage() {
     }
     try {
       const res = await fetch(`/api/researching-assistance/${params.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
-      if (!res.ok) { const err = await res.json(); setError(typeof err.error === "string" ? err.error : "Failed"); return }
+      if (!res.ok) { const err = await res.json(); setError(typeof err.error === "string" ? err.error : Object.values(err.error).flat().join("; ") || "Validation failed"); return }
       router.push(".."); router.refresh()
     } catch { setError("Failed to update") } finally { setSubmitting(false) }
   }

@@ -52,7 +52,7 @@ export function ContactEditor({
         { id: findId("contact_links"), key: "contact_links", value: linkList },
         { id: findId("contact_location"), key: "contact_location", value: { city, note } },
       ]
-      await Promise.all(
+      const results = await Promise.all(
         updates.map((u) =>
           fetch(`/api/settings/${u.id}`, {
             method: "PUT",
@@ -61,6 +61,7 @@ export function ContactEditor({
           })
         )
       )
+      if (!results.every((r) => r.ok)) { setMsg("Failed to save"); return }
       setMsg("Contact saved!")
       router.refresh()
     } catch {

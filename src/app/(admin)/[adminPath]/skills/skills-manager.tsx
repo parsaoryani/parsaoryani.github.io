@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Plus, Edit3, Trash2, X, Check } from "lucide-react"
+import { Plus, Edit3, Trash2, X, Check, AlertCircle } from "lucide-react"
 
 interface Skill { id: string; name: string; proficiency: string | null }
 interface Category { id: string; name: string; skills: Skill[] }
@@ -17,14 +17,17 @@ export function SkillsManager({ categories: initial }: { categories: Category[] 
   const [newSkills, setNewSkills] = useState<Record<string, string>>({})
   const [editingCat, setEditingCat] = useState<string | null>(null)
   const [editCatName, setEditCatName] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   async function addCategory() {
     if (!newCat.trim()) return
-    await fetch("/api/skills", {
+    setError(null)
+    const res = await fetch("/api/skills", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: newCat.trim() }),
     })
+    if (!res.ok) { setError("Failed to add category"); return }
     setNewCat("")
     setAddingCat(false)
     router.refresh()
@@ -32,35 +35,43 @@ export function SkillsManager({ categories: initial }: { categories: Category[] 
 
   async function updateCategory(id: string) {
     if (!editCatName.trim()) return
-    await fetch(`/api/skills/${id}`, {
+    setError(null)
+    const res = await fetch(`/api/skills/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: editCatName.trim() }),
     })
+    if (!res.ok) { setError("Failed to update category"); return }
     setEditingCat(null)
     router.refresh()
   }
 
   async function deleteCategory(id: string) {
     if (!confirm("Delete this category and all its skills?")) return
-    await fetch(`/api/skills/${id}`, { method: "DELETE" })
+    setError(null)
+    const res = await fetch(`/api/skills/${id}`, { method: "DELETE" })
+    if (!res.ok) { setError("Failed to delete category"); return }
     router.refresh()
   }
 
   async function addSkill(categoryId: string) {
     const name = (newSkills[categoryId] || "").trim()
     if (!name) return
-    await fetch("/api/skills/items", {
+    setError(null)
+    const res = await fetch("/api/skills/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, categoryId, proficiency: "advanced" }),
     })
+    if (!res.ok) { setError("Failed to add skill"); return }
     setNewSkills({ ...newSkills, [categoryId]: "" })
     router.refresh()
   }
 
   async function deleteSkill(id: string) {
-    await fetch(`/api/skills/items/${id}`, { method: "DELETE" })
+    setError(null)
+    const res = await fetch(`/api/skills/items/${id}`, { method: "DELETE" })
+    if (!res.ok) { setError("Failed to delete skill"); return }
     router.refresh()
   }
 
@@ -78,6 +89,12 @@ export function SkillsManager({ categories: initial }: { categories: Category[] 
           <Input value={newCat} onChange={(e) => setNewCat(e.target.value)} placeholder="Category name" />
           <Button size="sm" onClick={addCategory}><Check size={14} /></Button>
           <Button size="sm" variant="ghost" onClick={() => setAddingCat(false)}><X size={14} /></Button>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-2 mb-4 px-4 py-2 rounded-lg bg-coral/10 text-coral border border-coral/20 text-sm">
+          <AlertCircle size={14} /> {error}
         </div>
       )}
 

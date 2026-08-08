@@ -38,10 +38,10 @@ const navItems = [
   { href: "security", label: "Security", icon: Shield },
 ]
 
-export function AdminSidebar() {
+export function AdminSidebar({ adminPath }: { adminPath: string }) {
   const pathname = usePathname()
   const segments = pathname.split("/").filter(Boolean)
-  const adminIdx = segments.findIndex((s) => s === "x7k2-console")
+  const adminIdx = segments.findIndex((s) => s === adminPath)
   const base = `/${segments.slice(0, adminIdx + 1).join("/")}`
   const currentSection = segments[adminIdx + 1] || ""
 

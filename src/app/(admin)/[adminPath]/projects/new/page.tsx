@@ -44,7 +44,7 @@ export default function NewProjectPage() {
       })
       if (!res.ok) {
         const err = await res.json()
-        setError(typeof err.error === "string" ? err.error : "Validation failed")
+        setError(typeof err.error === "string" ? err.error : Object.values(err.error).flat().join("; ") || "Validation failed")
         return
       }
       router.push("..")

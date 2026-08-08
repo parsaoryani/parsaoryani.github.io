@@ -9,10 +9,9 @@ export function DeleteButton({ id, type }: { id: string; type: string }) {
 
   async function handleDelete() {
     if (!confirm(`Delete this ${type.slice(0, -1)}?`)) return
-    try {
-      const res = await fetch(`/api/${type}/${id}`, { method: "DELETE" })
-      if (res.ok) router.refresh()
-    } catch {}
+    const res = await fetch(`/api/${type}/${id}`, { method: "DELETE" })
+    if (!res.ok) return
+    router.refresh()
   }
 
   return (

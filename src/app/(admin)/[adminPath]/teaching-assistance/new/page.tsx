@@ -33,7 +33,7 @@ export default function NewTeachingPage() {
       const res = await fetch("/api/teaching-assistance", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
       })
-      if (!res.ok) { const err = await res.json(); setError(typeof err.error === "string" ? err.error : "Validation failed"); return }
+      if (!res.ok) { const err = await res.json(); setError(typeof err.error === "string" ? err.error : Object.values(err.error).flat().join("; ") || "Validation failed"); return }
       router.push("..")
       router.refresh()
     } catch { setError("Failed to create") }

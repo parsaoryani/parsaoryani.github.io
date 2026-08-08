@@ -9,10 +9,9 @@ export function DeleteButton({ id }: { id: string }) {
 
   async function handleDelete() {
     if (!confirm("Delete this event?")) return
-    try {
-      const res = await fetch(`/api/timeline/${id}`, { method: "DELETE" })
-      if (res.ok) router.refresh()
-    } catch {}
+    const res = await fetch(`/api/timeline/${id}`, { method: "DELETE" })
+    if (!res.ok) return
+    router.refresh()
   }
 
   return (

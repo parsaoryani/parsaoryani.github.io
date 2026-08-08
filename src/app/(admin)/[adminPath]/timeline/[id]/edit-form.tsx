@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { CourseManager } from "@/components/admin/CourseManager"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type TimelineEvent = {
   id: string
@@ -69,61 +71,80 @@ export function EditTimelineForm({ event }: { event: TimelineEvent }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Edit Timeline Event</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
-        <div className="space-y-2">
-          <Label htmlFor="type">Type</Label>
-          <select id="type" name="type" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue={event.type}>
-            <option value="education">Education</option>
-            <option value="experience">Experience</option>
-            <option value="award">Award</option>
-            <option value="talk">Talk</option>
-            <option value="service">Service</option>
-            <option value="publication_milestone">Publication Milestone</option>
-          </select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
-          <Input id="title" name="title" required defaultValue={event.title} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="organization">Organization *</Label>
-          <Input id="organization" name="organization" required defaultValue={event.organization} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
-          <Input id="location" name="location" defaultValue={event.location || ""} />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="startDate">Start Date *</Label>
-            <Input id="startDate" name="startDate" type="date" required defaultValue={fmt(event.startDate)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endDate">End Date</Label>
-            <Input id="endDate" name="endDate" type="date" defaultValue={fmt(event.endDate) || ""} />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Textarea id="description" name="description" rows={3} defaultValue={event.description || ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="url">URL</Label>
-          <Input id="url" name="url" type="url" defaultValue={event.url || ""} />
-        </div>
-        <div className="flex items-center gap-2">
-          <input id="visible" name="visible" type="checkbox" className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-cyan" defaultChecked={event.visible} />
-          <Label htmlFor="visible">Visible on public site</Label>
-        </div>
-        {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
-        <div className="flex items-center justify-between">
-          <div className="flex gap-3">
-            <Button type="submit" disabled={submitting}>{submitting ? "Saving..." : "Save Changes"}</Button>
-            <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>
-          </div>
-          <Button type="button" variant="danger" onClick={handleDelete}>Delete</Button>
-        </div>
-      </form>
+      <Tabs defaultValue="details" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="courses" disabled={event.type !== "education"}>Courses</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details">
+          <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
+            <div className="space-y-2">
+              <Label htmlFor="type">Type</Label>
+              <select id="type" name="type" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue={event.type}>
+                <option value="education">Education</option>
+                <option value="experience">Experience</option>
+                <option value="award">Award</option>
+                <option value="talk">Talk</option>
+                <option value="service">Service</option>
+                <option value="publication_milestone">Publication Milestone</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="title">Title *</Label>
+              <Input id="title" name="title" required defaultValue={event.title} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="organization">Organization *</Label>
+              <Input id="organization" name="organization" required defaultValue={event.organization} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input id="location" name="location" defaultValue={event.location || ""} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Start Date *</Label>
+                <Input id="startDate" name="startDate" type="date" required defaultValue={fmt(event.startDate)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="endDate">End Date</Label>
+                <Input id="endDate" name="endDate" type="date" defaultValue={fmt(event.endDate) || ""} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea id="description" name="description" rows={3} defaultValue={event.description || ""} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="url">URL</Label>
+              <Input id="url" name="url" type="url" defaultValue={event.url || ""} />
+            </div>
+            <div className="flex items-center gap-2">
+              <input id="visible" name="visible" type="checkbox" className="h-4 w-4 rounded border-slate-700 bg-slate-800 text-cyan" defaultChecked={event.visible} />
+              <Label htmlFor="visible">Visible on public site</Label>
+            </div>
+            {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-3">
+                <Button type="submit" disabled={submitting}>{submitting ? "Saving..." : "Save Changes"}</Button>
+                <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>
+              </div>
+              <Button type="button" variant="danger" onClick={handleDelete}>Delete</Button>
+            </div>
+          </form>
+        </TabsContent>
+
+        <TabsContent value="courses">
+          {event.type === "education" ? (
+            <CourseManager timelineEventId={event.id} isEducation={true} />
+          ) : (
+            <div className="p-4 rounded-lg border border-slate-700/50 bg-slate-800/30">
+              <p className="text-sm text-[var(--text-secondary)]">Courses are only available for Education timeline events.</p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+type TagOption = { id: string; slug: string; label: string; description: string | null; color: string | null }
+
 export default function EditTagPage() {
   const router = useRouter()
   const params = useParams()
-  const [tag, setTag] = useState<any>(null)
+  const [tag, setTag] = useState<TagOption | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -17,8 +19,8 @@ export default function EditTagPage() {
   useEffect(() => {
     fetch("/api/tags")
       .then((r) => r.json())
-      .then((tags: any[]) => {
-        const t = tags.find((t: any) => t.id === params.id)
+      .then((tags: TagOption[]) => {
+        const t = tags.find((t) => t.id === params.id)
         if (t) setTag(t)
         else setError("Tag not found")
         setLoading(false)
