@@ -256,3 +256,72 @@ Working document with findings: `docs/PERSONAL_SITE_UX_IA_REVIEW.md`
 **Commits:**
 - `a77e406` — Category 1 (public IA & navigation)
 - `6163a9a` — Category 2 (admin reorganization)
+
+### UX-44 — Admin Auth/2FA Boundary Fixes ✅
+
+- [x] **Pending 2FA challenge model**: `PendingTwoFactorChallenge` stores `userId`, `totpToken`, `createdAt`, `expiresAt`, `attempts`. Challenge expires after 5 minutes, max 5 attempts.
+- [x] **Login flow**: When TOTP is enabled but not yet verified, login returns `challengeId` instead of a session. User must call `/auth/verify-2fa` with challenge ID + TOTP code.
+- [x] **Session creation**: Real session is only created in `/auth/verify-2fa` after successful TOTP verification (previously bypassed).
+- [x] **Origin validation**: Production requests now validate `Origin` header matches expected host to prevent cross-origin auth attacks.
+
+### UX-27/34/35/45 — Publication/Project Editors + Concurrency ✅
+
+- [x] **Structured authors**: Publications store `authors[]` with `name`, `isMe`, `email`, `url` — `isMe` preserved on round-trip.
+- [x] **Ordered contributions**: Publications store `contributions[]` with `text`, `order` — order preserved.
+- [x] **Full project editor**: All 6 narrative sections (Problem, Approach, Architecture, Results, Lessons, Retrospective) with ordered `contributions[]`.
+- [x] **SEO fields**: Both editors support `metaTitle`, `metaDescription`, `ogImageUrl`.
+- [x] **Concurrency control**: `version` field on Publication, Project, TeachingAssistant, ResearchingAssistant. `$transaction` save. 409 Conflict on stale version.
+- [x] **Validation schemas**: Updated with `citationCount`, `sortOrder`, `ogImageUrl` in `src/lib/validation/schemas.ts`.
+
+### UX-01/02 — Public Claims/Links Verification ✅
+
+- [x] **Professional labels**: Verified all instances of "Researching Assistance"/"Teaching Assistance" use professional form ("Research Experience"/"Teaching Experience") in public pages.
+- [x] **CV claims**: "PhD applicant" verified correct. No "PhD student" anywhere.
+- [x] **Publication links**: Google Scholar links have `YOUR_ID` placeholder (3 instances in footer, nav, home page). Documented in `docs/PUBLICATIONS_RECONCILIATION.md`.
+- [x] **Footer**: "Built with Next.js" correct, no mention of Vercel.
+
+### UX-30 — Shared Admin Editor Framework ✅
+
+- [x] **EditorLayout component**: Breadcrumbs, page title, status badge, version, `savedAt`, inline error summary at top of form, per-field error display, dirty state tracking via form snapshots, `beforeunload` warning, sticky action bar, unsaved-change confirmation modal.
+- [x] **FieldGroup**: Reusable field wrapper with label, required indicator, error state.
+- [x] **SectionHeader**: Visual section dividers for multi-section editors.
+- [x] **Location**: `src/components/admin/editor-layout.tsx`, `field-group.tsx`.
+
+### UX-36-38 — Experience/Timeline/Course/Skills/Taxonomy Editors ✅
+
+- [x] **Teaching experience editor** (`teaching-assistance/[id]/page.tsx`): Refactored to use `EditorLayout` + `FieldGroup` with role, organization, courses, description, period, order fields.
+- [x] **Researching experience editor** (`researching-assistance/[id]/page.tsx`): Refactored to use `EditorLayout` + `FieldGroup` with project, role, tools, description, period, order fields.
+- [x] **Timeline editor**: Already existed; verified working with existing form pattern.
+- [x] **Skills editor**: Inline category + item management; verified working.
+
+### UX-31 — Standardized Content Library Lists ✅
+
+- [x] **ContentList component**: Reusable list with search, status/sort filters, empty states, loading states, pagination.
+- [x] **PublicationsList**: Refactored `publications/page.tsx` to use `ContentList` with publication-specific fields (year, venue, authors).
+- [x] **Location**: `src/components/admin/content-list.tsx`, `publications-list.tsx`.
+
+### UX-32/33 — Draft Preview, Lifecycle Actions, Revision History ✅
+
+- [x] **Revision model**: Tracks changes to publications, projects, teaching-assistance, and researching-assistance. Stores snapshot, authorId, entityType, entityId.
+- [x] **Lifecycle actions**: Publication PUT supports `?action=publish|archive|unpublish`. DELETE supports `?action=trash|restore` (soft delete with restore).
+- [x] **Preview route**: `/api/preview` returns draft content for authenticated users across all entity types.
+- [x] **Audit logging**: All lifecycle actions logged via `AuditLog.create()`.
+
+### UX-28/43 — Typed Profile/PageContent Domains ✅
+
+- [x] **Profile type**: Centralized name, email, university, role, bio, social links with typed defaults and DB override.
+- [x] **PageContent type**: Homepage hero/about, about bio/focus/offering, cv subtitle — all with typed defaults.
+- [x] **API route**: `/api/profile` GET/PUT for admin management of profile and page content.
+- [x] **Location**: `src/lib/content/profile.ts`, `src/app/api/profile/route.ts`.
+
+**Verification:** `tsc --noEmit` clean, 50 Vitest tests pass, production build succeeds.
+
+**Commits:**
+- `65117d0` — UX-44 (auth/2FA boundary)
+- `039813a` — UX-27/34/35/45 (editors + concurrency)
+- `6e64e31` — UX-01/02 (public verification)
+- `914ef4c` — UX-30 (editor framework)
+- `f20f001` — UX-36-38 (experience editors)
+- `c7c881e` — UX-31 (content lists)
+- `08337d4` — UX-32/33 (revision + lifecycle + preview)
+- `a416c88` — UX-28/43 (typed content domains)
