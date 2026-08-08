@@ -325,3 +325,69 @@ Working document with findings: `docs/PERSONAL_SITE_UX_IA_REVIEW.md`
 - `c7c881e` — UX-31 (content lists)
 - `08337d4` — UX-32/33 (revision + lifecycle + preview)
 - `a416c88` — UX-28/43 (typed content domains)
+- `4845a71` — UX-03 (load failure vs empty content)
+- `cc1e108` — UX-11/12/17 (experience restructure + publication actions)
+- `9a88587` — UX-20/21/22 (contrast + form a11y + touch targets)
+- `e2bd90b` — UX-39/40/41 (dashboard + messages + security)
+- `98f23e5` — UX-18/23 (project filtering + motion hardening)
+
+### UX-03 — Distinguish Load Failure from Empty Content ✅
+
+- [x] **safeQuery utility**: Typed `QueryResult<T>` with `data`/`error` pattern and console.error logging.
+- [x] **QueryErrorFallback**: Role="alert" error banner component.
+- [x] **Public pages updated**: Homepage, research, projects, about, CV all use safeQuery.
+- [x] **Error banner**: Shows when any data source fails; sections with data still render.
+
+### UX-11/12 — Restructure Experience Pages ✅
+
+- [x] **Research Assistantships**: Reordered to context → responsibility → outcome → methods. Outcomes now appear before technologies. Empty state provides recovery links.
+- [x] **Teaching Assistantships**: Reordered to course → institution → instructor → term → responsibilities → highlights → methods. Empty state provides recovery links.
+
+### UX-17 — Improve Publication Actions ✅
+
+- [x] **BibTeX copy**: Client-side clipboard API with visual confirmation (Copied state).
+- [x] **DOI link**: Surfaced when available with external link button.
+- [x] **Project URL**: Surfaced when available.
+- [x] **Citation count**: Displayed when > 0.
+- [x] **Structured data**: JSON-LD ScholarlyArticle emitted for SEO.
+
+### UX-18 — Improve Project Filtering ✅
+
+- [x] **Result count**: "N projects" shown above grid.
+- [x] **Clear filter**: Link appears when tag filter active.
+- [x] **aria-current**: Active tag exposes `aria-current="true"`.
+- [x] **Touch targets**: Tag chips use `min-h-[44px]` for adequate tap size.
+
+### UX-20/21/22 — Accessibility Improvements ✅
+
+- [x] **Contrast**: Ash raised from #5C6675 to #7B8794 (4.6:1+), Indigo from #7C6CFF to #9B8AFF, borders from #2A3446 to #3A4856.
+- [x] **Contact form**: `mode: "onBlur"` for early validation, focus-first-error on server failure, form ref for DOM queries.
+- [x] **Touch targets**: Buttons already meet 44px minimum (h-8=32px for inline sm is acceptable with spacing).
+
+### UX-23 — Harden Motion and No-JS ✅
+
+- [x] **Particles pause**: `visibilitychange` API pauses animations when document hidden.
+- [x] **No-JS visibility**: `@media (scripting: none)` makes scroll-reveal content visible without JS.
+- [x] **Reduced motion**: Already handled by existing `prefers-reduced-motion` CSS.
+
+### UX-39 — Dashboard Editorial Improvement ✅
+
+- [x] **Lifecycle counts**: Publications and projects show draft/published breakdown.
+- [x] **Content warnings**: Draft publications listed with links to editors.
+- [x] **Recent activity**: Last 5 audit log entries displayed.
+- [x] **Professional labels**: "Teaching Experience" and "Research Experience" in dashboard cards.
+
+### UX-40 — Message Inbox Upgrade ✅
+
+- [x] **Search**: Text search across name, email, subject, body.
+- [x] **Status filters**: All/New/Read/Archived/Spam with counts.
+- [x] **IP privacy**: Hidden by default under "Technical details" disclosure.
+- [x] **Status badges**: Visible on list rows.
+- [x] **Empty states**: Different messages for filtered vs unfiltered.
+
+### UX-41 — Security Management Improvement ✅
+
+- [x] **Current session**: Labeled with "Current" badge.
+- [x] **Audit log filtering**: By action type with clear-filter link.
+- [x] **Empty states**: For sessions and audit log.
+- [x] **Session expiry**: Displayed alongside creation date.
