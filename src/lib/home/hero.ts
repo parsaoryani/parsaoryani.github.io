@@ -10,6 +10,8 @@ export interface ResearchDirection {
   title: string
   description: string
   tags: string[]
+  href?: string
+  linkLabel?: string
 }
 
 export function parseResearchDirections(value: unknown): ResearchDirection[] {

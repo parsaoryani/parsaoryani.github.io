@@ -190,11 +190,16 @@ export default async function HomePage() {
                   <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
                     <h3 className="text-lg font-semibold leading-snug mb-2">{direction.title}</h3>
                     <p className="text-sm text-mist mb-4 leading-relaxed">{direction.description}</p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5 mb-4">
                       {direction.tags.map((tag) => (
                         <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-ash font-mono">{tag}</span>
                       ))}
                     </div>
+                    {direction.href && (
+                      <Link href={direction.href} className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan hover:text-cyan-deep transition-colors">
+                        {direction.linkLabel || "Learn more"} <ArrowUpRight size={12} />
+                      </Link>
+                    )}
                   </article>
                 </ScrollReveal>
               ))}
