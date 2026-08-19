@@ -317,7 +317,7 @@ async function main() {
 
   interface CourseSeed {
     name: string
-    grade: string
+    grade?: string
     highlight?: string
     instructor?: string
     focus?: string
@@ -339,6 +339,10 @@ async function main() {
     const mscCourses: CourseSeed[] = [
       { name: "Applied Cryptography", grade: "18.9/20" },
       { name: "Secure Software Systems", grade: "18.2/20" },
+      // Spring 2026 (started Feb 2026) — grades/details pending
+      { name: "Formal Methods in Information Security" },
+      { name: "Deep Learning" },
+      { name: "Foundations and Applications of Blockchain" },
     ]
     let order = 0
     for (const course of mscCourses) {

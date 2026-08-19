@@ -33,6 +33,16 @@ Human-readable source of truth for verified personal/academic information render
 
 Applied Cryptography's course project is **ZK-Mixer** (https://github.com/parsaoryani/ZK-Mixer) — linked from this course's section on `/about`. Slides for the presentation are pending (to be added via the admin panel).
 
+### M.Sc. Spring 2026 courses — Sharif University of Technology (started ~February 2026)
+
+| Course | Grade |
+|---|---|
+| Formal Methods in Information Security | *(pending)* |
+| Deep Learning | *(pending)* |
+| Foundations and Applications of Blockchain | *(pending)* |
+
+Grades, instructors, topics, and syllabi for these courses are pending — add them here and in `scripts/seed.ts` (`mscCourses`) together when available.
+
 ### B.Sc. in Computer Science — Amirkabir University of Technology (Tehran Polytechnic)
 
 | Course | Grade |
