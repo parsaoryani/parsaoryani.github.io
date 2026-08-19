@@ -2,9 +2,9 @@ export const HOME_SETTING_KEYS = ["home_title", "home_description"] as const
 
 export const RESEARCH_DIRECTIONS_SETTING_KEY = "research_directions"
 
-export const DEFAULT_TITLE_LINES = ["Secure and Scalable", "Decentralized Systems"]
+export const DEFAULT_TITLE_LINES = ["Security and Scalability for", "Decentralized Systems"]
 export const DEFAULT_DESCRIPTION =
-  "M.Sc. student in Computer Engineering at Sharif University of Technology, interested in the security and scalability of decentralized systems. My current research focuses on blockchain security, cross-chain and Layer-2 interoperability, with broader interests in applied cryptography, zero-knowledge proofs, formal methods, and distributed systems."
+  "I study how decentralized systems can be made more secure, scalable, and trustworthy through rigorous systems research, cryptographic design, and practical evaluation."
 
 export interface ResearchDirection {
   title: string

@@ -81,7 +81,7 @@ export default async function HomePage() {
               ))}
             </h1>
 
-            <p className="text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-4 min-h-[2em]">
+            <p className="text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-10 min-h-[2em]">
               <TypewriterText
                 speed={24}
                 startDelay={1000}
@@ -89,10 +89,6 @@ export default async function HomePage() {
                   { text: description },
                 ]}
               />
-            </p>
-
-            <p className="text-sm font-mono text-cyan/80 mb-10">
-              Blockchain Security · Cross-Chain &amp; Layer 2 · Applied Cryptography · Distributed Systems
             </p>
 
             <div className="animate-in animate-in-delay-3 flex flex-wrap items-center gap-3">
