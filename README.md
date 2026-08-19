@@ -74,6 +74,7 @@ docs/                  Guides, reviews, status notes, and implementation plans
 - [Deployment guide](DEPLOY.md)
 - [Public/admin UX review](docs/reviews/PERSONAL_SITE_UX_IA_REVIEW.md)
 - [Project progress](docs/status/PROGRESS.md)
+- [Verified profile data](docs/profile-data.md)
 
 ## Verification before handoff
 

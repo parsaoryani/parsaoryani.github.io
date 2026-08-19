@@ -297,6 +297,68 @@ async function main() {
   }
   console.log(`${timelineEvents.length} timeline events created`)
 
+  // Ensure the B.Sc. Computer Science (Amirkabir) education entry exists so
+  // its relevant coursework has a home. Additive only — the existing Sharif
+  // B.Sc. entry above is left untouched.
+  let bscAmirkabir = await prisma.timelineEvent.findFirst({
+    where: { title: "B.Sc. Computer Science", organization: "Amirkabir University of Technology (Tehran Polytechnic)" },
+  })
+  if (!bscAmirkabir) {
+    bscAmirkabir = await prisma.timelineEvent.create({
+      data: {
+        type: "education",
+        title: "B.Sc. Computer Science",
+        organization: "Amirkabir University of Technology (Tehran Polytechnic)",
+        startDate: new Date("2019-09-01"),
+        endDate: new Date("2023-07-01"),
+        sortOrder: 7,
+      },
+    })
+    console.log("B.Sc. Computer Science (Amirkabir) timeline event created")
+  }
+
+  const mscSharif = await prisma.timelineEvent.findFirst({
+    where: { title: "M.Sc. Computer Engineering", organization: "Sharif University of Technology" },
+    orderBy: { createdAt: "asc" },
+  })
+
+  async function ensureCourse(timelineEventId: string, name: string, grade: string, sortOrder: number) {
+    const existing = await prisma.course.findFirst({ where: { timelineEventId, name } })
+    if (existing) return
+    await prisma.course.create({ data: { timelineEventId, name, grade, sortOrder } })
+  }
+
+  if (mscSharif) {
+    const mscCourses: [string, string][] = [
+      ["Applied Cryptography", "18.9/20"],
+      ["Secure Software Systems", "18.2/20"],
+    ]
+    let order = 0
+    for (const [name, grade] of mscCourses) {
+      await ensureCourse(mscSharif.id, name, grade, order++)
+    }
+  }
+
+  const bscCourses: [string, string][] = [
+    ["Artificial Intelligence and Lab", "20/20"],
+    ["Probability I", "19.46/20"],
+    ["Cryptography I", "18.75/20"],
+    ["Foundations of Matrices and Linear Algebra", "18.69/20"],
+    ["Special Topics in Cryptography", "18.25/20"],
+    ["Design and Analysis of Algorithms", "18/20"],
+    ["Advanced Programming", "18/20"],
+    ["Foundations of Probability", "18/20"],
+    ["Numerical Linear Algebra", "17.55/20"],
+    ["Foundations of Logic and Set Theory", "17.50/20"],
+  ]
+  {
+    let order = 0
+    for (const [name, grade] of bscCourses) {
+      await ensureCourse(bscAmirkabir.id, name, grade, order++)
+    }
+  }
+  console.log("Relevant coursework seeded")
+
   // Create skill categories and skills
   const skillCategoriesData = [
     {
@@ -385,42 +447,99 @@ async function main() {
     },
   })
 
-  // Teaching Assistant entries
-  await prisma.teachingAssistant.upsert({
-    where: { slug: "advanced-algorithms-ta" },
-    update: {},
-    create: {
-      slug: "advanced-algorithms-ta",
-      course: "Advanced Algorithms",
+  // Teaching Assistant entries — reverse chronological, real experience only
+  const oldFakeTaSlugs = ["advanced-algorithms-ta", "machine-learning-ta"]
+  await prisma.teachingAssistant.deleteMany({ where: { slug: { in: oldFakeTaSlugs } } })
+
+  const teachingAssistantEntries = [
+    {
+      slug: "computer-networks-ta-sharif",
+      course: "Computer Networks",
+      level: "undergraduate",
       university: "Sharif University of Technology",
-      professor: "Dr. Mohammad Hossein Rohban",
-      startDate: new Date("2023-09-01"),
-      endDate: new Date("2024-01-15"),
-      description: "Served as teaching assistant for the graduate-level Advanced Algorithms course. Responsibilities included preparing problem sets, leading recitation sessions, and grading exams.",
-      highlights: ["Prepared 8 problem sets covering graph algorithms and NP-completeness", "Led weekly recitation sessions for 40+ students", "Developed automated grading scripts in Python"],
-      technologies: "Python, LaTeX",
-      status: "published",
+      professor: "Dr. Sadeghzadeh",
+      startDate: new Date("2026-02-01"),
+      endDate: new Date("2026-06-15"),
+      description: "Designed and graded theoretical and practical assignments for the undergraduate Computer Networks course.",
+      highlights: ["Designed theoretical assignments", "Designed practical assignments", "Graded theoretical and practical assignments"],
+      status: "published" as const,
       sortOrder: 0,
     },
-  })
-
-  await prisma.teachingAssistant.upsert({
-    where: { slug: "machine-learning-ta" },
-    update: {},
-    create: {
-      slug: "machine-learning-ta",
+    {
+      slug: "machine-learning-ta-sharif",
       course: "Machine Learning",
+      level: "undergraduate",
       university: "Sharif University of Technology",
-      professor: "Dr. Seyed Pooya Shariatpanahi",
-      startDate: new Date("2024-02-01"),
-      endDate: new Date("2024-06-15"),
-      description: "TA for undergraduate Machine Learning course. Managed course projects and provided mentorship on ML fundamentals.",
-      highlights: ["Designed 3 course projects on supervised learning and neural networks", "Held weekly office hours for 60+ students", "Created supplementary tutorials on PyTorch and scikit-learn"],
-      technologies: "Python, PyTorch, scikit-learn, Jupyter",
-      status: "published",
+      professor: "Dr. Motahari",
+      startDate: new Date("2026-02-01"),
+      endDate: new Date("2026-06-15"),
+      description: "Designed theoretical assignments and evaluated student submissions for the undergraduate Machine Learning course.",
+      highlights: ["Designed theoretical assignments", "Graded assignments"],
+      status: "published" as const,
       sortOrder: 1,
     },
-  })
+    {
+      slug: "ai-and-lab-ta-aut",
+      course: "Artificial Intelligence and Lab",
+      level: "undergraduate",
+      university: "Amirkabir University of Technology",
+      professor: "Dr. Ghatee",
+      startDate: new Date("2025-02-01"),
+      endDate: new Date("2025-06-15"),
+      description: "Designed and graded theoretical and practical assignments for the Artificial Intelligence and Lab course.",
+      highlights: ["Designed theoretical assignments", "Designed practical assignments", "Graded theoretical and practical assignments"],
+      status: "published" as const,
+      sortOrder: 2,
+    },
+    {
+      slug: "linear-algebra-ta-aut",
+      course: "Foundations of Matrices and Linear Algebra",
+      level: "undergraduate",
+      university: "Amirkabir University of Technology",
+      professor: "Dr. Najafi",
+      startDate: new Date("2023-09-01"),
+      endDate: new Date("2024-01-15"),
+      description: "Designed and graded assignments and quizzes, and conducted problem-solving and review sessions.",
+      highlights: [
+        "Designed assignments",
+        "Designed quizzes",
+        "Graded assignments and quizzes",
+        "Conducted problem-solving sessions",
+        "Conducted review sessions",
+        "Answered students' questions during exercise/review sessions",
+      ],
+      status: "published" as const,
+      sortOrder: 3,
+    },
+    {
+      slug: "advanced-programming-ta-aut",
+      course: "Advanced Programming",
+      level: "undergraduate",
+      university: "Amirkabir University of Technology",
+      professor: "Dr. Bejani",
+      startDate: new Date("2023-02-01"),
+      endDate: new Date("2023-06-15"),
+      description: "Designed and graded programming assignments and practical projects, and conducted workshops and problem-solving sessions.",
+      highlights: [
+        "Designed programming assignments",
+        "Designed practical projects",
+        "Graded assignments and projects",
+        "Conducted workshops",
+        "Conducted problem-solving and review sessions",
+      ],
+      status: "published" as const,
+      sortOrder: 4,
+    },
+  ]
+
+  for (const entry of teachingAssistantEntries) {
+    await prisma.teachingAssistant.upsert({
+      where: { slug: entry.slug },
+      update: entry,
+      create: entry,
+    })
+  }
+  console.log(`${teachingAssistantEntries.length} teaching assistant entries seeded`)
 
   // Researching Assistant entries
   await prisma.researchingAssistant.upsert({
