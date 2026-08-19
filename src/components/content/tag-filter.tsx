@@ -9,7 +9,7 @@ interface TagFilterProps {
 
 export function TagFilter({ tags, activeTag }: TagFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2 mb-10" role="group" aria-label="Filter projects by tag">
+    <div className="flex flex-wrap gap-2 mb-6" role="group" aria-label="Filter projects by tag">
       <Link
         href="/projects"
         aria-current={!activeTag ? "true" : undefined}

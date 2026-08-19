@@ -18,8 +18,12 @@ const roleColors: Record<string, "default" | "secondary" | "outline" | "success"
   "Research Assistant": "outline",
 }
 
+const MAX_VISIBLE_TECH = 6
+
 export const ProjectCard = memo(function ProjectCard({ project }: ProjectCardProps) {
   const techStack = project.techStack as string[] | null
+  const visibleTech = techStack?.slice(0, MAX_VISIBLE_TECH) ?? null
+  const hiddenTechCount = techStack ? techStack.length - MAX_VISIBLE_TECH : 0
 
   return (
     <Link href={`/projects/${project.slug}`} className="block group">
@@ -38,21 +42,24 @@ export const ProjectCard = memo(function ProjectCard({ project }: ProjectCardPro
               )}
             </div>
 
-            <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-indigo transition-colors duration-300">
+            <h3 className="text-lg font-semibold leading-snug mb-2 line-clamp-2 group-hover:text-indigo transition-colors duration-300">
               {project.title}
             </h3>
 
-            <p className="text-sm text-mist mb-4 flex-1 leading-relaxed">
+            <p className="text-sm text-mist mb-4 flex-1 leading-relaxed line-clamp-3">
               {project.summary}
             </p>
 
-            {techStack && techStack.length > 0 && (
+            {visibleTech && visibleTech.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-4">
-                {techStack.map((tech) => (
+                {visibleTech.map((tech) => (
                   <Badge key={tech} variant="ghost" size="sm" className="group-hover:border-indigo/30 group-hover:bg-indigo/5 transition-colors">
                     {tech}
                   </Badge>
                 ))}
+                {hiddenTechCount > 0 && (
+                  <Badge variant="ghost" size="sm" className="text-ash">+{hiddenTechCount}</Badge>
+                )}
               </div>
             )}
 

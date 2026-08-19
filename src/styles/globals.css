@@ -26,6 +26,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-slate-700;
   }
@@ -281,6 +284,9 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
     .animate-in,
     .animate-float,
     .animate-float-slow,

@@ -36,11 +36,11 @@ export default async function ProjectsPage({ searchParams }: Props) {
     <Section className="pt-32">
       <Container>
         <ScrollReveal>
-          <div className="max-w-3xl mb-12">
-            <Badge variant="secondary" size="lg" className="mb-5">
+          <div className="max-w-3xl mb-8">
+            <Badge variant="secondary" size="lg" className="mb-4">
               <Sparkles size={12} className="mr-1.5" /> Case Studies
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">
               <span className="text-gradient">Projects</span>
             </h1>
             <p className="text-lg text-mist leading-relaxed">
@@ -56,7 +56,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
         {tags.length > 0 && <TagFilter tags={tags} activeTag={tag} />}
 
         {/* Result count and clear filter */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-mist font-mono">
             {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""}
             {tag && (

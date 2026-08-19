@@ -7,6 +7,7 @@ interface SectionHeaderProps {
   description?: string
   className?: string
   action?: React.ReactNode
+  spacing?: "default" | "compact"
 }
 
 const accentColors = {
@@ -15,9 +16,9 @@ const accentColors = {
   emerald: "from-emerald to-cyan",
 }
 
-export function SectionHeader({ badge, title, accent = "cyan", description, className, action }: SectionHeaderProps) {
+export function SectionHeader({ badge, title, accent = "cyan", description, className, action, spacing = "default" }: SectionHeaderProps) {
   return (
-    <div className={cn("mb-12", className)}>
+    <div className={cn(spacing === "compact" ? "mb-8" : "mb-12", className)}>
       {badge && <div className="mb-4">{badge}</div>}
       <div className="flex items-end justify-between">
         <div>

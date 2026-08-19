@@ -1,19 +1,16 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
-import { SkillCluster } from "@/components/content/skill-cluster"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeader } from "@/components/ui/section-header"
 import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
-import { getSkillCategories } from "@/lib/db/queries"
-import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { prisma } from "@/lib/db/prisma"
 import { parseHomeDescription, parseHomeTitle, parseResearchDirections, RESEARCH_DIRECTIONS_SETTING_KEY } from "@/lib/home/hero"
 import Link from "next/link"
 import { Fragment } from "react"
-import { ArrowUpRight, FileText, Code2, Mail, ChevronRight, Sparkles, Target, Compass, Network, UserCheck } from "lucide-react"
+import { ArrowUpRight, ArrowDown, FileText, Code2, Mail, ChevronRight, Sparkles, Target, Compass, Network, UserCheck } from "lucide-react"
 
 export const revalidate = 3600
 
@@ -38,9 +35,67 @@ const researchInterests = [
   },
 ]
 
+const researchAreas = [
+  {
+    category: "Blockchain Architecture & Scalability",
+    areas: [
+      { name: "Layer 1", examples: "Sharding · Consensus · Fault Tolerance" },
+      { name: "Layer 2", examples: "Rollups · Payment Channels · State Channels" },
+      { name: "Scalability", examples: "Parallel Execution · Transaction Processing" },
+    ],
+  },
+  {
+    category: "Cross-Chain & Interoperability",
+    areas: [
+      { name: "Cross-Chain Bridges", examples: "State Verification · Message Passing" },
+      { name: "Cross-Rollup Systems", examples: "Messaging · Atomic Execution" },
+      { name: "Cross-Chain Transactions", examples: "Atomic Swaps · Multi-Chain Coordination" },
+    ],
+  },
+  {
+    category: "Blockchain & Protocol Security",
+    areas: [
+      { name: "Mempool Security", examples: "Transaction-Pool DoS · Resource Exhaustion" },
+      { name: "Smart Contract Security", examples: "EVM Contracts · Protocol Logic" },
+      { name: "Bridge & Interoperability Security", examples: "Trust Models · Verification Failures" },
+    ],
+  },
+  {
+    category: "Cryptographic Systems",
+    areas: [
+      { name: "Zero-Knowledge Proofs", examples: "zk-SNARKs · Private Transactions" },
+      { name: "Commitment & Authentication Structures", examples: "Merkle Trees · Hash Commitments" },
+      { name: "Privacy-Preserving Protocols", examples: "Mixers · Shielded Payments" },
+    ],
+  },
+  {
+    category: "Formal & Security Analysis",
+    areas: [
+      { name: "Security Models", examples: "Adversary Models · Trust Models · Threat Models" },
+      { name: "Protocol Security Analysis", examples: "Safety · Liveness · Atomicity" },
+      { name: "Formal Reasoning", examples: "Protocol Properties · Security Guarantees" },
+    ],
+  },
+  {
+    category: "Blockchain Engineering",
+    areas: [
+      { name: "Ethereum", examples: "EVM · Solidity · JSON-RPC" },
+      { name: "Solana", examples: "Rust · Anchor · SPL Tokens" },
+      { name: "Private Blockchain Infrastructure", examples: "Hyperledger Besu · QBFT" },
+    ],
+  },
+]
+
+const heroJumpLinks = [
+  { label: "Research Interests", href: "#research-interests" },
+  { label: "Current Research", href: "#current-research" },
+  { label: "Projects", href: "/projects" },
+  { label: "About", href: "#about-preview" },
+  { label: "Contact", href: "#contact-cta" },
+]
+
 export default async function HomePage() {
-  const [skillCategories, homeTitle, homeDescription, researchDirectionsSetting] = await Promise.all([
-    safeQuery(getSkillCategories(), "skill categories"),
+  const [homeTitle, homeDescription, researchDirectionsSetting] = await Promise.all([
     prisma.siteSetting.findUnique({ where: { key: "home_title" } }),
     prisma.siteSetting.findUnique({ where: { key: "home_description" } }),
     prisma.siteSetting.findUnique({ where: { key: RESEARCH_DIRECTIONS_SETTING_KEY } }),
@@ -50,13 +105,10 @@ export default async function HomePage() {
   const description = parseHomeDescription(homeDescription?.value)
   const researchDirections = parseResearchDirections(researchDirectionsSetting?.value)
 
-  const skillData = skillCategories.data ?? []
-  const hasLoadError = skillCategories.error
-
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="absolute inset-0 bg-glow" />
         <FloatingParticles count={18} className="opacity-60" />
@@ -129,23 +181,32 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce hidden md:block">
-            <ChevronRight size={20} className="text-ash rotate-90" />
+          {/* Hero bottom guide */}
+          <div className="absolute bottom-6 left-0 right-0 hidden md:flex flex-col items-center gap-3">
+            <a
+              href="#research-interests"
+              className="flex flex-col items-center gap-1.5 text-ash hover:text-cyan transition-colors group"
+              aria-label="Scroll to explore"
+            >
+              <span className="text-[11px] font-mono uppercase tracking-widest">Scroll to explore</span>
+              <ArrowDown size={16} className="animate-bounce group-hover:text-cyan" />
+            </a>
+            <nav aria-label="Jump to section" className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] font-mono text-ash/80">
+              {heroJumpLinks.map((link, i) => (
+                <Fragment key={link.href}>
+                  {i > 0 && <span className="text-slate-700">·</span>}
+                  <Link href={link.href} className="hover:text-cyan transition-colors">
+                    {link.label}
+                  </Link>
+                </Fragment>
+              ))}
+            </nav>
           </div>
         </Container>
       </section>
 
-      {/* Load Error Banner */}
-      {hasLoadError && (
-        <Section>
-          <Container>
-            <QueryErrorFallback error="Some content could not be loaded. The page may be incomplete." />
-          </Container>
-        </Section>
-      )}
-
       {/* Research Interests */}
-      <Section className="relative">
+      <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20" id="research-interests">
         <Container>
           <ScrollReveal>
             <SectionHeader
@@ -153,6 +214,7 @@ export default async function HomePage() {
               title="Research Interests"
               accent="cyan"
               description="What I work on, and how it's prioritized"
+              spacing="compact"
             />
           </ScrollReveal>
           <div className="grid gap-6 sm:grid-cols-3">
@@ -173,7 +235,7 @@ export default async function HomePage() {
 
       {/* Current Research */}
       {researchDirections.length > 0 && (
-        <Section className="relative">
+        <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20" id="current-research">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
           <Container className="relative">
             <ScrollReveal>
@@ -182,6 +244,7 @@ export default async function HomePage() {
                 title="Current Research"
                 accent="cyan"
                 description="Selected research directions and ongoing projects"
+                spacing="compact"
               />
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2">
@@ -208,27 +271,40 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* Skills */}
-      {skillData.length > 0 && (
-        <Section className="relative">
-          <Container>
-            <ScrollReveal>
-              <SectionHeader
-                badge={<Badge variant="default">Expertise</Badge>}
-                title="Skills & Technologies"
-                accent="cyan"
-                description="Research and technical background across decentralized systems, security, cryptography, and distributed systems"
-              />
-            </ScrollReveal>
-            <ScrollReveal direction="up" delay={150}>
-              <SkillCluster categories={skillData} />
-            </ScrollReveal>
-          </Container>
-        </Section>
-      )}
+      {/* Research & Technical Areas */}
+      <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20">
+        <Container>
+          <ScrollReveal>
+            <SectionHeader
+              badge={<Badge variant="default">Research Areas</Badge>}
+              title="Research & Technical Areas"
+              accent="cyan"
+              description="Selected research areas, methods, and technologies across blockchain security, scalability, cryptography, and decentralized systems."
+              spacing="compact"
+            />
+          </ScrollReveal>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {researchAreas.map((group, i) => (
+              <ScrollReveal key={group.category} direction="up" delay={i * 60}>
+                <div className="h-full p-5 rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all duration-300">
+                  <h3 className="text-xs font-mono uppercase tracking-wider text-cyan mb-3.5">{group.category}</h3>
+                  <div className="space-y-3">
+                    {group.areas.map((area) => (
+                      <div key={area.name}>
+                        <p className="text-sm font-medium text-fog">{area.name}</p>
+                        <p className="text-xs text-mist/70 mt-0.5">{area.examples}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
 
       {/* About Preview */}
-      <Section className="relative">
+      <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20" id="about-preview">
         <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
         <Container className="relative">
           <ScrollReveal>
@@ -256,10 +332,10 @@ export default async function HomePage() {
       </Section>
 
       {/* Contact CTA */}
-      <Section className="relative">
+      <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20" id="contact-cta">
         <Container>
           <ScrollReveal>
-            <div className="text-center py-12">
+            <div className="text-center py-8">
               <h2 className="text-2xl md:text-3xl font-bold mb-4">
                 <span className="text-gradient">Get in Touch</span>
               </h2>
