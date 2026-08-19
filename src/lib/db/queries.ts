@@ -1,5 +1,6 @@
 import "server-only"
 import { prisma } from "./prisma"
+import { TIMELINE_SECTIONS_SETTING_KEY, parseHiddenSections } from "@/lib/timeline/sections"
 
 export async function getFeaturedPublications() {
   return prisma.publication.findMany({
@@ -56,8 +57,14 @@ export async function getAllTags() {
 }
 
 export async function getTimelineEvents() {
+  const hiddenSetting = await getSiteSetting(TIMELINE_SECTIONS_SETTING_KEY)
+  const hiddenTypes = parseHiddenSections(hiddenSetting)
+
   return prisma.timelineEvent.findMany({
-    where: { visible: true },
+    where: {
+      visible: true,
+      ...(hiddenTypes.length > 0 ? { type: { notIn: hiddenTypes } } : {}),
+    },
     include: {
       courses: {
         where: { timelineEvent: { type: "education" } },

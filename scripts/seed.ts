@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
+import { TIMELINE_SECTIONS_SETTING_KEY } from "../src/lib/timeline/sections"
 
 const prisma = new PrismaClient()
 
@@ -533,6 +534,12 @@ async function main() {
       value:
         "PhD applicant and researcher at the intersection of blockchain security, deep learning robustness, and agentic AI safety. Building verifiably secure decentralized systems through formal methods and cryptographic guarantees.",
     },
+  })
+
+  await prisma.siteSetting.upsert({
+    where: { key: TIMELINE_SECTIONS_SETTING_KEY },
+    update: {},
+    create: { key: TIMELINE_SECTIONS_SETTING_KEY, value: [] },
   })
 
   // Teaching Assistant entries — reverse chronological, real experience only

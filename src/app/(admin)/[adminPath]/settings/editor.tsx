@@ -4,8 +4,15 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Check, X, AlertCircle, Home, Save } from "lucide-react"
+import { Check, X, AlertCircle, Home, Save, EyeOff } from "lucide-react"
 import { HOME_SETTING_KEYS } from "@/lib/home/hero"
+import {
+  TIMELINE_SECTIONS_SETTING_KEY,
+  TIMELINE_SECTION_TYPES,
+  TIMELINE_SECTION_LABELS,
+  parseHiddenSections,
+  type TimelineSectionType,
+} from "@/lib/timeline/sections"
 
 interface SettingsEditorProps {
   settings: Array<{ id: string; key: string; value: unknown }>
@@ -27,7 +34,19 @@ export function SettingsEditor({ settings }: SettingsEditorProps) {
   const [homeError, setHomeError] = useState<string | null>(null)
   const [homeSaved, setHomeSaved] = useState(false)
 
-  const otherSettings = settings.filter((s) => !HOME_SETTING_KEYS.includes(s.key as (typeof HOME_SETTING_KEYS)[number]))
+  const sectionVisibility = settings.find((s) => s.key === TIMELINE_SECTIONS_SETTING_KEY)
+  const [hiddenSections, setHiddenSections] = useState<TimelineSectionType[]>(() =>
+    parseHiddenSections(sectionVisibility?.value)
+  )
+  const [sectionsSaving, setSectionsSaving] = useState(false)
+  const [sectionsError, setSectionsError] = useState<string | null>(null)
+  const [sectionsSaved, setSectionsSaved] = useState(false)
+
+  const otherSettings = settings.filter(
+    (s) =>
+      !HOME_SETTING_KEYS.includes(s.key as (typeof HOME_SETTING_KEYS)[number]) &&
+      s.key !== TIMELINE_SECTIONS_SETTING_KEY
+  )
 
   async function saveSetting(id: string, value: unknown) {
     const res = await fetch(`/api/settings/${id}`, {
@@ -57,6 +76,32 @@ export function SettingsEditor({ settings }: SettingsEditorProps) {
       setHomeError("Failed to save homepage settings")
     } finally {
       setHomeSaving(false)
+    }
+  }
+
+  function toggleSection(type: TimelineSectionType) {
+    setHiddenSections((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    )
+    setSectionsSaved(false)
+  }
+
+  async function saveSections() {
+    if (!sectionVisibility) {
+      setSectionsError("Section visibility setting not found in database. Run the seed script first.")
+      return
+    }
+    setSectionsSaving(true)
+    setSectionsError(null)
+    setSectionsSaved(false)
+    try {
+      await saveSetting(sectionVisibility.id, hiddenSections)
+      setSectionsSaved(true)
+      router.refresh()
+    } catch {
+      setSectionsError("Failed to save section visibility")
+    } finally {
+      setSectionsSaving(false)
     }
   }
 
@@ -139,6 +184,48 @@ export function SettingsEditor({ settings }: SettingsEditorProps) {
             </Button>
             {homeSaved && <span className="text-xs text-emerald flex items-center gap-1"><Check size={12} /> Saved</span>}
           </div>
+        </div>
+      </div>
+
+      {/* Section visibility */}
+      <div className="mb-8 p-5 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)]">
+        <div className="flex items-center gap-2 mb-4">
+          <EyeOff size={16} className="text-[var(--accent)]" />
+          <h2 className="text-base font-semibold">Section Visibility</h2>
+        </div>
+        <p className="text-xs text-[var(--text-tertiary)] font-mono mb-4">
+          Hide a whole timeline category everywhere it appears on the public site (About and CV pages). Unchecked
+          sections stay visible.
+        </p>
+
+        <div className="space-y-2 mb-4">
+          {TIMELINE_SECTION_TYPES.map((type) => (
+            <label key={type} className="flex items-center gap-2 text-sm cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!hiddenSections.includes(type)}
+                onChange={() => toggleSection(type)}
+                className="h-4 w-4 rounded border-slate-700 accent-[var(--accent)]"
+              />
+              {TIMELINE_SECTION_LABELS[type]}
+              {hiddenSections.includes(type) && (
+                <span className="text-xs font-mono text-[var(--text-tertiary)]">(hidden)</span>
+              )}
+            </label>
+          ))}
+        </div>
+
+        {sectionsError && (
+          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-coral/10 text-coral border border-coral/20 text-sm">
+            <AlertCircle size={14} /> {sectionsError}
+          </div>
+        )}
+
+        <div className="flex items-center gap-3">
+          <Button size="sm" onClick={saveSections} disabled={sectionsSaving}>
+            <Save size={14} className="mr-1.5" /> {sectionsSaving ? "Saving..." : "Save visibility"}
+          </Button>
+          {sectionsSaved && <span className="text-xs text-emerald flex items-center gap-1"><Check size={12} /> Saved</span>}
         </div>
       </div>
 

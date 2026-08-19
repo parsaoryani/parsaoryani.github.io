@@ -24,6 +24,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     })
 
     revalidatePath("/")
+    revalidatePath("/about")
+    revalidatePath("/cv")
 
     return NextResponse.json(setting)
   } catch {
