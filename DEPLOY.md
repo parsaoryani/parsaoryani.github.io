@@ -474,7 +474,7 @@ Can't reach database server at localhost:5432
 Warning: Text content did not match Server and Client
 ```
 
-**Fix:** This is expected for `Math.random()` content (particles). The app handles this via `useEffect`-based rendering. No action needed.
+**Fix:** The particle background (`FloatingParticles`) generates its `Math.random()` positions inside a `useEffect`, so the server renders an empty container and the client fills it in after mount — no mismatch. If you see this warning elsewhere, look for `Math.random()`, `Date.now()`, or other non-deterministic values used directly during render.
 
 ### Admin Page Returns 404
 
