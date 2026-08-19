@@ -12,7 +12,7 @@ import { FolderGit2, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Engineering case studies in blockchain, deep learning, and AI security.",
+  description: "Systems and security projects in blockchain, cryptography, and decentralized applications.",
 }
 
 interface Props {
@@ -44,8 +44,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
               <span className="text-gradient">Projects</span>
             </h1>
             <p className="text-lg text-mist leading-relaxed">
-              Engineering case studies that demonstrate system design, technical
-              decision-making, and end-to-end execution.
+              Systems and security projects related to blockchain, cryptography, and decentralized applications.
             </p>
           </div>
         </ScrollReveal>

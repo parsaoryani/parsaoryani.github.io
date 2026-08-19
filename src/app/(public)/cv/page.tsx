@@ -50,7 +50,7 @@ export default async function CVPage() {
                 <Sparkles size={12} className="mr-1.5" /> Curriculum Vitae
               </Badge>
               <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gradient">Parsa Oryani</h1>
-              <p className="text-mist">M.Sc. Computer Engineering &middot; Blockchain &amp; AI Security Researcher</p>
+              <p className="text-mist">M.Sc. Computer Engineering &middot; Security &amp; Scalability of Decentralized Systems</p>
               <div className="flex items-center gap-4 mt-3 text-xs text-ash font-mono">
                 <span>parsa.oryani82@sharif.edu</span>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
@@ -63,10 +63,6 @@ export default async function CVPage() {
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
                 <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" className="hover:text-cyan transition-colors flex items-center gap-1">
                   <UserCheck size={12} /> LinkedIn
-                </Link>
-                <span className="w-1 h-1 rounded-full bg-slate-700" />
-                <Link href="https://scholar.google.com" target="_blank" className="hover:text-cyan transition-colors flex items-center gap-1">
-                  <GraduationCap size={12} /> Scholar
                 </Link>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
                 <Link href="mailto:parsa.oryani82@sharif.edu" className="hover:text-cyan transition-colors flex items-center gap-1">

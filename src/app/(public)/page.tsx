@@ -1,7 +1,5 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
-import { PublicationCard } from "@/components/content/publication-card"
-import { ProjectCard } from "@/components/content/project-card"
 import { SkillCluster } from "@/components/content/skill-cluster"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -9,40 +7,51 @@ import { SectionHeader } from "@/components/ui/section-header"
 import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
-import { getFeaturedPublications, getFeaturedProjects, getSkillCategories, getLatestResearchExperience, getLatestTeachingExperience } from "@/lib/db/queries"
+import { getSkillCategories } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { prisma } from "@/lib/db/prisma"
-import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
+import { parseHomeDescription, parseHomeTitle, parseResearchDirections, RESEARCH_DIRECTIONS_SETTING_KEY } from "@/lib/home/hero"
 import Link from "next/link"
 import { Fragment } from "react"
-import { ArrowUpRight, FileText, Code2, Mail, GraduationCap, ChevronRight, Sparkles } from "lucide-react"
-import type { Publication, Project, PublicationTag, Tag, ProjectTag } from "@prisma/client"
-
-type PublicationWithTags = Publication & { tags: (PublicationTag & { tag: Tag })[] }
-type ProjectWithTags = Project & { tags: (ProjectTag & { tag: Tag })[] }
+import { ArrowUpRight, FileText, Code2, Mail, ChevronRight, Sparkles, Target, Compass, Network, UserCheck } from "lucide-react"
 
 export const revalidate = 3600
 
+const researchInterests = [
+  {
+    label: "Primary Focus",
+    description: "Security and scalability of decentralized systems",
+    icon: Target,
+    color: "text-cyan",
+  },
+  {
+    label: "Current Focus",
+    description: "Blockchain security, cross-chain interoperability, Layer-2 systems, cross-rollup communication/execution",
+    icon: Compass,
+    color: "text-indigo",
+  },
+  {
+    label: "Related Areas",
+    description: "Applied cryptography, zero-knowledge proofs, formal methods, distributed systems",
+    icon: Network,
+    color: "text-emerald",
+  },
+]
+
 export default async function HomePage() {
-  const [publications, projects, skillCategories, homeTitle, homeDescription, latestResearch, latestTeaching] = await Promise.all([
-    safeQuery(getFeaturedPublications(), "featured publications"),
-    safeQuery(getFeaturedProjects(), "featured projects"),
+  const [skillCategories, homeTitle, homeDescription, researchDirectionsSetting] = await Promise.all([
     safeQuery(getSkillCategories(), "skill categories"),
     prisma.siteSetting.findUnique({ where: { key: "home_title" } }),
     prisma.siteSetting.findUnique({ where: { key: "home_description" } }),
-    safeQuery(getLatestResearchExperience(), "latest research experience"),
-    safeQuery(getLatestTeachingExperience(), "latest teaching experience"),
+    prisma.siteSetting.findUnique({ where: { key: RESEARCH_DIRECTIONS_SETTING_KEY } }),
   ])
 
   const titleLines = parseHomeTitle(homeTitle?.value)
   const description = parseHomeDescription(homeDescription?.value)
+  const researchDirections = parseResearchDirections(researchDirectionsSetting?.value)
 
-  const pubData = publications.data ?? []
-  const projData = projects.data ?? []
   const skillData = skillCategories.data ?? []
-  const researchData = latestResearch.data
-  const teachingData = latestTeaching.data
-  const hasLoadError = publications.error || projects.error || skillCategories.error
+  const hasLoadError = skillCategories.error
 
   return (
     <>
@@ -72,7 +81,7 @@ export default async function HomePage() {
               ))}
             </h1>
 
-            <p className="text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-10 min-h-[2em]">
+            <p className="text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-4 min-h-[2em]">
               <TypewriterText
                 speed={24}
                 startDelay={1000}
@@ -80,6 +89,10 @@ export default async function HomePage() {
                   { text: description },
                 ]}
               />
+            </p>
+
+            <p className="text-sm font-mono text-cyan/80 mb-10">
+              Blockchain Security · Cross-Chain &amp; Layer 2 · Applied Cryptography · Distributed Systems
             </p>
 
             <div className="animate-in animate-in-delay-3 flex flex-wrap items-center gap-3">
@@ -96,17 +109,17 @@ export default async function HomePage() {
                 </Button>
               </Link>
               <div className="w-px h-6 bg-slate-700 mx-1 hidden sm:block" />
-              <Link href="https://scholar.google.com" target="_blank">
-                <Button variant="outline" size="default" className="font-mono text-xs gap-2">
-                  <GraduationCap size={14} />
-                  Scholar
-                  <ArrowUpRight size={12} />
-                </Button>
-              </Link>
               <Link href="https://github.com/parsaoryani" target="_blank">
                 <Button variant="outline" size="default" className="font-mono text-xs gap-2">
                   <Code2 size={14} />
                   GitHub
+                  <ArrowUpRight size={12} />
+                </Button>
+              </Link>
+              <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank">
+                <Button variant="outline" size="default" className="font-mono text-xs gap-2">
+                  <UserCheck size={14} />
+                  LinkedIn
                   <ArrowUpRight size={12} />
                 </Button>
               </Link>
@@ -115,11 +128,7 @@ export default async function HomePage() {
             <div className="animate-in animate-in-delay-4 mt-16 flex items-center gap-6 text-xs text-ash font-mono">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
-                Open to PhD positions
-              </span>
-              <span className="hidden sm:flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan" />
-                Publications in S&P, NeurIPS, CCS
+                Open to research collaborations, internships, and future PhD opportunities
               </span>
             </div>
           </div>
@@ -139,179 +148,60 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* Featured Research */}
-      {pubData.length > 0 && (
+      {/* Research Interests */}
+      <Section className="relative">
+        <Container>
+          <ScrollReveal>
+            <SectionHeader
+              badge={<Badge variant="default">Focus</Badge>}
+              title="Research Interests"
+              accent="cyan"
+              description="What I work on, and how it's prioritized"
+            />
+          </ScrollReveal>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {researchInterests.map((item, i) => (
+              <ScrollReveal key={item.label} direction="up" delay={i * 80}>
+                <div className="h-full flex items-start gap-3 p-5 rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all duration-300">
+                  <item.icon size={18} className={`${item.color} shrink-0 mt-0.5`} />
+                  <div>
+                    <p className={`text-xs font-mono uppercase tracking-wider mb-1 ${item.color}`}>{item.label}</p>
+                    <p className="text-sm text-mist leading-relaxed">{item.description}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      {/* Current Research */}
+      {researchDirections.length > 0 && (
         <Section className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-void via-cyan/[0.01] to-void pointer-events-none" />
           <Container className="relative">
             <ScrollReveal>
               <SectionHeader
-                badge={<Badge variant="default">Featured Research</Badge>}
-                title="Latest Publications"
+                badge={<Badge variant="default">Current Research</Badge>}
+                title="Current Research"
                 accent="cyan"
-                description="Selected papers from top-tier venues"
-                action={
-                  <Link href="/research" className="hidden md:flex items-center gap-1.5 text-sm text-cyan hover:text-cyan-deep transition-colors font-mono group">
-                    View all research
-                    <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </Link>
-                }
-              />
-            </ScrollReveal>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {pubData.map((pub: PublicationWithTags, i: number) => (
-                <ScrollReveal key={pub.id} direction="up" delay={i * 100} className="h-full">
-                  <PublicationCard publication={pub} />
-                </ScrollReveal>
-              ))}
-            </div>
-            <div className="mt-8 text-center md:hidden">
-              <Link href="/research">
-                <Button variant="outline" size="sm" className="font-mono text-xs gap-1.5">
-                  View all research <ArrowUpRight size={10} />
-                </Button>
-              </Link>
-            </div>
-          </Container>
-        </Section>
-      )}
-
-      {/* Selected Experience */}
-      {(researchData || teachingData) && (
-        <Section className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-void via-emerald/[0.01] to-void pointer-events-none" />
-          <Container className="relative">
-            <ScrollReveal>
-              <SectionHeader
-                badge={<Badge variant="success"><Sparkles size={12} className="mr-1.5" /> Experience</Badge>}
-                title="Selected Experience"
-                accent="emerald"
-                description="Recent research and teaching roles"
-                action={
-                  <Link href="/research-assistance" className="hidden md:flex items-center gap-1.5 text-sm text-emerald hover:text-emerald/80 transition-colors font-mono group">
-                    View all experience
-                    <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </Link>
-                }
+                description="Selected research directions and ongoing projects"
               />
             </ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2">
-              {researchData && (
-                <ScrollReveal key={researchData.id} direction="up" className="h-full">
-                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-emerald/30 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2.5 py-1 rounded-full bg-emerald/5 border border-emerald/10 text-emerald group-hover:bg-emerald/10 group-hover:border-emerald/20 transition-colors">
-                        <span className="font-mono text-[10px] font-medium uppercase tracking-wider">Research Experience</span>
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-emerald transition-colors duration-300">
-                      {researchData.topic}
-                    </h3>
-                    <p className="text-sm text-mist mb-3 flex-1">
-                      {researchData.lab}, {researchData.university}
-                    </p>
-                    <p className="font-mono text-xs text-ash mb-4">
-                      {new Date(researchData.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
-                      {researchData.endDate
-                        ? `— ${new Date(researchData.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
-                        : "— Present"}
-                    </p>
-                    {researchData.outcomes && (
-                      <p className="text-sm text-mist/80 mb-4 line-clamp-2 leading-relaxed">
-                        {String(researchData.outcomes)}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-3 pt-4 border-t border-slate-700/50">
-                      <Link
-                        href="/research-assistance"
-                        className="flex items-center gap-1 text-xs text-emerald hover:text-emerald-deep transition-colors font-mono"
-                      >
-                        View all <ArrowUpRight size={10} />
-                      </Link>
+              {researchDirections.map((direction, i) => (
+                <ScrollReveal key={direction.title} direction="up" delay={i * 100} className="h-full">
+                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
+                    <h3 className="text-lg font-semibold leading-snug mb-2">{direction.title}</h3>
+                    <p className="text-sm text-mist mb-4 leading-relaxed">{direction.description}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {direction.tags.map((tag) => (
+                        <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-ash font-mono">{tag}</span>
+                      ))}
                     </div>
                   </article>
-                </ScrollReveal>
-              )}
-              {teachingData && (
-                <ScrollReveal key={teachingData.id} direction="up" delay={100} className="h-full">
-                  <article className="h-full p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-amber/30 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2.5 py-1 rounded-full bg-amber/5 border border-amber/10 text-amber group-hover:bg-amber/10 group-hover:border-amber/20 transition-colors">
-                        <span className="font-mono text-[10px] font-medium uppercase tracking-wider">Teaching Experience</span>
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold leading-snug mb-2 group-hover:text-amber transition-colors duration-300">
-                      {teachingData.course}
-                    </h3>
-                    <p className="text-sm text-mist mb-3 flex-1">
-                      {teachingData.university}
-                    </p>
-                    <p className="font-mono text-xs text-ash mb-4">
-                      {new Date(teachingData.startDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}{" "}
-                      {teachingData.endDate
-                        ? `— ${new Date(teachingData.endDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}`
-                        : "— Present"}
-                    </p>
-                    {teachingData.highlights && (
-                      <p className="text-sm text-mist/80 mb-4 line-clamp-2 leading-relaxed">
-                        {String(teachingData.highlights)}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-3 pt-4 border-t border-slate-700/50">
-                      <Link
-                        href="/teaching"
-                        className="flex items-center gap-1 text-xs text-amber hover:text-amber-deep transition-colors font-mono"
-                      >
-                        View all <ArrowUpRight size={10} />
-                      </Link>
-                    </div>
-                  </article>
-                </ScrollReveal>
-              )}
-            </div>
-            <div className="mt-8 text-center md:hidden">
-              <Link href="/research-assistance">
-                <Button variant="outline" size="sm" className="font-mono text-xs gap-1.5">
-                  View all experience <ArrowUpRight size={10} />
-                </Button>
-              </Link>
-            </div>
-          </Container>
-        </Section>
-      )}
-
-      {/* Featured Projects */}
-      {projData.length > 0 && (
-        <Section className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-void via-indigo/[0.01] to-void pointer-events-none" />
-          <Container className="relative">
-            <ScrollReveal>
-              <SectionHeader
-                badge={<Badge variant="secondary">Engineering</Badge>}
-                title="Featured Projects"
-                accent="indigo"
-                description="System design case studies with real impact"
-                action={
-                  <Link href="/projects" className="hidden md:flex items-center gap-1.5 text-sm text-indigo hover:text-indigo/80 transition-colors font-mono group">
-                    View all projects
-                    <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </Link>
-                }
-              />
-            </ScrollReveal>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {projData.map((project: ProjectWithTags, i: number) => (
-                <ScrollReveal key={project.id} direction="up" delay={i * 100} className="h-full">
-                  <ProjectCard project={project} />
                 </ScrollReveal>
               ))}
-            </div>
-            <div className="mt-8 text-center md:hidden">
-              <Link href="/projects">
-                <Button variant="outline" size="sm" className="font-mono text-xs gap-1.5">
-                  View all projects <ArrowUpRight size={10} />
-                </Button>
-              </Link>
             </div>
           </Container>
         </Section>
@@ -326,7 +216,7 @@ export default async function HomePage() {
                 badge={<Badge variant="default">Expertise</Badge>}
                 title="Skills & Technologies"
                 accent="cyan"
-                description="Deep expertise across blockchain, ML, and security domains"
+                description="Research and technical background across decentralized systems, security, cryptography, and distributed systems"
               />
             </ScrollReveal>
             <ScrollReveal direction="up" delay={150}>
@@ -348,7 +238,8 @@ export default async function HomePage() {
                   <span className="text-gradient">Parsa Oryani</span>
                 </h2>
                 <p className="text-sm text-mist leading-relaxed max-w-xl">
-                  M.Sc. Computer Engineering at Sharif University of Technology, researching the intersection of security, privacy, and machine learning.
+                  M.Sc. Computer Engineering student at Sharif University of Technology, studying secure and scalable
+                  decentralized systems, with a focus on blockchain security, interoperability, and Layer-2 protocols.
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -372,7 +263,8 @@ export default async function HomePage() {
                 <span className="text-gradient">Get in Touch</span>
               </h2>
               <p className="text-mist text-sm mb-6 max-w-lg mx-auto">
-                Open to PhD positions, research collaborations, and interesting problems in security and ML.
+                Open to research collaborations, internships, and PhD opportunities in systems security, applied
+                cryptography, blockchain, and distributed systems.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <Link href="mailto:parsa.oryani82@sharif.edu">
@@ -380,14 +272,14 @@ export default async function HomePage() {
                     <Mail size={14} /> Email me
                   </Button>
                 </Link>
-                <Link href="https://scholar.google.com" target="_blank">
-                  <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
-                    <GraduationCap size={14} /> Google Scholar
-                  </Button>
-                </Link>
                 <Link href="https://github.com/parsaoryani" target="_blank">
                   <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
                     <Code2 size={14} /> GitHub
+                  </Button>
+                </Link>
+                <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank">
+                  <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
+                    <UserCheck size={14} /> LinkedIn
                   </Button>
                 </Link>
               </div>

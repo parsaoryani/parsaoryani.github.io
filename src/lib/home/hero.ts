@@ -1,8 +1,24 @@
 export const HOME_SETTING_KEYS = ["home_title", "home_description"] as const
 
-export const DEFAULT_TITLE_LINES = ["Researching the", "Security of", "Decentralized & AI Systems"]
+export const RESEARCH_DIRECTIONS_SETTING_KEY = "research_directions"
+
+export const DEFAULT_TITLE_LINES = ["Secure and Scalable", "Decentralized Systems"]
 export const DEFAULT_DESCRIPTION =
-  "PhD applicant and researcher at the intersection of blockchain security, deep learning robustness, and agentic AI safety. Building verifiably secure decentralized systems through formal methods and cryptographic guarantees."
+  "M.Sc. student in Computer Engineering at Sharif University of Technology, interested in the security and scalability of decentralized systems. My current research focuses on blockchain security, cross-chain and Layer-2 interoperability, with broader interests in applied cryptography, zero-knowledge proofs, formal methods, and distributed systems."
+
+export interface ResearchDirection {
+  title: string
+  description: string
+  tags: string[]
+}
+
+export function parseResearchDirections(value: unknown): ResearchDirection[] {
+  if (!Array.isArray(value)) return []
+  return value.filter(
+    (v): v is ResearchDirection =>
+      typeof v === "object" && v !== null && typeof (v as ResearchDirection).title === "string"
+  )
+}
 
 export function parseHomeTitle(value: unknown): string[] {
   if (typeof value !== "string") return DEFAULT_TITLE_LINES

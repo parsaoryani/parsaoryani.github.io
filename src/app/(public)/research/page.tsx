@@ -10,7 +10,7 @@ import { BookOpen, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Research",
-  description: "Research agenda and publications in blockchain security, deep learning, and AI safety.",
+  description: "Research agenda and publications in blockchain security, cross-chain interoperability, and applied cryptography.",
 }
 
 export default async function ResearchPage() {
@@ -37,10 +37,14 @@ export default async function ResearchPage() {
               <span className="text-gradient">Research</span>
             </h1>
             <p className="text-lg text-mist leading-relaxed">
-              My research agenda centers on the security and reliability of decentralized
-              and intelligent systems. I investigate how cryptographic primitives, formal
-              verification, and adversarial machine learning can converge to build systems
-              that are both autonomous and trustworthy.
+              My research interests lie at the intersection of systems security, applied cryptography, and
+              distributed systems. I am particularly interested in the security and scalability of blockchain
+              and Layer-2 protocols, including cross-chain interoperability, cross-rollup communication, state
+              verification, and protocol-level security.
+            </p>
+            <p className="text-lg text-mist leading-relaxed mt-4">
+              More broadly, I am interested in cryptographic and formal techniques for building secure
+              decentralized systems, including zero-knowledge proofs and formal verification.
             </p>
           </div>
         </ScrollReveal>
@@ -70,7 +74,7 @@ export default async function ResearchPage() {
         {publications.length === 0 && (
           <div className="text-center py-20">
             <BookOpen size={40} className="mx-auto text-slate-700 mb-4" />
-            <p className="text-mist font-mono text-sm">Research updates will appear here. In the meantime, view my research experience or Scholar profile.</p>
+            <p className="text-mist font-mono text-sm">Research updates will appear here. In the meantime, view my research experience.</p>
           </div>
         )}
       </Container>

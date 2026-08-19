@@ -1,6 +1,8 @@
 import { Prisma, PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
 import { TIMELINE_SECTIONS_SETTING_KEY } from "../src/lib/timeline/sections"
+import { NAV_RESEARCH_SETTING_KEY } from "../src/lib/site/visibility"
+import { DEFAULT_TITLE_LINES, DEFAULT_DESCRIPTION, RESEARCH_DIRECTIONS_SETTING_KEY } from "../src/lib/home/hero"
 
 const prisma = new PrismaClient()
 
@@ -34,107 +36,20 @@ async function main() {
   ])
   console.log(`${tags.length} tags created`)
 
-  // Create publications
-  const publications = [
-    {
-      slug: "zk-rollup-security-framework",
-      title: "A Formal Security Framework for ZK-Rollup Bridges",
-      authors: [{ name: "Parsa Oryani", isMe: true }, { name: "Amir Hossein Jahangir", isMe: false }],
-      venue: "IEEE Symposium on Security and Privacy",
-      venueType: "conference" as const,
-      year: 2026,
-      status: "published" as const,
-      abstract: "We present a comprehensive formal framework for analyzing security properties of ZK-rollup bridges. Our framework identifies 7 classes of vulnerabilities and provides automated verification tools.",
-      tldr: "A formal verification framework for ZK-rollup bridges that identifies 7 vulnerability classes.",
-      contributions: ["Designed the formal verification methodology", "Implemented the automated analysis tool", "Discovered 3 novel vulnerability patterns"],
-      arxivId: "2601.12345",
-      pdfUrl: "#",
-      codeUrl: "https://github.com/parsaoryani/zk-bridge-verifier",
-      bibtex: `@inproceedings{oryani2026zkrollup,
-  title={A Formal Security Framework for ZK-Rollup Bridges},
-  author={Oryani, Parsa and Jahangir, Amir Hossein},
-  booktitle={IEEE Symposium on Security and Privacy},
-  year={2026}
-}`,
-      featured: true,
-      sortOrder: 0,
-      tagIds: ["blockchain", "zk", "formal-verification"],
-    },
-    {
-      slug: "adversarial-robustness-agentic-ai",
-      title: "Adversarial Robustness in Agentic AI Systems: A Security Analysis",
-      authors: [{ name: "Parsa Oryani", isMe: true }, { name: "Mohammad Hossein Rohban", isMe: false }],
-      venue: "NeurIPS 2025",
-      venueType: "conference" as const,
-      year: 2025,
-      status: "published" as const,
-      abstract: "We investigate the security vulnerabilities introduced by agency in AI systems. We demonstrate that agentic architectures create new attack surfaces through tool-use delegation and memory poisoning.",
-      tldr: "First systematic security analysis of agentic AI systems revealing novel attack surfaces.",
-      contributions: ["Identified 5 new attack vectors specific to agentic AI", "Developed a threat taxonomy for AI agents", "Proposed defense mechanisms with formal guarantees"],
-      arxivId: "2506.54321",
-      pdfUrl: "#",
-      codeUrl: "https://github.com/parsaoryani/agentic-ai-security",
-      bibtex: `@inproceedings{oryani2025adversarial,
-  title={Adversarial Robustness in Agentic AI Systems: A Security Analysis},
-  author={Oryani, Parsa and Rohban, Mohammad Hossein},
-  booktitle={NeurIPS},
-  year={2025}
-}`,
-      featured: true,
-      sortOrder: 1,
-      tagIds: ["ai-security", "agentic-ai", "deep-learning"],
-    },
-    {
-      slug: "privacy-preserving-blockchain-ml",
-      title: "Privacy-Preserving Machine Learning on Blockchain using Secure Multi-Party Computation",
-      authors: [{ name: "Parsa Oryani", isMe: true }, { name: "Seyed Pooya Shariatpanahi", isMe: false }],
-      venue: "ACM CCS 2025",
-      venueType: "conference" as const,
-      year: 2025,
-      status: "published" as const,
-      abstract: "We propose a novel protocol combining SMPC with blockchain settlements for privacy-preserving ML model training and inference, demonstrating order-of-magnitude efficiency improvements.",
-      tldr: "A hybrid SMPC-blockchain protocol for privacy-preserving ML with 10x efficiency gains.",
-      contributions: ["Designed the hybrid protocol architecture", "Implemented the full system prototype", "Achieved 10x improvement over existing solutions"],
-      arxivId: "2503.98765",
-      pdfUrl: "#",
-      codeUrl: "https://github.com/parsaoryani/private-ml-blockchain",
-      bibtex: `@inproceedings{oryani2025privacy,
-  title={Privacy-Preserving Machine Learning on Blockchain using Secure Multi-Party Computation},
-  author={Oryani, Parsa and Shariatpanahi, Seyed Pooya},
-  booktitle={ACM CCS},
-  year={2025}
-}`,
-      featured: true,
-      sortOrder: 2,
-      tagIds: ["blockchain", "deep-learning", "ai-security"],
-    },
+  // Publications — previously seeded three fabricated entries; none exist.
+  // Remove any stale records so the site shows no fake publications.
+  const fakePublicationSlugs = [
+    "zk-rollup-security-framework",
+    "adversarial-robustness-agentic-ai",
+    "privacy-preserving-blockchain-ml",
   ]
-
-  for (const pub of publications) {
-    const { tagIds, ...pubData } = pub
-    const created = await prisma.publication.upsert({
-      where: { slug: pubData.slug },
-      update: {},
-      create: {
-        ...pubData,
-        publishedAt: new Date(`${pubData.year}-01-01`),
-      },
-    })
-    // Link tags
-    if (tagIds) {
-      for (const tagSlug of tagIds) {
-        const tag = tags.find((t) => t.slug === tagSlug)
-        if (tag) {
-          await prisma.publicationTag.upsert({
-            where: { publicationId_tagId: { publicationId: created.id, tagId: tag.id } },
-            update: {},
-            create: { publicationId: created.id, tagId: tag.id },
-          })
-        }
-      }
-    }
-  }
-  console.log(`${publications.length} publications created`)
+  await prisma.publicationTag.deleteMany({
+    where: { publication: { slug: { in: fakePublicationSlugs } } },
+  })
+  const deletedPublications = await prisma.publication.deleteMany({
+    where: { slug: { in: fakePublicationSlugs } },
+  })
+  console.log(`${deletedPublications.count} stale publications removed`)
 
   // Create projects
   const projects = [
@@ -228,6 +143,10 @@ async function main() {
     where: { type: "education", organization: "Sharif University of Technology", title: { startsWith: "B.Sc." } },
   })
 
+  // Work experience, awards, and talks were placeholder/unverified content —
+  // this site currently only shows verified education.
+  await prisma.timelineEvent.deleteMany({ where: { type: { in: ["experience", "award", "talk"] } } })
+
   const timelineEvents = [
     {
       type: "education" as const,
@@ -236,58 +155,8 @@ async function main() {
       location: "Tehran, Iran",
       startDate: new Date("2025-09-01"),
       endDate: null,
-      description: "Thesis: Security of Decentralized and Intelligent Systems. GPA: 4.0/4.0. National Master's Entrance Examination Rank: 56",
-      highlights: ["Research focus on blockchain security and AI safety", "Graduate coursework in advanced cryptography, ML theory, and formal methods"],
+      description: "National Master's Entrance Examination Rank: 56",
       sortOrder: 0,
-    },
-    {
-      type: "experience" as const,
-      title: "Research Assistant — Blockchain Security Lab",
-      organization: "Sharif University of Technology",
-      location: "Tehran, Iran",
-      startDate: new Date("2024-01-01"),
-      endDate: null,
-      description: "Leading research on formal verification of cross-chain bridges and ZK-rollup security.",
-      highlights: ["Published 3 papers at top venues (S&P, CCS, NeurIPS)", "Built open-source verification tooling used by 500+ developers", "Supervised 3 undergraduate research interns"],
-      sortOrder: 1,
-    },
-    {
-      type: "experience" as const,
-      title: "Blockchain Developer Intern",
-      organization: "Leading DeFi Protocol",
-      location: "Remote",
-      startDate: new Date("2023-06-01"),
-      endDate: new Date("2023-09-01"),
-      description: "Developed smart contract infrastructure for a decentralized exchange.",
-      highlights: ["Implemented automated market maker contracts in Solidity", "Reduced gas costs by 35% through optimized storage patterns", "Contributed to security audit preparation"],
-      sortOrder: 3,
-    },
-    {
-      type: "award" as const,
-      title: "Best Paper Award",
-      organization: "IEEE S&P Workshop on Blockchain Security",
-      startDate: new Date("2026-05-01"),
-      endDate: null,
-      description: "For the paper on ZK-rollup bridge security framework.",
-      sortOrder: 4,
-    },
-    {
-      type: "award" as const,
-      title: "National Elites Foundation Scholarship",
-      organization: "Iran National Elites Foundation",
-      startDate: new Date("2023-09-01"),
-      endDate: null,
-      description: "Merit-based full scholarship for graduate studies.",
-      sortOrder: 5,
-    },
-    {
-      type: "talk" as const,
-      title: "Securing the Bridge: Formal Verification of Cross-Chain Protocols",
-      organization: "Blockchain Security Summit 2026",
-      location: "Virtual",
-      startDate: new Date("2026-03-01"),
-      endDate: null,
-      sortOrder: 6,
     },
     {
       type: "education" as const,
@@ -381,6 +250,39 @@ async function main() {
         1
       )
     }
+
+    const formalMethods = await prisma.course.findFirst({
+      where: { timelineEventId: mscSharif.id, name: "Formal Methods in Information Security" },
+    })
+    if (formalMethods) {
+      await ensureCourseLink(
+        formalMethods.id,
+        "project",
+        "Course Project",
+        "https://docs.google.com/presentation/d/16WQGKbFC_pK5xJtQ2K8BavE-JxwXGfI43B80bMfxuTs/edit?usp=sharing",
+        0
+      )
+    }
+
+    const blockchainCourse = await prisma.course.findFirst({
+      where: { timelineEventId: mscSharif.id, name: "Foundations and Applications of Blockchain" },
+    })
+    if (blockchainCourse) {
+      await ensureCourseLink(
+        blockchainCourse.id,
+        "project",
+        "opML: Optimistic Machine Learning on Blockchain",
+        "https://docs.google.com/presentation/d/1JJwBT6vOO8ssTMe1s-mtMt8GoxPlowBC8T3n8T3JiPY/edit?usp=sharing",
+        0
+      )
+      await ensureCourseLink(
+        blockchainCourse.id,
+        "project",
+        "ZKsync Protocol",
+        "https://docs.google.com/presentation/d/1KerdC4P7yvEFYT-IbljRlH7pljRMfVQdoDNc0sFb920/edit?usp=sharing",
+        1
+      )
+    }
   }
 
   // Full syllabi are only included for courses the graduate provided detailed content for.
@@ -455,50 +357,67 @@ async function main() {
   // Create skill categories and skills
   const skillCategoriesData = [
     {
-      name: "Blockchain",
+      name: "Decentralized Systems",
       sortOrder: 0,
       skills: [
-        { name: "Solidity", proficiency: "expert", sortOrder: 0 },
-        { name: "Rust (Solana)", proficiency: "expert", sortOrder: 1 },
-        { name: "ZK-Proofs", proficiency: "advanced", sortOrder: 2 },
-        { name: "Smart Contract Auditing", proficiency: "expert", sortOrder: 3 },
-        { name: "DeFi Protocols", proficiency: "advanced", sortOrder: 4 },
+        { name: "Blockchain", proficiency: "advanced", sortOrder: 0 },
+        { name: "Ethereum", proficiency: "advanced", sortOrder: 1 },
+        { name: "Solana", proficiency: "advanced", sortOrder: 2 },
+        { name: "Layer 2", proficiency: "advanced", sortOrder: 3 },
+        { name: "Cross-Chain Protocols", proficiency: "advanced", sortOrder: 4 },
+        { name: "DeFi", proficiency: "advanced", sortOrder: 5 },
       ],
     },
     {
-      name: "ML & Deep Learning",
+      name: "Security & Cryptography",
       sortOrder: 1,
       skills: [
-        { name: "PyTorch", proficiency: "expert", sortOrder: 0 },
-        { name: "Adversarial ML", proficiency: "expert", sortOrder: 1 },
-        { name: "Reinforcement Learning", proficiency: "advanced", sortOrder: 2 },
-        { name: "NLP / LLMs", proficiency: "advanced", sortOrder: 3 },
-        { name: "Privacy-Preserving ML", proficiency: "expert", sortOrder: 4 },
+        { name: "Applied Cryptography", proficiency: "advanced", sortOrder: 0 },
+        { name: "Zero-Knowledge Proofs", proficiency: "advanced", sortOrder: 1 },
+        { name: "Protocol Security", proficiency: "advanced", sortOrder: 2 },
+        { name: "Smart Contract Security", proficiency: "advanced", sortOrder: 3 },
+        { name: "Formal Methods", proficiency: "advanced", sortOrder: 4 },
       ],
     },
     {
-      name: "Systems & Security",
+      name: "Distributed Systems",
       sortOrder: 2,
       skills: [
-        { name: "Formal Verification", proficiency: "expert", sortOrder: 0 },
-        { name: "Cryptography", proficiency: "advanced", sortOrder: 1 },
-        { name: "Security Auditing", proficiency: "advanced", sortOrder: 2 },
-        { name: "Distributed Systems", proficiency: "advanced", sortOrder: 3 },
-        { name: "Zero-Knowledge Proofs", proficiency: "advanced", sortOrder: 4 },
+        { name: "Consensus", proficiency: "advanced", sortOrder: 0 },
+        { name: "Blockchain Scalability", proficiency: "advanced", sortOrder: 1 },
+        { name: "Interoperability", proficiency: "advanced", sortOrder: 2 },
+        { name: "Transaction Processing", proficiency: "advanced", sortOrder: 3 },
+        { name: "System Evaluation", proficiency: "advanced", sortOrder: 4 },
       ],
     },
     {
-      name: "Languages & Tools",
+      name: "Programming & Tools",
       sortOrder: 3,
       skills: [
-        { name: "TypeScript", proficiency: "expert", sortOrder: 0 },
-        { name: "Python", proficiency: "expert", sortOrder: 1 },
-        { name: "Rust", proficiency: "advanced", sortOrder: 2 },
-        { name: "Solidity", proficiency: "expert", sortOrder: 3 },
-        { name: "Go", proficiency: "proficient", sortOrder: 4 },
+        { name: "Python", proficiency: "advanced", sortOrder: 0 },
+        { name: "Rust", proficiency: "advanced", sortOrder: 1 },
+        { name: "Solidity", proficiency: "advanced", sortOrder: 2 },
+        { name: "TypeScript", proficiency: "advanced", sortOrder: 3 },
+        { name: "Docker", proficiency: "advanced", sortOrder: 4 },
+        { name: "Git", proficiency: "advanced", sortOrder: 5 },
+      ],
+    },
+    {
+      name: "Additional Interests",
+      sortOrder: 4,
+      skills: [
+        { name: "Machine Learning", proficiency: "proficient", sortOrder: 0 },
+        { name: "Adversarial ML", proficiency: "proficient", sortOrder: 1 },
+        { name: "Reinforcement Learning", proficiency: "proficient", sortOrder: 2 },
       ],
     },
   ]
+
+  // Skill categories from earlier seeding are no longer part of the taxonomy —
+  // drop them (and their skills, via cascade) so re-seeding converges cleanly.
+  await prisma.skillCategory.deleteMany({
+    where: { name: { in: ["Blockchain", "ML & Deep Learning", "Systems & Security", "Languages & Tools"] } },
+  })
 
   // Skill categories and skills — idempotent. Repeated non-idempotent seeding
   // left duplicate category copies; collapse them to one per name, then upsert
@@ -529,34 +448,65 @@ async function main() {
   }
   console.log(`${skillCategoriesData.length} skill categories seeded`)
 
-  // Site settings
+  // Site settings — home hero text is corrected in place (`update`) since the
+  // previously-seeded copy overstated AI as a co-equal research focus.
   await prisma.siteSetting.upsert({
     where: { key: "hero_thesis" },
-    update: {},
+    update: {
+      value: {
+        text: "I am interested in the security and scalability of decentralized systems, focusing on blockchain security, cross-chain and Layer-2 interoperability, applied cryptography, and formal methods.",
+      },
+    },
     create: {
       key: "hero_thesis",
       value: {
-        text: "I research the security of decentralized and intelligent systems, focusing on formal verification of blockchain protocols and adversarial robustness of AI agents.",
+        text: "I am interested in the security and scalability of decentralized systems, focusing on blockchain security, cross-chain and Layer-2 interoperability, applied cryptography, and formal methods.",
       },
     },
   })
 
   await prisma.siteSetting.upsert({
     where: { key: "home_title" },
-    update: {},
-    create: {
-      key: "home_title",
-      value: "Researching the\nSecurity of\nDecentralized & AI Systems",
-    },
+    update: { value: DEFAULT_TITLE_LINES.join("\n") },
+    create: { key: "home_title", value: DEFAULT_TITLE_LINES.join("\n") },
   })
 
   await prisma.siteSetting.upsert({
     where: { key: "home_description" },
-    update: {},
+    update: { value: DEFAULT_DESCRIPTION },
+    create: { key: "home_description", value: DEFAULT_DESCRIPTION },
+  })
+
+  await prisma.siteSetting.upsert({
+    where: { key: RESEARCH_DIRECTIONS_SETTING_KEY },
+    update: {
+      value: [
+        {
+          title: "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
+          description: "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
+          tags: ["Blockchain Security", "Cross-Chain", "Layer 2", "Distributed Systems"],
+        },
+        {
+          title: "Ethereum Mempool Security and Asymmetric DoS",
+          description: "Investigating denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.",
+          tags: ["Ethereum", "Security", "Mempool", "DoS", "Systems"],
+        },
+      ],
+    },
     create: {
-      key: "home_description",
-      value:
-        "PhD applicant and researcher at the intersection of blockchain security, deep learning robustness, and agentic AI safety. Building verifiably secure decentralized systems through formal methods and cryptographic guarantees.",
+      key: RESEARCH_DIRECTIONS_SETTING_KEY,
+      value: [
+        {
+          title: "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
+          description: "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
+          tags: ["Blockchain Security", "Cross-Chain", "Layer 2", "Distributed Systems"],
+        },
+        {
+          title: "Ethereum Mempool Security and Asymmetric DoS",
+          description: "Investigating denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.",
+          tags: ["Ethereum", "Security", "Mempool", "DoS", "Systems"],
+        },
+      ],
     },
   })
 
@@ -564,6 +514,12 @@ async function main() {
     where: { key: TIMELINE_SECTIONS_SETTING_KEY },
     update: {},
     create: { key: TIMELINE_SECTIONS_SETTING_KEY, value: [] },
+  })
+
+  await prisma.siteSetting.upsert({
+    where: { key: NAV_RESEARCH_SETTING_KEY },
+    update: {},
+    create: { key: NAV_RESEARCH_SETTING_KEY, value: false },
   })
 
   // Teaching Assistant entries — reverse chronological, real experience only
@@ -660,40 +616,72 @@ async function main() {
   }
   console.log(`${teachingAssistantEntries.length} teaching assistant entries seeded`)
 
-  // Researching Assistant entries
+  // Researching Assistant entries — replaced the earlier fabricated-outcome
+  // entries with factual, unpublished-claim-free research descriptions.
+  const oldFakeRaSlugs = ["zk-rollup-verification-ra", "agentic-ai-security-ra"]
+  await prisma.researchingAssistant.deleteMany({ where: { slug: { in: oldFakeRaSlugs } } })
+
   await prisma.researchingAssistant.upsert({
-    where: { slug: "zk-rollup-verification-ra" },
-    update: {},
-    create: {
-      slug: "zk-rollup-verification-ra",
-      lab: "Security and Privacy Lab",
+    where: { slug: "blockchain-security-research" },
+    update: {
+      lab: "",
       university: "Sharif University of Technology",
-      supervisor: "Dr. Amir Hossein Jahangir",
-      topic: "Formal Verification of ZK-Rollup Bridges",
-      startDate: new Date("2024-06-01"),
+      supervisor: "",
+      topic: "Blockchain Security Research",
+      description: "Studying security and scalability challenges in cross-chain and Layer-2 protocols.",
+      outcomes: [
+        "Investigating cross-rollup execution, state verification, and blockchain interoperability",
+        "Exploring thesis directions around secure and scalable cross-L2 systems",
+      ],
+      technologies: "",
+    },
+    create: {
+      slug: "blockchain-security-research",
+      lab: "",
+      university: "Sharif University of Technology",
+      supervisor: "",
+      topic: "Blockchain Security Research",
+      startDate: new Date("2025-09-01"),
       endDate: undefined,
-      description: "Researching security properties of ZK-rollup bridges using formal verification techniques. Developed an automated tool for vulnerability detection in bridge protocols.",
-      outcomes: ["Paper accepted at IEEE S&P 2026", "Open-source tool released on GitHub", "Identified 3 novel vulnerability patterns in existing bridges"],
-      technologies: "Rust, Z3 Prover, Solidity, Isabelle/HOL",
+      description: "Studying security and scalability challenges in cross-chain and Layer-2 protocols.",
+      outcomes: [
+        "Investigating cross-rollup execution, state verification, and blockchain interoperability",
+        "Exploring thesis directions around secure and scalable cross-L2 systems",
+      ],
+      technologies: "",
       status: "published",
       sortOrder: 0,
     },
   })
 
   await prisma.researchingAssistant.upsert({
-    where: { slug: "agentic-ai-security-ra" },
-    update: {},
-    create: {
-      slug: "agentic-ai-security-ra",
-      lab: "Machine Learning Lab",
+    where: { slug: "ethereum-mempool-security-research" },
+    update: {
+      lab: "",
       university: "Sharif University of Technology",
-      supervisor: "Dr. Mohammad Hossein Rohban",
-      topic: "Adversarial Robustness in Agentic AI Systems",
-      startDate: new Date("2024-01-01"),
-      endDate: new Date("2024-08-15"),
-      description: "Investigating security vulnerabilities introduced by agency in AI systems. Demonstrated that agentic architectures create new attack surfaces through tool-use delegation and memory poisoning.",
-      outcomes: ["Paper published at NeurIPS 2025", "Developed threat taxonomy for AI agents", "Proposed provable defense mechanisms"],
-      technologies: "Python, PyTorch, LangChain, OpenAI API",
+      supervisor: "",
+      topic: "Ethereum Mempool Security Research",
+      description: "Investigating asymmetric DoS attacks against Ethereum transaction pools.",
+      outcomes: [
+        "Building a controlled multi-node Hyperledger Besu environment for reproducible experiments",
+        "Measuring mempool behavior and system resource usage under controlled workloads",
+      ],
+      technologies: "Hyperledger Besu",
+    },
+    create: {
+      slug: "ethereum-mempool-security-research",
+      lab: "",
+      university: "Sharif University of Technology",
+      supervisor: "",
+      topic: "Ethereum Mempool Security Research",
+      startDate: new Date("2025-09-01"),
+      endDate: undefined,
+      description: "Investigating asymmetric DoS attacks against Ethereum transaction pools.",
+      outcomes: [
+        "Building a controlled multi-node Hyperledger Besu environment for reproducible experiments",
+        "Measuring mempool behavior and system resource usage under controlled workloads",
+      ],
+      technologies: "Hyperledger Besu",
       status: "published",
       sortOrder: 1,
     },

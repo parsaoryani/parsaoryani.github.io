@@ -37,7 +37,6 @@ export default async function ContactPage() {
   const links = (linksSetting as Array<{ label: string; url: string; desc: string; icon?: string }> | undefined) || [
     { label: "GitHub", url: "https://github.com/parsaoryani", desc: "@parsaoryani", icon: "Code2" },
     { label: "LinkedIn", url: "https://www.linkedin.com/in/parsa-oryani/", desc: "in/parsa-oryani", icon: "UserCheck" },
-    { label: "Google Scholar", url: "https://scholar.google.com", desc: "Citations & Publications", icon: "GraduationCap" },
   ]
   const location = (locSetting as { city?: string; note?: string } | undefined) || { city: "Tehran, Iran", note: "Available for virtual meetings worldwide" }
 
