@@ -88,9 +88,9 @@ export default async function AboutPage() {
             <p className="text-xs font-mono uppercase tracking-widest text-cyan mb-8">Along the way</p>
           </ScrollReveal>
 
-          <ScrollReveal direction="up" className="max-w-3xl mx-auto">
+          <ScrollReveal direction="up" className="max-w-sm mx-auto">
             <figure className="group">
-              <div className="relative rounded-xl overflow-hidden border border-slate-700/50 aspect-[4/3]">
+              <div className="relative rounded-xl overflow-hidden border border-slate-700/50 aspect-[3/4]">
                 <Image
                   src="/about/graduation.jpg"
                   alt="Parsa Oryani at his B.Sc. graduation at Amirkabir University of Technology"
