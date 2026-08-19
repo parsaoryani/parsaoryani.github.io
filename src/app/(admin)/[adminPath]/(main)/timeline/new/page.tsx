@@ -28,6 +28,7 @@ function NewTimelineForm() {
       startDate: form.get("startDate") as string,
       endDate: (form.get("endDate") as string) || undefined,
       description: (form.get("description") as string) || undefined,
+      highlights: (form.get("highlights") as string)?.split("\n").map((h) => h.trim()).filter(Boolean) || [],
       url: (form.get("url") as string) || undefined,
       visible: form.get("visible") === "on",
     }
@@ -88,6 +89,10 @@ function NewTimelineForm() {
         <div className="space-y-2">
           <Label htmlFor="description">Description</Label>
           <Textarea id="description" name="description" rows={3} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="highlights">Highlights <span className="text-[var(--text-tertiary)] font-mono text-xs">(one per line)</span></Label>
+          <Textarea id="highlights" name="highlights" rows={3} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="url">URL</Label>

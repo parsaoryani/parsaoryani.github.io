@@ -8,9 +8,9 @@ import { EditorLayout, type Breadcrumb } from "@/components/admin/editor-layout"
 import { FieldGroup, SectionHeader } from "@/components/admin/field-group"
 
 interface RAItem {
-  id: string; slug: string; lab: string; university: string; supervisor: string; topic: string
+  id: string; slug: string; lab: string | null; university: string; supervisor: string | null; topic: string
   startDate: string; endDate: string | null; description: string | null
-  outcomes: string[]; technologies: string | null; status: string
+  outcomes: string[]; technologies: string | null; repoUrl: string | null; status: string
   createdAt: string; updatedAt: string
 }
 
@@ -44,16 +44,17 @@ export default function EditResearchingPage() {
     const form = document.querySelector("form")!
     const fd = new FormData(form)
     const data = {
-      lab: fd.get("lab") as string,
+      lab: (fd.get("lab") as string) || undefined,
       slug: fd.get("slug") as string,
       university: fd.get("university") as string,
-      supervisor: fd.get("supervisor") as string,
+      supervisor: (fd.get("supervisor") as string) || undefined,
       topic: fd.get("topic") as string,
       startDate: fd.get("startDate") as string,
       endDate: (fd.get("endDate") as string) || undefined,
       description: (fd.get("description") as string) || undefined,
       outcomes: (fd.get("outcomes") as string)?.split("\n").filter(Boolean) || [],
       technologies: (fd.get("technologies") as string) || undefined,
+      repoUrl: (fd.get("repoUrl") as string) || undefined,
       status: fd.get("status") as string,
     }
 
@@ -114,15 +115,15 @@ export default function EditResearchingPage() {
         </FieldGroup>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <FieldGroup label="Lab" required>
-          <Input name="lab" required defaultValue={item.lab} />
+        <FieldGroup label="Lab">
+          <Input name="lab" defaultValue={item.lab || ""} />
         </FieldGroup>
         <FieldGroup label="University" required>
           <Input name="university" required defaultValue={item.university} />
         </FieldGroup>
       </div>
-      <FieldGroup label="Supervisor" required>
-        <Input name="supervisor" required defaultValue={item.supervisor} />
+      <FieldGroup label="Supervisor">
+        <Input name="supervisor" defaultValue={item.supervisor || ""} />
       </FieldGroup>
       <div className="grid grid-cols-2 gap-4">
         <FieldGroup label="Start Date" required>
@@ -143,6 +144,9 @@ export default function EditResearchingPage() {
           </select>
         </FieldGroup>
       </div>
+      <FieldGroup label="Repository URL">
+        <Input name="repoUrl" type="url" defaultValue={item.repoUrl || ""} placeholder="https://github.com/..." />
+      </FieldGroup>
 
       <SectionHeader title="Description" />
       <FieldGroup label="Description">

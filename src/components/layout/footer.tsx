@@ -12,7 +12,6 @@ const footerBackground = [
   { label: "Education", href: "/experience#education" },
   { label: "Research Assistantships", href: "/experience#research-assistance" },
   { label: "Teaching Assistantships", href: "/experience#teaching-assistance" },
-  { label: "Awards, Talks & Service", href: "/experience#awards" },
   { label: "CV / PDF", href: "/cv" },
 ]
 

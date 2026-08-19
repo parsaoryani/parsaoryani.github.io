@@ -20,6 +20,7 @@ import {
   Calendar,
   User,
   Building2,
+  FolderGit2,
 } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -160,7 +161,7 @@ export default async function ExperiencePage() {
 
         {/* Education */}
         {events.filter((e) => e.type === "education").length > 0 && (
-          <ScrollReveal direction="left" className="mb-16" id="education">
+          <ScrollReveal direction="left" className="mb-16 scroll-mt-24" id="education">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
               <GraduationCap size={16} className="text-cyan" />
               <span className="text-cyan">Education</span>
@@ -175,7 +176,7 @@ export default async function ExperiencePage() {
 
         {/* Research Assistantships */}
         {researchItems.length > 0 && (
-          <div className="mb-16" id="research-assistance">
+          <div className="mb-16 scroll-mt-24" id="research-assistance">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
               <FlaskConical size={16} className="text-indigo" />
               <span className="text-indigo">Research Assistantships</span>
@@ -211,6 +212,11 @@ export default async function ExperiencePage() {
                         </div>
                       </div>
                     )}
+                    {item.repoUrl && (
+                      <a href={item.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-3 text-xs font-mono text-indigo hover:text-indigo/80 transition-colors">
+                        <FolderGit2 size={12} /> View repository <ArrowUpRight size={10} />
+                      </a>
+                    )}
                   </div>
                 </ScrollReveal>
               ))}
@@ -220,7 +226,7 @@ export default async function ExperiencePage() {
 
         {/* Teaching Assistantships */}
         {teachingItems.length > 0 && (
-          <div className="mb-16" id="teaching-assistance">
+          <div className="mb-16 scroll-mt-24" id="teaching-assistance">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
               <Users size={16} className="text-emerald" />
               <span className="text-emerald">Teaching Assistantships</span>
@@ -268,7 +274,7 @@ export default async function ExperiencePage() {
 
         {/* Experience */}
         {events.filter((e) => e.type === "experience").length > 0 && (
-          <ScrollReveal direction="left" className="mb-16" id="experience">
+          <ScrollReveal direction="left" className="mb-16 scroll-mt-24" id="experience">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
               <Briefcase size={16} className="text-indigo" />
               <span className="text-indigo">Experience</span>
@@ -287,7 +293,7 @@ export default async function ExperiencePage() {
           const typeEvents = events.filter((e) => e.type === type)
           if (typeEvents.length === 0) return null
           return (
-            <ScrollReveal key={type} direction="left" className="mb-16" id={config.anchor}>
+            <ScrollReveal key={type} direction="left" className="mb-16 scroll-mt-24" id={config.anchor}>
               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
                 <config.icon size={16} className={config.color} />
                 <span className={config.color}>{config.label}</span>

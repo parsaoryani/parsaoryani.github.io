@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { FileText, Link as LinkIcon } from "lucide-react"
+import { FileText, Link as LinkIcon, FolderGit2 } from "lucide-react"
 
 interface CourseFileShape {
   id: string
@@ -30,7 +30,40 @@ export interface CourseDetailShape {
   links?: CourseLinkShape[]
 }
 
+function linkChipLabel(link: CourseLinkShape): string {
+  if (link.type === "slides") return "Slides"
+  if (link.url.includes("docs.google.com/presentation")) return "Slides"
+  return "Implementation"
+}
+
+function ProjectLinkChip({ link }: { link: CourseLinkShape }) {
+  const label = linkChipLabel(link)
+  const className = "inline-flex items-center gap-1 px-2 py-1 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors"
+  if (link.url.startsWith("/")) {
+    return (
+      <Link href={link.url} className={className}>
+        <LinkIcon size={10} /> {label}
+      </Link>
+    )
+  }
+  return (
+    <a href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
+      <LinkIcon size={10} /> {label}
+    </a>
+  )
+}
+
 export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
+  const exerciseLinks = course.links?.filter((l) => l.type === "exercise") ?? []
+  const projectLinks = course.links?.filter((l) => l.type === "project" || l.type === "slides") ?? []
+  const projects = Object.values(
+    projectLinks.reduce<Record<string, { name: string; links: CourseLinkShape[] }>>((acc, link) => {
+      const group = (acc[link.name] ??= { name: link.name, links: [] })
+      group.links.push(link)
+      return acc
+    }, {})
+  )
+
   return (
     <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-4 hover:border-cyan/20 transition-colors">
       <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -81,26 +114,27 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
           ))}
         </div>
       )}
-      {course.links && course.links.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {course.links.filter((l) => l.type === "exercise").map((link) => (
-            <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-emerald/10 border border-emerald/20 text-emerald hover:bg-emerald/20 transition-colors">
-              <LinkIcon size={10} /> {link.name}
-            </a>
+      {projects.length > 0 && (
+        <div className="mt-3 space-y-2">
+          <p className="text-xs font-semibold text-cyan uppercase tracking-wider">Project</p>
+          {projects.map((project) => (
+            <div key={project.name} className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg border border-slate-700/50 bg-slate-800/40">
+              <span className="flex items-center gap-1.5 text-sm text-fog">
+                <FolderGit2 size={13} className="text-cyan shrink-0" /> {project.name}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {project.links.map((link) => (
+                  <ProjectLinkChip key={link.id} link={link} />
+                ))}
+              </div>
+            </div>
           ))}
-          {course.links.filter((l) => l.type === "project").map((link) =>
-            link.url.startsWith("/") ? (
-              <Link key={link.id} href={link.url} className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors">
-                <LinkIcon size={10} /> {link.name}
-              </Link>
-            ) : (
-              <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors">
-                <LinkIcon size={10} /> {link.name}
-              </a>
-            )
-          )}
-          {course.links.filter((l) => l.type === "slides").map((link) => (
-            <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-indigo/10 border border-indigo/20 text-indigo hover:bg-indigo/20 transition-colors">
+        </div>
+      )}
+      {exerciseLinks.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {exerciseLinks.map((link) => (
+            <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-emerald/10 border border-emerald/20 text-emerald hover:bg-emerald/20 transition-colors">
               <LinkIcon size={10} /> {link.name}
             </a>
           ))}

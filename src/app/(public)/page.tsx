@@ -72,7 +72,7 @@ export default async function HomePage() {
               </Badge>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
               {titleLines.map((line, i) => (
                 <Fragment key={i}>
                   {i > 0 && <br />}
@@ -125,7 +125,7 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="animate-in animate-in-delay-4 mt-16 flex items-center gap-6 text-xs text-ash font-mono">
+            <div className="animate-in animate-in-delay-4 mt-8 flex items-center gap-6 text-xs text-ash font-mono">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
                 Open to research collaborations, internships, and future PhD opportunities
@@ -159,7 +159,7 @@ export default async function HomePage() {
               description="What I work on, and how it's prioritized"
             />
           </ScrollReveal>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-3">
             {researchInterests.map((item, i) => (
               <ScrollReveal key={item.label} direction="up" delay={i * 80}>
                 <div className="h-full flex items-start gap-3 p-5 rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all duration-300">

@@ -241,11 +241,13 @@ async function main() {
       where: { timelineEventId: mscSharif.id, name: "Applied Cryptography" },
     })
     if (appliedCrypto) {
+      // Both links share the "ZK-Mixer" name so the UI groups them under one project.
+      await prisma.courseLink.deleteMany({ where: { courseId: appliedCrypto.id, name: "Presentation Slides" } })
       await ensureCourseLink(appliedCrypto.id, "project", "ZK-Mixer", "/projects/zk-mixer", 0)
       await ensureCourseLink(
         appliedCrypto.id,
         "slides",
-        "Presentation Slides",
+        "ZK-Mixer",
         "https://docs.google.com/presentation/d/1TOtABEE-BxehewOyfk-qVNsLYb-tzV6QI-S6NThfhIg/edit?usp=sharing",
         1
       )
@@ -255,10 +257,11 @@ async function main() {
       where: { timelineEventId: mscSharif.id, name: "Formal Methods in Information Security" },
     })
     if (formalMethods) {
+      await prisma.courseLink.deleteMany({ where: { courseId: formalMethods.id, name: "Course Project" } })
       await ensureCourseLink(
         formalMethods.id,
         "project",
-        "Course Project",
+        "Formal Verification of ZK-Rollup Security Mechanisms",
         "https://docs.google.com/presentation/d/16WQGKbFC_pK5xJtQ2K8BavE-JxwXGfI43B80bMfxuTs/edit?usp=sharing",
         0
       )
@@ -624,9 +627,9 @@ async function main() {
   await prisma.researchingAssistant.upsert({
     where: { slug: "blockchain-security-research" },
     update: {
-      lab: "",
+      lab: null,
       university: "Sharif University of Technology",
-      supervisor: "",
+      supervisor: null,
       topic: "Blockchain Security Research",
       description: "Studying security and scalability challenges in cross-chain and Layer-2 protocols.",
       outcomes: [
@@ -637,9 +640,9 @@ async function main() {
     },
     create: {
       slug: "blockchain-security-research",
-      lab: "",
+      lab: null,
       university: "Sharif University of Technology",
-      supervisor: "",
+      supervisor: null,
       topic: "Blockchain Security Research",
       startDate: new Date("2025-09-01"),
       endDate: undefined,
@@ -657,9 +660,9 @@ async function main() {
   await prisma.researchingAssistant.upsert({
     where: { slug: "ethereum-mempool-security-research" },
     update: {
-      lab: "",
+      lab: null,
       university: "Sharif University of Technology",
-      supervisor: "",
+      supervisor: null,
       topic: "Ethereum Mempool Security Research",
       description: "Investigating asymmetric DoS attacks against Ethereum transaction pools.",
       outcomes: [
@@ -667,12 +670,13 @@ async function main() {
         "Measuring mempool behavior and system resource usage under controlled workloads",
       ],
       technologies: "Hyperledger Besu",
+      repoUrl: "https://github.com/parsaoryani/brcc-lab",
     },
     create: {
       slug: "ethereum-mempool-security-research",
-      lab: "",
+      lab: null,
       university: "Sharif University of Technology",
-      supervisor: "",
+      supervisor: null,
       topic: "Ethereum Mempool Security Research",
       startDate: new Date("2025-09-01"),
       endDate: undefined,
@@ -682,6 +686,7 @@ async function main() {
         "Measuring mempool behavior and system resource usage under controlled workloads",
       ],
       technologies: "Hyperledger Besu",
+      repoUrl: "https://github.com/parsaoryani/brcc-lab",
       status: "published",
       sortOrder: 1,
     },

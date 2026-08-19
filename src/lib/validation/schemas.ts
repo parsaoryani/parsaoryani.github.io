@@ -85,14 +85,15 @@ export const teachingSchema = z.object({
 
 export const researchingSchema = z.object({
   slug: z.string().min(1).max(200),
-  lab: z.string().min(1).max(300),
+  lab: z.string().max(300).optional(),
   university: z.string().min(1).max(200),
-  supervisor: z.string().min(1).max(200),
+  supervisor: z.string().max(200).optional(),
   topic: z.string().min(1).max(500),
   startDate: z.string(),
   endDate: z.string().optional(),
   description: z.string().optional(),
   outcomes: z.array(z.string()).optional(),
   technologies: z.string().optional(),
+  repoUrl: z.string().max(500).optional(),
   status: z.enum(["draft", "published"]),
 })

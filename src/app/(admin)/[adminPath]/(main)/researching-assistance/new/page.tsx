@@ -16,13 +16,14 @@ export default function NewResearchingPage() {
     e.preventDefault(); setError(null); setSubmitting(true)
     const form = new FormData(e.currentTarget)
     const data = {
-      lab: form.get("lab") as string, slug: form.get("slug") as string,
-      university: form.get("university") as string, supervisor: form.get("supervisor") as string,
+      lab: (form.get("lab") as string) || undefined, slug: form.get("slug") as string,
+      university: form.get("university") as string, supervisor: (form.get("supervisor") as string) || undefined,
       topic: form.get("topic") as string,
       startDate: form.get("startDate") as string, endDate: (form.get("endDate") as string) || undefined,
       description: (form.get("description") as string) || undefined,
       outcomes: (form.get("outcomes") as string)?.split("\n").filter(Boolean) || [],
       technologies: (form.get("technologies") as string) || undefined,
+      repoUrl: (form.get("repoUrl") as string) || undefined,
       status: form.get("status") as string,
     }
     try {
@@ -41,15 +42,16 @@ export default function NewResearchingPage() {
           <div className="space-y-2"><Label htmlFor="slug">Slug *</Label><Input id="slug" name="slug" required placeholder="zk-rollup-verification-ra" /></div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2"><Label htmlFor="lab">Lab *</Label><Input id="lab" name="lab" required placeholder="Security Lab" /></div>
+          <div className="space-y-2"><Label htmlFor="lab">Lab</Label><Input id="lab" name="lab" placeholder="Security Lab" /></div>
           <div className="space-y-2"><Label htmlFor="university">University *</Label><Input id="university" name="university" required placeholder="Sharif University of Technology" /></div>
         </div>
-        <div className="space-y-2"><Label htmlFor="supervisor">Supervisor *</Label><Input id="supervisor" name="supervisor" required placeholder="Dr. Supervisor" /></div>
+        <div className="space-y-2"><Label htmlFor="supervisor">Supervisor</Label><Input id="supervisor" name="supervisor" placeholder="Dr. Supervisor" /></div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2"><Label htmlFor="startDate">Start Date *</Label><Input id="startDate" name="startDate" type="date" required /></div>
           <div className="space-y-2"><Label htmlFor="endDate">End Date</Label><Input id="endDate" name="endDate" type="date" /></div>
         </div>
         <div className="space-y-2"><Label htmlFor="technologies">Technologies</Label><Input id="technologies" name="technologies" placeholder="Rust, Z3, Python" /></div>
+        <div className="space-y-2"><Label htmlFor="repoUrl">Repository URL</Label><Input id="repoUrl" name="repoUrl" type="url" placeholder="https://github.com/..." /></div>
         <div className="space-y-2">
           <Label htmlFor="status">Status</Label>
           <select id="status" name="status" className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog" defaultValue="draft">
@@ -57,7 +59,7 @@ export default function NewResearchingPage() {
           </select>
         </div>
         <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" name="description" rows={3} /></div>
-        <div className="space-y-2"><Label htmlFor="outcomes">Outcomes / Publications (one per line)</Label><Textarea id="outcomes" name="outcomes" rows={3} placeholder="Paper submitted to IEEE S&amp;P&#10;Tool released on GitHub&#10;..." /></div>
+        <div className="space-y-2"><Label htmlFor="outcomes">Outcomes (one per line)</Label><Textarea id="outcomes" name="outcomes" rows={3} placeholder="Building a reproducible experimental environment&#10;Measuring system behavior under controlled workloads" /></div>
         {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
         <div className="flex gap-3">
           <Button type="submit" disabled={submitting}>{submitting ? "Creating..." : "Create Entry"}</Button>
