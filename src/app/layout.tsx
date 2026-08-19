@@ -88,7 +88,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen font-sans text-fog antialiased">
+      <body className="min-h-screen font-sans text-fog antialiased" suppressHydrationWarning>
         <ClientLayout showResearch={showResearch}>
           {children}
         </ClientLayout>
