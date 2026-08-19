@@ -35,9 +35,9 @@ const researchInterests = [
   },
 ]
 
-const researchAreas = [
+const coreResearchFoundations = [
   {
-    category: "Blockchain Architecture & Scalability",
+    category: "Blockchain Systems & Scalability",
     areas: [
       { name: "Layer 1", examples: "Sharding · Consensus · Fault Tolerance" },
       { name: "Layer 2", examples: "Rollups · Payment Channels · State Channels" },
@@ -45,15 +45,7 @@ const researchAreas = [
     ],
   },
   {
-    category: "Cross-Chain & Interoperability",
-    areas: [
-      { name: "Cross-Chain Bridges", examples: "State Verification · Message Passing" },
-      { name: "Cross-Rollup Systems", examples: "Messaging · Atomic Execution" },
-      { name: "Cross-Chain Transactions", examples: "Atomic Swaps · Multi-Chain Coordination" },
-    ],
-  },
-  {
-    category: "Blockchain & Protocol Security",
+    category: "Protocol & Blockchain Security",
     areas: [
       { name: "Mempool Security", examples: "Transaction-Pool DoS · Resource Exhaustion" },
       { name: "Smart Contract Security", examples: "EVM Contracts · Protocol Logic" },
@@ -61,7 +53,7 @@ const researchAreas = [
     ],
   },
   {
-    category: "Cryptographic Systems",
+    category: "Cryptographic Mechanisms",
     areas: [
       { name: "Zero-Knowledge Proofs", examples: "zk-SNARKs · Private Transactions" },
       { name: "Commitment & Authentication Structures", examples: "Merkle Trees · Hash Commitments" },
@@ -76,12 +68,31 @@ const researchAreas = [
       { name: "Formal Reasoning", examples: "Protocol Properties · Security Guarantees" },
     ],
   },
+]
+
+const engineeringToolkit = [
   {
     category: "Blockchain Engineering",
     areas: [
       { name: "Ethereum", examples: "EVM · Solidity · JSON-RPC" },
       { name: "Solana", examples: "Rust · Anchor · SPL Tokens" },
       { name: "Private Blockchain Infrastructure", examples: "Hyperledger Besu · QBFT" },
+    ],
+  },
+  {
+    category: "Programming & Infrastructure",
+    areas: [
+      { name: "Programming Languages", examples: "Python · TypeScript · Rust" },
+      { name: "Web & Tooling", examples: "React · Next.js · Docker" },
+      { name: "Data & Infrastructure", examples: "PostgreSQL · AWS · Linux" },
+    ],
+  },
+  {
+    category: "AI & ML Systems",
+    areas: [
+      { name: "Deep Learning", examples: "Neural Networks · Training" },
+      { name: "LLM Systems", examples: "Agents · RAG" },
+      { name: "Machine Learning", examples: "Classical ML · Applied Models" },
     ],
   },
 ]
@@ -108,7 +119,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden pb-44 md:pb-36">
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="absolute inset-0 bg-glow" />
         <FloatingParticles count={18} className="opacity-60" />
@@ -180,29 +191,29 @@ export default async function HomePage() {
               </span>
             </div>
           </div>
-
-          {/* Hero bottom guide */}
-          <div className="absolute bottom-6 left-0 right-0 hidden md:flex flex-col items-center gap-3">
-            <a
-              href="#research-interests"
-              className="flex flex-col items-center gap-1.5 text-ash hover:text-cyan transition-colors group"
-              aria-label="Scroll to explore"
-            >
-              <span className="text-[11px] font-mono uppercase tracking-widest">Scroll to explore</span>
-              <ArrowDown size={16} className="animate-bounce group-hover:text-cyan" />
-            </a>
-            <nav aria-label="Jump to section" className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] font-mono text-ash/80">
-              {heroJumpLinks.map((link, i) => (
-                <Fragment key={link.href}>
-                  {i > 0 && <span className="text-slate-700">·</span>}
-                  <Link href={link.href} className="hover:text-cyan transition-colors">
-                    {link.label}
-                  </Link>
-                </Fragment>
-              ))}
-            </nav>
-          </div>
         </Container>
+
+        {/* Hero bottom guide — anchored to the section's own bottom edge */}
+        <div className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-3">
+          <a
+            href="#research-interests"
+            className="flex flex-col items-center gap-1.5 py-2 text-ash hover:text-cyan transition-colors group"
+            aria-label="Scroll to explore"
+          >
+            <span className="text-[11px] font-mono uppercase tracking-widest">Scroll to explore</span>
+            <ArrowDown size={14} className="animate-scroll-nudge group-hover:text-cyan" />
+          </a>
+          <nav aria-label="Jump to section" className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 text-[10px] font-mono text-ash/60">
+            {heroJumpLinks.map((link, i) => (
+              <Fragment key={link.href}>
+                {i > 0 && <span className="text-slate-700">·</span>}
+                <Link href={link.href} className="py-1 px-1 hover:text-cyan transition-colors">
+                  {link.label}
+                </Link>
+              </Fragment>
+            ))}
+          </nav>
+        </div>
       </section>
 
       {/* Research Interests */}
@@ -271,34 +282,65 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* Research & Technical Areas */}
+      {/* Technical Foundations */}
       <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20">
         <Container>
           <ScrollReveal>
             <SectionHeader
               badge={<Badge variant="default">Research Areas</Badge>}
-              title="Research & Technical Areas"
+              title="Technical Foundations"
               accent="cyan"
-              description="Selected research areas, methods, and technologies across blockchain security, scalability, cryptography, and decentralized systems."
+              description="Methods, systems, and tools that support my research and engineering work."
               spacing="compact"
             />
           </ScrollReveal>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {researchAreas.map((group, i) => (
-              <ScrollReveal key={group.category} direction="up" delay={i * 60}>
-                <div className="h-full p-5 rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all duration-300">
-                  <h3 className="text-xs font-mono uppercase tracking-wider text-cyan mb-3.5">{group.category}</h3>
-                  <div className="space-y-3">
-                    {group.areas.map((area) => (
-                      <div key={area.name}>
-                        <p className="text-sm font-medium text-fog">{area.name}</p>
-                        <p className="text-xs text-mist/70 mt-0.5">{area.examples}</p>
-                      </div>
-                    ))}
+
+          <div className="mb-10">
+            <p className="text-xs font-mono uppercase tracking-wider text-fog/80 mb-4 flex items-center gap-3">
+              Core Research Foundations
+              <span className="h-px flex-1 bg-slate-800" />
+            </p>
+            <div className="grid gap-5 sm:grid-cols-2">
+              {coreResearchFoundations.map((group, i) => (
+                <ScrollReveal key={group.category} direction="up" delay={i * 60}>
+                  <div className="h-full p-5 rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 transition-all duration-300">
+                    <h3 className="text-xs font-mono uppercase tracking-wider text-cyan mb-3.5">{group.category}</h3>
+                    <div className="space-y-3">
+                      {group.areas.map((area) => (
+                        <div key={area.name}>
+                          <p className="text-sm font-medium text-fog">{area.name}</p>
+                          <p className="text-xs text-mist/70 mt-0.5">{area.examples}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-mono uppercase tracking-wider text-ash mb-4 flex items-center gap-3">
+              Engineering & Computational Toolkit
+              <span className="h-px flex-1 bg-slate-800" />
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {engineeringToolkit.map((group, i) => (
+                <ScrollReveal key={group.category} direction="up" delay={i * 60}>
+                  <div className="h-full p-4 rounded-xl border border-slate-800/60 bg-slate-900/40 hover:border-slate-700 transition-all duration-300">
+                    <h3 className="text-[11px] font-mono uppercase tracking-wider text-fog/60 mb-3">{group.category}</h3>
+                    <div className="space-y-2.5">
+                      {group.areas.map((area) => (
+                        <div key={area.name}>
+                          <p className="text-[13px] font-medium text-mist">{area.name}</p>
+                          <p className="text-xs text-mist/50 mt-0.5">{area.examples}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
         </Container>
       </Section>
