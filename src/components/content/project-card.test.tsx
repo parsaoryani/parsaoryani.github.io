@@ -9,15 +9,15 @@ type ProjectProps = Parameters<typeof ProjectCard>[0]
 function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps["project"] {
   return {
     id: "pr1",
-    slug: "zk-bridge-verifier",
-    title: "ZK Bridge Verifier",
-    summary: "An automated verifier for bridge protocols.",
-    role: "Lead Developer",
+    slug: "ethereum-cli",
+    title: "Ethereum CLI (Sepolia Testnet)",
+    summary: "A modular CLI for the Ethereum Sepolia testnet.",
+    role: "Solo",
     status: "published",
     featured: false,
     sortOrder: 0,
     year: 2025,
-    techStack: ["Rust", "Z3", "Solidity"],
+    techStack: ["Python", "JSON-RPC", "Etherscan API"],
     problem: null,
     approach: null,
     architecture: null,
@@ -53,18 +53,18 @@ function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps
 describe("ProjectCard", () => {
   it("renders title, summary, year, role and tech stack", () => {
     render(<ProjectCard project={project()} />)
-    expect(screen.getByText("ZK Bridge Verifier")).toBeInTheDocument()
-    expect(screen.getByText("An automated verifier for bridge protocols.")).toBeInTheDocument()
+    expect(screen.getByText("Ethereum CLI (Sepolia Testnet)")).toBeInTheDocument()
+    expect(screen.getByText("A modular CLI for the Ethereum Sepolia testnet.")).toBeInTheDocument()
     expect(screen.getByText("2025")).toBeInTheDocument()
-    expect(screen.getByText("Lead Developer")).toBeInTheDocument()
-    for (const tech of ["Rust", "Z3", "Solidity"]) {
+    expect(screen.getByText("Solo")).toBeInTheDocument()
+    for (const tech of ["Python", "JSON-RPC", "Etherscan API"]) {
       expect(screen.getByText(tech)).toBeInTheDocument()
     }
   })
 
   it("renders without a role badge when role is missing", () => {
     const { container } = render(<ProjectCard project={project({ role: null })} />)
-    const badge = Array.from(container.querySelectorAll("span")).find((el) => el.textContent === "Lead Developer")
+    const badge = Array.from(container.querySelectorAll("span")).find((el) => el.textContent === "Solo")
     expect(badge).toBeUndefined()
   })
 
@@ -83,6 +83,6 @@ it("shows repo and demo links only when present", () => {
 
   it("links to the project detail page", () => {
     const { container } = render(<ProjectCard project={project()} />)
-    expect(container.querySelector("a[href='/projects/zk-bridge-verifier']")).not.toBeNull()
+    expect(container.querySelector("a[href='/projects/ethereum-cli']")).not.toBeNull()
   })
 })

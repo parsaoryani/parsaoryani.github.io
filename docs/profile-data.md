@@ -106,6 +106,23 @@ Reverse chronological order.
 - **Responsibilities:** Designed programming assignments; designed practical projects; graded assignments and projects; conducted workshops; conducted problem-solving and review sessions.
 - **Website description:** "Designed and graded programming assignments and practical projects, and conducted workshops and problem-solving sessions."
 
+## Projects
+
+Reverse chronological order. Only verified projects with real repositories are listed — earlier placeholder projects (`zk-bridge-verifier`, `agentic-ai-guardrails`, `private-ml-on-chain`) were removed because their repositories do not exist.
+
+### Ethereum CLI (Sepolia Testnet)
+- **Repo:** https://github.com/parsaoryani/ethereum-cli
+- **Role:** Solo
+- **Year:** 2025
+- **Summary:** "A modular command-line interface for the Ethereum Sepolia testnet — encrypted wallet management, balance queries, ETH transfers, and transaction history export."
+- **Tech stack:** Python, JSON-RPC (direct, no web3.py), Etherscan API, eth-account, cryptography, argparse, unittest
+- **Highlights:**
+  - Direct JSON-RPC calls to any standard endpoint (Infura, Alchemy, GetBlock) keep dependencies minimal
+  - Encrypted wallet storage; private keys never stored in plaintext and all sensitive operations require a password
+  - Full wallet lifecycle, balances in ETH/Wei, signed ETH transfers, tx status/history, JSON export
+  - 74% overall test coverage (transaction module at 86%, its tests at 99%)
+- **Planned follow-ups:** raise `wallet.py` (38%) and `rpc_client.py` (59%) coverage past 80%; add ERC-20 transfers and smart-contract interactions
+
 ## Date representation note
 
 The `TeachingAssistant` model stores `startDate`/`endDate` (exact days), but only semester/year was provided for each entry. Semesters were mapped to date ranges using the site's existing convention (Fall → Sep 1–Jan 15, Spring → Feb 1–Jun 15) purely so the entries sort and display correctly — no specific day was verified or implied beyond "the semester named above."

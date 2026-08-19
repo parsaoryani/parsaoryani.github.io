@@ -29,6 +29,7 @@ async function main() {
     prisma.tag.upsert({ where: { slug: "ai-security" }, update: {}, create: { slug: "ai-security", label: "AI Security" } }),
     prisma.tag.upsert({ where: { slug: "smart-contracts" }, update: {}, create: { slug: "smart-contracts", label: "Smart Contracts" } }),
     prisma.tag.upsert({ where: { slug: "formal-verification" }, update: {}, create: { slug: "formal-verification", label: "Formal Verification" } }),
+    prisma.tag.upsert({ where: { slug: "ethereum" }, update: {}, create: { slug: "ethereum", label: "Ethereum" } }),
   ])
   console.log(`${tags.length} tags created`)
 
@@ -137,62 +138,23 @@ async function main() {
   // Create projects
   const projects = [
     {
-      slug: "zk-bridge-verifier",
-      title: "ZK-Bridge Verifier",
-      summary: "Automated formal verification tool for zero-knowledge rollup bridge security.",
-      role: "Lead Developer",
-      status: "published" as const,
-      year: 2026,
-      problem: "Cross-chain bridges have been responsible for over $2B in hacks. Existing security tools are ad-hoc and miss subtle vulnerabilities specific to ZK constructions.",
-      approach: "Developed a formal verification framework that models ZK-rollup bridges as transition systems and checks security properties using SMT solvers and theorem provers.",
-      architecture: "The system uses a modular architecture: (1) a DSL for specifying bridge configurations, (2) an intermediate representation for formal modeling, (3) integration with Z3 and Coq for property checking, and (4) a reporting engine for vulnerability classification.",
-      challenges: "Encoding ZK-specific primitives (commitments, proofs) into SMT constraints required novel modeling techniques. Balancing soundness with automation was a key trade-off.",
-      results: "Applied to 10 production bridges, found 7 previously unknown vulnerabilities. 100% precision with 85% recall.",
-      retrospective: "The DSL approach made the tool accessible. I would add fuzzing integration for deeper coverage.",
-      techStack: ["Rust", "Z3", "Coq", "Docker", "CI/CD"],
-      repoUrl: "https://github.com/parsaoryani/zk-bridge-verifier",
-      featured: true,
-      sortOrder: 0,
-      tagIds: ["blockchain", "zk", "formal-verification"],
-    },
-    {
-      slug: "agentic-ai-guardrails",
-      title: "Agentic AI Guardrails",
-      summary: "Runtime security monitoring framework for LLM-based autonomous agents.",
-      role: "Research Lead",
-      status: "published" as const,
-      year: 2025,
-      problem: "Autonomous AI agents can be manipulated through prompt injection, tool misuse, and memory poisoning. No comprehensive runtime security framework existed.",
-      approach: "Built a runtime monitoring system that intercepts agent actions, applies security policies, and enforces constraints on tool use and information flow.",
-      architecture: "Interceptor-based architecture with four layers: (1) input sanitization, (2) action validation, (3) information flow control, and (4) audit logging. Uses constrained decoding for safe LLM output generation.",
-      challenges: "Latency overhead was the main challenge. Optimized the interceptor pipeline to add only ~50ms per action. Balancing security strictness with agent autonomy required careful policy design.",
-      results: "Deployed in research environment. Blocks 94% of prompt injection attacks with <100ms overhead. Published at NeurIPS 2025.",
-      retrospective: "The policy language needs to be more expressive. Next version should support probabilistic policies.",
-      techStack: ["Python", "PyTorch", "FastAPI", "Redis", "Docker"],
-      repoUrl: "https://github.com/parsaoryani/agentic-guardrails",
-      demoUrl: "#",
-      featured: true,
-      sortOrder: 1,
-      tagIds: ["agentic-ai", "ai-security", "deep-learning"],
-    },
-    {
-      slug: "private-ml-on-chain",
-      title: "Private ML on Chain",
-      summary: "Hybrid SMPC-blockchain protocol for privacy-preserving machine learning.",
+      slug: "ethereum-cli",
+      title: "Ethereum CLI (Sepolia Testnet)",
+      summary: "A modular command-line interface for the Ethereum Sepolia testnet — encrypted wallet management, balance queries, ETH transfers, and transaction history export.",
       role: "Solo",
       status: "published" as const,
       year: 2025,
-      problem: "Training ML models on sensitive data requires privacy guarantees, but existing MPC solutions are too slow and blockchain solutions lack privacy.",
-      approach: "Designed a hybrid protocol that splits computation: heavy ML operations run off-chain via SMPC, while settlement and verification happen on-chain.",
-      architecture: "Off-chain SMPC cluster handles the computation. Merkle proofs are submitted to the smart contract for verification. Uses Shamir secret sharing for input privacy.",
-      challenges: "The main challenge was the SMPC-to-blockchain communication overhead. Used batched Merkle proofs to reduce gas costs by 60%.",
-      results: "Achieves 10x improvement over fully on-chain ML. Privacy guarantees equivalent to standard SMPC with abort security.",
-      retrospective: "I would explore using ZK-SNARKs for proof aggregation in the next iteration.",
-      techStack: ["Solidity", "Python", "MP-SPDZ", "Ethereum", "Hardhat"],
-      repoUrl: "https://github.com/parsaoryani/private-ml-chain",
+      problem: "Interacting with Ethereum from the terminal usually means pulling in web3.py and fighting its API surface. This tool needed to cover the essential Sepolia workflows — wallet management, balances, transfers, and history — in a lightweight, modular CLI that keeps private keys safe.",
+      approach: "Built on direct JSON-RPC calls to any standard endpoint (Infura, Alchemy, GetBlock) instead of web3.py, paired with the Etherscan API for efficient transaction-history retrieval. Wallets are stored encrypted on disk, and every sensitive operation is gated behind a user password.",
+      architecture: "Four modules plus a thin entry point: wallet.py (generate, import, list, use, show — encrypted storage via the cryptography library), rpc_client.py (JSON-RPC client with retry logic for rate limits and timeouts, checksum-validated addresses), transaction.py (build/sign/send ETH transfers, status lookups, history and JSON export via Etherscan), and main.py (argparse command parsing behind the executable cli script). Network settings live in config/settings.json; secrets are loaded from .env.",
+      challenges: "Staying safe without a heavyweight library: private keys are never stored in plaintext and require a password for export, addresses are validated against Ethereum checksum format, transient RPC failures (HTTP 429, timeouts) are retried, and the tool is restricted to Sepolia to prevent accidental use of test keys against mainnet funds.",
+      results: "Full wallet lifecycle, balances in both ETH and Wei, signed ETH transfers, transaction status and history, and JSON export. 74% overall test coverage across the three modules (transaction.py at 86%, its tests at 99%).",
+      retrospective: "Direct JSON-RPC kept dependencies minimal and made provider switching trivial, but wallet.py (38%) and rpc_client.py (59%) still lag on coverage — the next pass should add wallet error-path and network failure tests to push past 80%. ERC-20 transfers and smart-contract interactions are the natural next features.",
+      techStack: ["Python", "JSON-RPC", "Etherscan API", "eth-account", "cryptography", "argparse", "unittest"],
+      repoUrl: "https://github.com/parsaoryani/ethereum-cli",
       featured: true,
-      sortOrder: 2,
-      tagIds: ["blockchain", "deep-learning", "smart-contracts"],
+      sortOrder: 0,
+      tagIds: ["blockchain", "ethereum"],
     },
   ]
 
@@ -200,7 +162,7 @@ async function main() {
     const { tagIds, ...projectData } = project
     const created = await prisma.project.upsert({
       where: { slug: projectData.slug },
-      update: {},
+      update: projectData,
       create: projectData,
     })
     if (tagIds) {
@@ -216,6 +178,11 @@ async function main() {
       }
     }
   }
+  // Remove placeholder projects that were never real (their repositories do not
+  // exist) so re-seeding converges to verified data only.
+  await prisma.project.deleteMany({
+    where: { slug: { in: ["zk-bridge-verifier", "agentic-ai-guardrails", "private-ml-on-chain"] } },
+  })
   console.log(`${projects.length} projects created`)
 
   // Timeline events — idempotent. Keyed on (type, organization) so title
