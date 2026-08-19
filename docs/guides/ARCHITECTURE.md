@@ -49,14 +49,16 @@ Next.js route directories are framework-owned. Keep route groups such as `(publi
 
 | Route family | Responsibility |
 |---|---|
-| `/` | Research-first introduction, selected publications/projects/experience, and primary actions |
-| `/research` and `/research/[slug]` | Publication index and scholarly detail pages |
+| `/` | Introduction, research interests, current research, skills, and primary actions |
+| `/experience` | Consolidated Education, Research/Teaching Assistantships, Work Experience, Awards, Talks, and Service — pill nav into anchored sections |
+| `/education/[slug]` | Per-university coursework and syllabus detail, linked from the Education section on `/experience`; slug is the kebab-case organization name |
+| `/research` and `/research/[slug]` | Publication index and scholarly detail pages — unlinked from nav/footer until the `nav_research_visible` site setting is turned on |
 | `/projects` and `/projects/[slug]` | Filterable project index and case studies |
-| `/research-assistance` | Research assistantship experience |
-| `/teaching` | Teaching assistantship experience |
-| `/about` | Biography, education, timeline, recognition, courses, and skills |
+| `/about` | Biography and skills |
 | `/cv` | HTML CV and PDF action |
 | `/contact` | Contact form and contact methods |
+
+`/research-assistance` and `/teaching` were retired as standalone pages; both 308-redirect (see `next.config.ts`) to `/experience#research-assistance` and `/experience#teaching-assistance`.
 
 ## Admin and API
 

@@ -1,33 +1,33 @@
 import Link from "next/link"
-import { Code2, UserCheck, Mail, GraduationCap, ArrowUpRight } from "lucide-react"
+import { Code2, UserCheck, Mail, ArrowUpRight } from "lucide-react"
 
 const socialLinks = [
   { href: "https://github.com/parsaoryani", label: "GitHub", icon: Code2 },
   { href: "https://www.linkedin.com/in/parsa-oryani/", label: "LinkedIn", icon: UserCheck },
-  { href: "https://scholar.google.com/citations?user=YOUR_ID", label: "Google Scholar", icon: GraduationCap },
   { href: "mailto:parsa.oryani82@sharif.edu", label: "Email", icon: Mail },
 ]
 
-const footerNav = {
-  work: [
-    { label: "Research", href: "/research" },
-    { label: "Projects", href: "/projects" },
-  ],
-  background: [
-    { label: "Research Experience", href: "/research-assistance" },
-    { label: "Teaching Experience", href: "/teaching" },
-    { label: "About", href: "/about" },
-    { label: "Education & Career", href: "/about#timeline" },
-    { label: "Awards, Talks & Service", href: "/about#recognition" },
-    { label: "CV / PDF", href: "/cv" },
-  ],
-  connect: [
-    { label: "Contact", href: "/contact", external: false },
-    ...socialLinks.map((s) => ({ label: s.label, href: s.href, external: true })),
-  ],
-}
+const footerBackground = [
+  { label: "About", href: "/about" },
+  { label: "Education", href: "/experience#education" },
+  { label: "Research Assistantships", href: "/experience#research-assistance" },
+  { label: "Teaching Assistantships", href: "/experience#teaching-assistance" },
+  { label: "Awards, Talks & Service", href: "/experience#awards" },
+  { label: "CV / PDF", href: "/cv" },
+]
 
-export function Footer() {
+const footerConnect = [
+  { label: "Contact", href: "/contact", external: false },
+  ...socialLinks.map((s) => ({ label: s.label, href: s.href, external: true })),
+]
+
+export function Footer({ showResearch }: { showResearch: boolean }) {
+  const footerWork = [
+    ...(showResearch ? [{ label: "Research", href: "/research" }] : []),
+    { label: "Projects", href: "/projects" },
+    { label: "Experience", href: "/experience" },
+  ]
+
   return (
     <footer className="relative border-t border-slate-700/50 bg-void">
       <div className="absolute inset-0 bg-grid opacity-30" />
@@ -38,13 +38,13 @@ export function Footer() {
               Parsa Oryani
             </Link>
             <p className="mt-3 text-sm text-mist leading-relaxed max-w-xs">
-              PhD applicant researching the security of decentralized and AI systems. M.Sc. Computer Engineering at Sharif University of Technology.
+              M.Sc. student researching security and scalability in decentralized systems, with interests in blockchain, cryptography, and distributed systems.
             </p>
           </div>
           <div>
             <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4">Work & Experience</h3>
             <div className="flex flex-col gap-2">
-              {footerNav.work.map((item) => (
+              {footerWork.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -57,7 +57,7 @@ export function Footer() {
             </div>
             <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4 mt-8">Background</h3>
             <div className="flex flex-col gap-2">
-              {footerNav.background.map((item) => (
+              {footerBackground.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -72,7 +72,7 @@ export function Footer() {
           <div>
             <h3 className="text-xs font-mono uppercase tracking-widest text-ash mb-4">Connect</h3>
             <div className="flex flex-col gap-2">
-              {footerNav.connect.map((item) => (
+              {footerConnect.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -92,7 +92,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Parsa Oryani. Built with Next.js
           </p>
           <p className="text-xs text-ash font-mono">
-            Research · Engineering · Security
+            Security · Cryptography · Blockchain · Distributed Systems
           </p>
         </div>
       </div>

@@ -13,6 +13,7 @@ import {
   parseHiddenSections,
   type TimelineSectionType,
 } from "@/lib/timeline/sections"
+import { NAV_RESEARCH_SETTING_KEY, parseShowResearch } from "@/lib/site/visibility"
 
 interface SettingsEditorProps {
   settings: Array<{ id: string; key: string; value: unknown }>
@@ -42,10 +43,37 @@ export function SettingsEditor({ settings }: SettingsEditorProps) {
   const [sectionsError, setSectionsError] = useState<string | null>(null)
   const [sectionsSaved, setSectionsSaved] = useState(false)
 
+  const navResearchSetting = settings.find((s) => s.key === NAV_RESEARCH_SETTING_KEY)
+  const [showResearch, setShowResearch] = useState(() => parseShowResearch(navResearchSetting?.value))
+  const [navSaving, setNavSaving] = useState(false)
+  const [navError, setNavError] = useState<string | null>(null)
+  const [navSaved, setNavSaved] = useState(false)
+
+  async function saveNavResearch(next: boolean) {
+    setShowResearch(next)
+    if (!navResearchSetting) {
+      setNavError("Research visibility setting not found in database. Run the seed script first.")
+      return
+    }
+    setNavSaving(true)
+    setNavError(null)
+    setNavSaved(false)
+    try {
+      await saveSetting(navResearchSetting.id, next)
+      setNavSaved(true)
+      router.refresh()
+    } catch {
+      setNavError("Failed to save")
+    } finally {
+      setNavSaving(false)
+    }
+  }
+
   const otherSettings = settings.filter(
     (s) =>
       !HOME_SETTING_KEYS.includes(s.key as (typeof HOME_SETTING_KEYS)[number]) &&
-      s.key !== TIMELINE_SECTIONS_SETTING_KEY
+      s.key !== TIMELINE_SECTIONS_SETTING_KEY &&
+      s.key !== NAV_RESEARCH_SETTING_KEY
   )
 
   async function saveSetting(id: string, value: unknown) {
@@ -226,6 +254,28 @@ export function SettingsEditor({ settings }: SettingsEditorProps) {
             <Save size={14} className="mr-1.5" /> {sectionsSaving ? "Saving..." : "Save visibility"}
           </Button>
           {sectionsSaved && <span className="text-xs text-emerald flex items-center gap-1"><Check size={12} /> Saved</span>}
+        </div>
+
+        <div className="mt-5 pt-5 border-t border-[var(--border)]">
+          <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={showResearch}
+              onChange={(e) => saveNavResearch(e.target.checked)}
+              disabled={navSaving}
+              className="h-4 w-4 rounded border-slate-700 accent-[var(--accent)]"
+            />
+            Show &quot;Research&quot; in navigation &amp; footer
+            {navSaved && <span className="text-xs text-emerald flex items-center gap-1 ml-1"><Check size={12} /> Saved</span>}
+          </label>
+          <p className="text-xs text-[var(--text-tertiary)] font-mono mt-1.5">
+            Off by default until real publications are ready to link from the site.
+          </p>
+          {navError && (
+            <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-lg bg-coral/10 text-coral border border-coral/20 text-sm">
+              <AlertCircle size={14} /> {navError}
+            </div>
+          )}
         </div>
       </div>
 

@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
+  redirects: async () => [
+    { source: "/research-assistance", destination: "/experience#research-assistance", permanent: true },
+    { source: "/teaching", destination: "/experience#teaching-assistance", permanent: true },
+  ],
   headers: async () => [
     {
       source: "/(.*)",

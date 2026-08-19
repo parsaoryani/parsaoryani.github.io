@@ -52,20 +52,22 @@ Admin navigation is grouped as follows:
 - **Media:** Profile and content media; course resources remain managed from education timeline records.
 - **System:** Emergency settings, sessions/security, activity log, and development-only mail capture.
 
-All current public/admin routes and content types remain available. Professional labels such as **Research Experience** and **Teaching Experience** are used in the interface while existing route slugs remain stable.
+All admin routes and content types remain available. On the public site, Research/Teaching Assistantship content moved from standalone pages into `/experience` (see the route map below); every admin CRUD capability for that content is unchanged.
 
 ## Public route map
 
 | Route | Purpose |
 |---|---|
-| `/` | Research-first introduction, selected publications/projects/experience, and contact action |
-| `/research` and `/research/[slug]` | Publication index and details |
+| `/` | Introduction, research interests, current research, skills, and contact action |
+| `/experience` | Education, Research/Teaching Assistantships, Work Experience, Awards, Talks, Service — one page, pill nav into anchored sections |
+| `/education/[slug]` | Per-university coursework/syllabus detail, linked from Education on `/experience` |
+| `/research` and `/research/[slug]` | Publication index and details — unlinked from nav until `nav_research_visible` is on |
 | `/projects` and `/projects/[slug]` | Project gallery and case studies |
-| `/research-assistance` | Research assistantship experience |
-| `/teaching` | Teaching assistantship experience |
-| `/about` | Biography, education, timeline, recognition, courses, and skills |
+| `/about` | Biography and skills |
 | `/cv` | HTML CV and PDF action |
 | `/contact` | Contact form and contact methods |
+
+`/research-assistance` and `/teaching` redirect (308) to `/experience#research-assistance` and `/experience#teaching-assistance`.
 
 ## Content management
 

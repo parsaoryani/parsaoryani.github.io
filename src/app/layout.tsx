@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google"
 import "@/styles/globals.css"
 import { ClientLayout } from "@/components/layout/client-layout"
+import { getSiteSetting } from "@/lib/db/queries"
+import { NAV_RESEARCH_SETTING_KEY, parseShowResearch } from "@/lib/site/visibility"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,11 +29,11 @@ const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Parsa Oryani — Researcher in Blockchain & AI Security",
+    default: "Parsa Oryani — Secure and Scalable Decentralized Systems",
     template: "%s — Parsa Oryani",
   },
   description:
-    "PhD applicant researching the security of decentralized and AI systems. M.Sc. Computer Engineering at Sharif University of Technology.",
+    "M.Sc. student researching the security and scalability of decentralized systems, blockchain, and Layer-2 protocols. M.Sc. Computer Engineering at Sharif University of Technology.",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -50,11 +52,15 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const showResearch = await getSiteSetting(NAV_RESEARCH_SETTING_KEY)
+    .then(parseShowResearch)
+    .catch(() => false)
+
   return (
     <html
       lang="en"
@@ -76,7 +82,6 @@ export default function RootLayout({
               url: siteUrl,
               sameAs: [
                 "https://github.com/parsaoryani",
-                "https://scholar.google.com/citations?user=YOUR_ID",
                 "https://www.linkedin.com/in/parsa-oryani/",
               ],
             }),
@@ -84,7 +89,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen font-sans text-fog antialiased">
-        <ClientLayout>
+        <ClientLayout showResearch={showResearch}>
           {children}
         </ClientLayout>
       </body>
