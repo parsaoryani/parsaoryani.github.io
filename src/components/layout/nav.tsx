@@ -20,7 +20,6 @@ const experienceLinks = [
   { href: "/research-assistance", label: "Research Experience" },
   { href: "/teaching", label: "Teaching Experience" },
   { href: "/about#timeline", label: "Education & Career" },
-  { href: "/about#recognition", label: "Awards, Talks & Service" },
 ]
 
 export function Nav() {

@@ -350,26 +350,36 @@ async function main() {
     }
   }
 
-  // Course project link — ZK-Mixer is the Applied Cryptography course project.
+  // Course links — ZK-Mixer is the Applied Cryptography course project, and
+  // its slides are the course presentation. Idempotent by (course, type, name).
+  async function ensureCourseLink(
+    courseId: string,
+    type: string,
+    name: string,
+    url: string,
+    sortOrder: number
+  ) {
+    const existing = await prisma.courseLink.findFirst({ where: { courseId, type, name } })
+    if (existing) {
+      await prisma.courseLink.update({ where: { id: existing.id }, data: { url } })
+      return
+    }
+    await prisma.courseLink.create({ data: { courseId, type, name, url, sortOrder } })
+  }
+
   if (mscSharif) {
     const appliedCrypto = await prisma.course.findFirst({
       where: { timelineEventId: mscSharif.id, name: "Applied Cryptography" },
     })
     if (appliedCrypto) {
-      const existingLink = await prisma.courseLink.findFirst({
-        where: { courseId: appliedCrypto.id, name: "ZK-Mixer" },
-      })
-      if (!existingLink) {
-        await prisma.courseLink.create({
-          data: {
-            courseId: appliedCrypto.id,
-            type: "project",
-            name: "ZK-Mixer",
-            url: "https://github.com/parsaoryani/ZK-Mixer",
-            sortOrder: 0,
-          },
-        })
-      }
+      await ensureCourseLink(appliedCrypto.id, "project", "ZK-Mixer", "/projects/zk-mixer", 0)
+      await ensureCourseLink(
+        appliedCrypto.id,
+        "slides",
+        "Presentation Slides",
+        "https://docs.google.com/presentation/d/1TOtABEE-BxehewOyfk-qVNsLYb-tzV6QI-S6NThfhIg/edit?usp=sharing",
+        1
+      )
     }
   }
 

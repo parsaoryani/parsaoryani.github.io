@@ -36,7 +36,7 @@ type CourseFile = {
 
 type CourseLink = {
   id: string
-  type: "exercise" | "project"
+  type: "exercise" | "project" | "slides"
   name: string
   url: string
   sortOrder: number
@@ -69,7 +69,7 @@ const emptyCourseForm: CourseFormData = {
 }
 
 type LinkFormData = {
-  type: "exercise" | "project"
+  type: "exercise" | "project" | "slides"
   name: string
   url: string
 }
@@ -83,7 +83,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
   const [newCourse, setNewCourse] = useState<CourseFormData>(emptyCourseForm)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<CourseFormData>(emptyCourseForm)
-  const [showLinkForm, setShowLinkForm] = useState<{ courseId: string; type: "exercise" | "project" } | null>(null)
+  const [showLinkForm, setShowLinkForm] = useState<{ courseId: string; type: "exercise" | "project" | "slides" } | null>(null)
   const [newLink, setNewLink] = useState<LinkFormData>({ type: "exercise", name: "", url: "" })
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null)
   const [editLinkForm, setEditLinkForm] = useState<LinkFormData>({ type: "exercise", name: "", url: "" })
@@ -519,15 +519,19 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                       <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setShowLinkForm({ courseId: course.id, type: "project" })}>
                         <Plus size={12} /> Add Project Link
                       </Button>
+                      <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setShowLinkForm({ courseId: course.id, type: "slides" })}>
+                        <Plus size={12} /> Add Slides Link
+                      </Button>
                     </div>
 
                     {showLinkForm && showLinkForm.courseId === course.id && (
                       <form onSubmit={e => handleCreateLink(course.id, e)} className="p-3 rounded-lg border border-cyan/20 bg-slate-800/30 space-y-3 mb-4">
                         <div className="space-y-2">
                           <Label htmlFor={`link-type-${course.id}`}>Type</Label>
-                          <select id={`link-type-${course.id}`} value={newLink.type} onChange={e => setNewLink({ ...newLink, type: e.target.value as "exercise" | "project" })} className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog">
+                          <select id={`link-type-${course.id}`} value={newLink.type} onChange={e => setNewLink({ ...newLink, type: e.target.value as "exercise" | "project" | "slides" })} className="flex h-11 w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-2 text-sm text-fog">
                             <option value="exercise">Exercise</option>
                             <option value="project">Project</option>
+                            <option value="slides">Slides</option>
                           </select>
                         </div>
                         <div className="space-y-2">
@@ -547,7 +551,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
 
                     {course.links.length === 0 && !showLinkForm ? (
                       <p className="text-xs text-[var(--text-tertiary)] font-mono">
-                        No links added yet. Click &quot;Add Exercise Link&quot; or &quot;Add Project Link&quot; to start.
+                        No links added yet. Click &quot;Add Exercise Link&quot;, &quot;Add Project Link&quot; or &quot;Add Slides Link&quot; to start.
                       </p>
                     ) : (
                       <div className="space-y-2">
@@ -612,6 +616,39 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                               <div className="flex items-center gap-2 shrink-0">
                                 <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[var(--text-secondary)] hover:text-cyan"><ExternalLink size={14} /></a>
                                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setEditingLinkId(link.id); setEditLinkForm({ type: "project", name: link.name, url: link.url }); }}><Save size={12} /></Button>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 text-[var(--danger)]" onClick={() => handleDeleteLink(course.id, link.id)}><Trash2 size={12} /></Button>
+                              </div>
+                            </div>
+                          )
+                        ))}
+                        {course.links.filter(l => l.type === "slides").map((link) => (
+                          editingLinkId === link.id ? (
+                            <form key={link.id} onSubmit={e => { e.preventDefault(); handleUpdateLink(course.id, link.id); }} className="p-3 rounded-lg border border-cyan/20 bg-slate-800/30 space-y-2">
+                              <div className="space-y-2">
+                                <Label htmlFor={`edit-link-name-${link.id}`}>Display Name *</Label>
+                                <Input id={`edit-link-name-${link.id}`} required defaultValue={editLinkForm.name || link.name} onChange={e => setEditLinkForm({ ...editLinkForm, name: e.target.value })} />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`edit-link-url-${link.id}`}>URL *</Label>
+                                <Input id={`edit-link-url-${link.id}`} required type="url" defaultValue={editLinkForm.url || link.url} onChange={e => setEditLinkForm({ ...editLinkForm, url: e.target.value })} />
+                              </div>
+                              <div className="flex gap-2">
+                                <Button type="submit" disabled={submitting} size="sm">{submitting ? "Saving..." : "Save"}</Button>
+                                <Button type="button" variant="ghost" size="sm" onClick={() => { setEditingLinkId(null); setEditLinkForm({ type: "slides", name: "", url: "" }); }}>Cancel</Button>
+                              </div>
+                            </form>
+                          ) : (
+                            <div key={link.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-700/50 bg-slate-800/50">
+                              <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <LinkIcon className="text-indigo" size={18} />
+                                <div className="min-w-0">
+                                  <p className="text-sm truncate font-medium">{link.name}</p>
+                                  <p className="text-xs text-[var(--text-tertiary)] font-mono">{link.url}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[var(--text-secondary)] hover:text-cyan"><ExternalLink size={14} /></a>
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setEditingLinkId(link.id); setEditLinkForm({ type: "slides", name: link.name, url: link.url }); }}><Save size={12} /></Button>
                                 <Button variant="ghost" size="icon" className="h-7 w-7 text-[var(--danger)]" onClick={() => handleDeleteLink(course.id, link.id)}><Trash2 size={12} /></Button>
                               </div>
                             </div>

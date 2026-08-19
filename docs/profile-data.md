@@ -31,7 +31,7 @@ Human-readable source of truth for verified personal/academic information render
 | Applied Cryptography | 18.9 / 20 |
 | Secure Software Systems | 18.2 / 20 |
 
-Applied Cryptography's course project is **ZK-Mixer** (https://github.com/parsaoryani/ZK-Mixer) — linked from this course's section on `/about`. Slides for the presentation are pending (to be added via the admin panel).
+Applied Cryptography's course project is **ZK-Mixer** — linked from this course's section on `/about` to the project page (`/projects/zk-mixer`). The course presentation slides are linked there too (Google Slides, `type: "slides"`).
 
 ### M.Sc. Spring 2026 courses — Sharif University of Technology (started ~February 2026)
 

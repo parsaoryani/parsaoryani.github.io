@@ -8,6 +8,7 @@ import { getTimelineEvents, getSkillCategories } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { Sparkles, GraduationCap, Briefcase, Award, Mic, HeartHandshake, BookOpen, Award as AwardIcon, FileText, Link as LinkIcon } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import type { Metadata } from "next"
 
 export const revalidate = 3600
@@ -165,8 +166,19 @@ function TimelineEvent({ event, config, isLast }: { event: any; config: typeof t
                             <LinkIcon size={10} /> {link.name}
                           </a>
                         ))}
-                        {course.links.filter((l: CourseLinkShape) => l.type === "project").map((link: CourseLinkShape) => (
-                          <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors">
+                        {course.links.filter((l: CourseLinkShape) => l.type === "project").map((link: CourseLinkShape) =>
+                          link.url.startsWith("/") ? (
+                            <Link key={link.id} href={link.url} className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors">
+                              <LinkIcon size={10} /> {link.name}
+                            </Link>
+                          ) : (
+                            <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors">
+                              <LinkIcon size={10} /> {link.name}
+                            </a>
+                          )
+                        )}
+                        {course.links.filter((l: CourseLinkShape) => l.type === "slides").map((link: CourseLinkShape) => (
+                          <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-indigo/10 border border-indigo/20 text-indigo hover:bg-indigo/20 transition-colors">
                             <LinkIcon size={10} /> {link.name}
                           </a>
                         ))}
@@ -260,6 +272,7 @@ export default async function AboutPage() {
             {Object.entries(typeConfig).map(([type, config]) => {
               const Icon = config.icon
               const count = events.filter(e => e.type === type).length
+              if (count === 0) return null
               return (
                 <a
                   key={type}

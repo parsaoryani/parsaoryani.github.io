@@ -68,7 +68,10 @@ export async function getTimelineEvents() {
     include: {
       courses: {
         where: { timelineEvent: { type: "education" } },
-        include: { files: { orderBy: { sortOrder: "asc" } } },
+        include: {
+          files: { orderBy: { sortOrder: "asc" } },
+          links: { orderBy: { sortOrder: "asc" } },
+        },
         orderBy: { sortOrder: "asc" },
       },
     },
