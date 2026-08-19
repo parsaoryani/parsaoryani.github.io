@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db/prisma"
 import { getSession } from "@/lib/auth/auth"
-import { headers } from "next/headers"
 import crypto from "crypto"
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "./uploads"
 const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+
+// Course materials only — excludes html/svg/js/etc. that could serve stored XSS if opened directly.
+const ALLOWED_EXTENSIONS = new Set([
+  "pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "csv", "txt", "md",
+  "zip", "png", "jpg", "jpeg", "gif", "webp", "mp4", "mov",
+])
 
 async function uploadToR2(file: File, key: string): Promise<string> {
   const { S3Client, PutObjectCommand } = await import("@aws-sdk/client-s3")
@@ -58,7 +63,11 @@ export async function POST(request: Request) {
     const course = await prisma.course.findUnique({ where: { id: courseId } })
     if (!course) return NextResponse.json({ error: "Course not found" }, { status: 404 })
 
-    const ext = file.name.split(".").pop() || "bin"
+    const rawExt = file.name.split(".").pop()?.toLowerCase() || ""
+    if (!ALLOWED_EXTENSIONS.has(rawExt)) {
+      return NextResponse.json({ error: "File type not allowed" }, { status: 400 })
+    }
+    const ext = rawExt
     const hash = crypto.randomBytes(16).toString("hex")
     const key = `courses/${courseId}/${hash}.${ext}`
 

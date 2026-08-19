@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, type LoginData } from "@/lib/validation/schemas"
@@ -10,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export default function AdminLoginPage() {
-  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [requires2fa, setRequires2fa] = useState(false)
   const [challengeToken, setChallengeToken] = useState("")

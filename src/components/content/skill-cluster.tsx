@@ -1,7 +1,5 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { MouseGlow } from "@/components/ui/mouse-glow"
 import type { SkillCategory, Skill } from "@prisma/client"
 import { memo } from "react"
@@ -18,17 +16,10 @@ const proficiencyColors: Record<string, { badge: string; glow: string; ring: str
   beginner: { badge: "ghost", glow: "bg-amber/10", ring: "ring-amber/30" },
 }
 
-const proficiencyLabels: Record<string, string> = {
-  expert: "Expert",
-  advanced: "Advanced",
-  proficient: "Proficient",
-  beginner: "Learning",
-}
-
 export const SkillCluster = memo(function SkillCluster({ categories }: SkillClusterProps) {
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {categories.map((category, catIndex) => (
+      {categories.map((category) => (
         <div
           key={category.id}
           className="group relative"

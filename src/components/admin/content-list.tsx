@@ -3,9 +3,8 @@
 import { useState, useMemo, type ReactNode } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils/cn"
-import { Plus, Search, ChevronLeft, ChevronRight, FileText, FolderOpen } from "lucide-react"
+import { Plus, Search, ChevronLeft, ChevronRight, FolderOpen } from "lucide-react"
 
 export interface ListColumn<T> {
   key: string

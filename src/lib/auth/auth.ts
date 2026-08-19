@@ -2,11 +2,8 @@ import "server-only"
 import { cookies } from "next/headers"
 import { prisma } from "@/lib/db/prisma"
 import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
 import crypto from "crypto"
 
-if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET environment variable is required")
-const JWT_SECRET: string = process.env.JWT_SECRET
 const SESSION_COOKIE = "session_token"
 const SESSION_DURATION = 1000 * 60 * 60 * 24 * 7 // 7 days
 
@@ -103,18 +100,6 @@ export function generateBackupCodes(): string[] {
     codes.push(crypto.randomBytes(4).toString("hex").toUpperCase())
   }
   return codes
-}
-
-export function signJwt(payload: Record<string, unknown>, expiresIn = "15m"): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn } as jwt.SignOptions)
-}
-
-export function verifyJwt<T>(token: string): T | null {
-  try {
-    return jwt.verify(token, JWT_SECRET) as T
-  } catch {
-    return null
-  }
 }
 
 export const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"

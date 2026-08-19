@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { getPublicationBySlug, getAllPublications } from "@/lib/db/queries"
 import { safeQuery } from "@/lib/db/query-result"
 import Link from "next/link"
-import { ArrowLeft, FileText, Code2, ExternalLink, Quote, BookOpen, Copy, Check } from "lucide-react"
+import { ArrowLeft, FileText, Code2, ExternalLink, BookOpen } from "lucide-react"
 import { BibTeXCopy } from "@/components/content/bibtex-copy"
 import type { Metadata } from "next"
 

@@ -16,7 +16,7 @@ import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
 import Link from "next/link"
 import { Fragment } from "react"
 import { ArrowUpRight, FileText, Code2, Mail, GraduationCap, ChevronRight, Sparkles } from "lucide-react"
-import type { Publication, ResearchingAssistant, TeachingAssistant, Project, PublicationTag, Tag, ProjectTag } from "@prisma/client"
+import type { Publication, Project, PublicationTag, Tag, ProjectTag } from "@prisma/client"
 
 type PublicationWithTags = Publication & { tags: (PublicationTag & { tag: Tag })[] }
 type ProjectWithTags = Project & { tags: (ProjectTag & { tag: Tag })[] }

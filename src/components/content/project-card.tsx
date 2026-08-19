@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FolderGit2, ExternalLink, Code2, ArrowUpRight } from "lucide-react"
 import type { Project, ProjectTag, Tag } from "@prisma/client"
-import { cn } from "@/lib/utils/cn"
 import { memo } from "react"
 import { MouseGlow } from "@/components/ui/mouse-glow"
 

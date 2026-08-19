@@ -19,7 +19,6 @@ export function ProfilePhotoEditor({ current }: { current: { url?: string; alt?:
     setSaving(true)
     setMsg(null)
     try {
-      const id = current ? "" : ""
       const res = await fetch("/api/photo", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

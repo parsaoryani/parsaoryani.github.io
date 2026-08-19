@@ -1,9 +1,7 @@
 import { prisma } from "@/lib/db/prisma"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { MessageSquare, Trash2, Search, Eye, EyeOff } from "lucide-react"
+import { Search } from "lucide-react"
 import { MessageDeleteButton, MessageStatusButton } from "./actions"
 
 const statusColors: Record<string, "default" | "secondary" | "warning" | "outline"> = {

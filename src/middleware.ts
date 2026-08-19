@@ -7,7 +7,7 @@ const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || "https://parsaoryani.me"
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"])
 
 export function middleware(request: NextRequest) {
-  const { pathname, origin } = request.nextUrl
+  const { pathname } = request.nextUrl
 
   // Admin routes - check session cookie exists (skip login page)
   if (

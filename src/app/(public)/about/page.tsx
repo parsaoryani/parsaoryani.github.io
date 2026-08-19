@@ -6,7 +6,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { prisma } from "@/lib/db/prisma"
 import { getTimelineEvents, getSkillCategories } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
-import { Sparkles, GraduationCap, Briefcase, Award, Mic, HeartHandshake, Camera, BookOpen, Award as AwardIcon, FileText, Star, Link as LinkIcon } from "lucide-react"
+import { Sparkles, GraduationCap, Briefcase, Award, Mic, HeartHandshake, BookOpen, Award as AwardIcon, FileText, Link as LinkIcon } from "lucide-react"
 import Image from "next/image"
 import type { Metadata } from "next"
 

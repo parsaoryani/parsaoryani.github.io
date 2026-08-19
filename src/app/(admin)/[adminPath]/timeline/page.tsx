@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db/prisma"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Plus, Edit, GraduationCap, Briefcase, Award, Mic, HeartHandshake } from "lucide-react"

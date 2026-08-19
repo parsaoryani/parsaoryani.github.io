@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getTimelineEvents, getSkillCategories, getAllPublications, getAllResearchExperience, getAllTeachingExperience } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
-import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, Mic, HeartHandshake, Sparkles, Code2, UserCheck, Mail, ExternalLink } from "lucide-react"
+import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, HeartHandshake, Sparkles, Code2, UserCheck, Mail } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
 import type { TimelineEvent, SkillCategory, Publication, ResearchingAssistant, TeachingAssistant, Skill } from "@prisma/client"
@@ -21,14 +21,6 @@ function formatDate(date: Date, endDate?: Date | null) {
   const start = date.toLocaleDateString("en-US", options)
   if (!endDate) return `${start} — Present`
   return `${start} — ${endDate.toLocaleDateString("en-US", options)}`
-}
-
-const typeIcons: Record<string, typeof GraduationCap> = {
-  education: GraduationCap,
-  experience: Briefcase,
-  award: Award,
-  talk: Mic,
-  service: HeartHandshake,
 }
 
 export default async function CVPage() {

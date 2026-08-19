@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db/prisma"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Plus, Edit, ExternalLink } from "lucide-react"
+import { Plus, Edit } from "lucide-react"
 import { DeleteButton } from "@/components/admin/delete-button"
 
 export default async function AdminTeachingPage() {

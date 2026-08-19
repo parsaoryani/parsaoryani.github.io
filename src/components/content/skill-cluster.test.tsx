@@ -37,7 +37,7 @@ function category(overrides: Partial<SkillCategory> = {}): SkillCategory & { ski
 
 describe("SkillCluster", () => {
   it("renders category name and its skills", () => {
-    const { getByText, getByRole } = render(<SkillCluster categories={[category()]} />)
+    const { getByText } = render(<SkillCluster categories={[category()]} />)
     expect(getByText("Blockchain Security")).toBeInTheDocument()
     expect(getByText("Solidity")).toBeInTheDocument()
     expect(getByText("Rust")).toBeInTheDocument()

@@ -33,7 +33,6 @@ Open `http://localhost:4321`. Copy `.env.example` to `.env` first and set the da
 | Variable | Purpose |
 |---|---|
 | `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_SECRET` | Session/signing secret; replace the development fallback in production |
 | `ADMIN_PATH` | Dynamic admin route segment |
 | `NEXT_PUBLIC_SITE_URL` | Canonical URL for metadata and links |
 | `RESEND_API_KEY` | Resend email provider key; blank uses local mail capture |

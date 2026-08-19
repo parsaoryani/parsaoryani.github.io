@@ -37,7 +37,6 @@ Complete deployment instructions for Parsa Oryani's personal academic website.
 | Variable | Required | Description |
 |---|---|---|
 | `DATABASE_URL` | **Yes** | PostgreSQL connection string |
-| `JWT_SECRET` | **Yes** | Random string for JWT signing (min 32 chars) |
 | `NEXT_PUBLIC_SITE_URL` | **Yes** | Production URL (e.g., `https://parsaoryani.me`) |
 | `ADMIN_PATH` | No | Admin route slug (default: `x7k2-console`) |
 | `RESEND_API_KEY` | No | Resend API key for contact form emails |
@@ -48,11 +47,7 @@ Complete deployment instructions for Parsa Oryani's personal academic website.
 | `R2_ENDPOINT` | No | R2 endpoint URL |
 | `REVALIDATION_TOKEN` | No | Token for ISR revalidation webhooks |
 
-### Generating `JWT_SECRET`
-
-```bash
-openssl rand -base64 48
-```
+Admin sessions use a random, server-generated token stored (hashed) in the database — there is no JWT signing secret to configure.
 
 ---
 
@@ -137,7 +132,6 @@ In Vercel Dashboard → Settings → Environment Variables:
 | Key | Value | Environment |
 |---|---|---|
 | `DATABASE_URL` | `postgresql://...` | Production, Preview |
-| `JWT_SECRET` | `<random 48-char string>` | Production, Preview |
 | `NEXT_PUBLIC_SITE_URL` | `https://parsaoryani.me` | Production |
 | `NEXT_PUBLIC_SITE_URL` | `https://<preview-url>.vercel.app` | Preview |
 | `ADMIN_PATH` | `x7k2-console` | Production, Preview |
@@ -196,7 +190,6 @@ docker run -d \
   --name personal-site \
   -p 3000:3000 \
   -e DATABASE_URL="postgresql://user:pass@host:5432/db" \
-  -e JWT_SECRET="your-secret-here" \
   -e NEXT_PUBLIC_SITE_URL="https://parsaoryani.me" \
   -e NODE_ENV=production \
   personal-site
@@ -231,7 +224,6 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: "postgresql://siteuser:${DB_PASSWORD}@db:5432/personal_site"
-      JWT_SECRET: ${JWT_SECRET}
       NEXT_PUBLIC_SITE_URL: "https://parsaoryani.me"
       NODE_ENV: production
     depends_on:
@@ -248,7 +240,6 @@ volumes:
 # Create .env file
 cat > .env.docker <<EOF
 DB_PASSWORD=$(openssl rand -base64 24)
-JWT_SECRET=$(openssl rand -base64 48)
 EOF
 
 # Start
@@ -269,7 +260,6 @@ Simple deployment with managed PostgreSQL.
 3. Add **Next.js** service (from GitHub repo)
 4. Set environment variables:
    - `DATABASE_URL` → Use Railway's PostgreSQL variable
-   - `JWT_SECRET` → Generate and set
    - `NEXT_PUBLIC_SITE_URL` → Your Railway domain or custom domain
 5. Railway auto-runs `npm install` and `npm run build`
 6. Add deploy command: `npx prisma migrate deploy && npm start`
@@ -301,7 +291,6 @@ fly launch
 
 # Set secrets
 fly secrets set DATABASE_URL="postgresql://..."
-fly secrets set JWT_SECRET="$(openssl rand -base64 48)"
 fly secrets set NEXT_PUBLIC_SITE_URL="https://parsaoryani.me"
 
 # Deploy
@@ -360,7 +349,6 @@ npm install
 # Configure environment
 cat > .env <<EOF
 DATABASE_URL="postgresql://siteuser:secure_password@localhost:5432/personal_site"
-JWT_SECRET="$(openssl rand -base64 48)"
 NEXT_PUBLIC_SITE_URL="https://parsaoryani.me"
 ADMIN_PATH="x7k2-console"
 NODE_ENV=production
@@ -439,7 +427,6 @@ sudo certbot --nginx -d parsaoryani.me -d www.parsaoryani.me
 - [ ] Contact form emails delivering (if Resend configured)
 - [ ] File uploads working (if R2 configured)
 - [ ] Admin 2FA enabled
-- [ ] `JWT_SECRET` rotated periodically
 - [ ] Database backups scheduled
 - [ ] Monitoring/alerting configured
 
@@ -584,7 +571,6 @@ npm start
 | Variable | Format | Example |
 |---|---|---|
 | `DATABASE_URL` | `postgresql://user:pass@host:5432/db` | `postgresql://siteuser:abc123@db.example.com:5432/personal_site` |
-| `JWT_SECRET` | Base64 string, 32+ chars | `k8J3mN2pQ7rT5vW9xY1zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8` |
 | `NEXT_PUBLIC_SITE_URL` | Full URL with protocol | `https://parsaoryani.me` |
 | `ADMIN_PATH` | URL slug | `x7k2-console` |
 | `RESEND_API_KEY` | `re_` prefix | `re_abc123def456` |

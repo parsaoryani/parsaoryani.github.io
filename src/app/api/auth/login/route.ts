@@ -7,7 +7,6 @@ import { checkRateLimit } from "@/lib/rate-limit"
 import { createHash, randomBytes } from "crypto"
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000 // 5 minutes
-const MAX_CHALLENGE_ATTEMPTS = 5
 
 export async function POST(request: Request) {
   try {

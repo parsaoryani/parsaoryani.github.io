@@ -11,7 +11,7 @@ interface Category { id: string; name: string; skills: Skill[] }
 
 export function SkillsManager({ categories: initial }: { categories: Category[] }) {
   const router = useRouter()
-  const [categories, setCategories] = useState(initial)
+  const [categories] = useState(initial)
   const [newCat, setNewCat] = useState("")
   const [addingCat, setAddingCat] = useState(false)
   const [newSkills, setNewSkills] = useState<Record<string, string>>({})

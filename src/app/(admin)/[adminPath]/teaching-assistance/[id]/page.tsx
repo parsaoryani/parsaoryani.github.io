@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { EditorLayout, type Breadcrumb } from "@/components/admin/editor-layout"

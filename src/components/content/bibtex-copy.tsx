@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Quote, Copy, Check } from "lucide-react"
+import { Quote, Check } from "lucide-react"
 
 export function BibTeXCopy({ bibtex }: { bibtex: string }) {
   const [copied, setCopied] = useState(false)

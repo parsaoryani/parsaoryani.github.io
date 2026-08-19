@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db/prisma"
-import { Badge } from "@/components/ui/badge"
 import { SkillsManager } from "./skills-manager"
 
 export default async function AdminSkillsPage() {

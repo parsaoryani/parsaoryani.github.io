@@ -3,7 +3,7 @@ import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { FlaskConical, Calendar, User, Building2, Sparkles, ChevronRight, Beaker } from "lucide-react"
+import { FlaskConical, Calendar, User, Building2, ChevronRight, Beaker } from "lucide-react"
 import type { Metadata } from "next"
 
 export const revalidate = 3600

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Code2, UserCheck, Mail, ExternalLink, GraduationCap, ArrowUpRight, FileText, Briefcase, Award, Mic, HeartHandshake, BookOpen } from "lucide-react"
+import { Code2, UserCheck, Mail, GraduationCap, ArrowUpRight } from "lucide-react"
 
 const socialLinks = [
   { href: "https://github.com/parsaoryani", label: "GitHub", icon: Code2 },

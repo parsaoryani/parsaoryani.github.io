@@ -4,7 +4,6 @@
   "installCommand": "npm install",
   "env": {
     "DATABASE_URL": "@database-url",
-    "JWT_SECRET": "@jwt-secret",
     "ADMIN_PATH": "x7k2-console",
     "NEXT_PUBLIC_SITE_URL": "@site-url"
   },

@@ -1,12 +1,11 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Upload, FileText, Trash2, GripVertical, Save, X, Plus, Eye, Download, Link as LinkIcon, ExternalLink } from "lucide-react"
+import { Upload, FileText, Trash2, GripVertical, Save, Plus, Download, Link as LinkIcon, ExternalLink } from "lucide-react"
 
 type Course = {
   id: string
@@ -53,7 +52,6 @@ type LinkFormData = {
 }
 
 export function CourseManager({ timelineEventId, isEducation }: { timelineEventId: string; isEducation: boolean }) {
-  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
@@ -67,7 +65,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null)
   const [editLinkForm, setEditLinkForm] = useState<LinkFormData>({ type: "exercise", name: "", url: "" })
   const [submitting, setSubmitting] = useState(false)
-  const [uploading, setUploading] = useState<Record<string, boolean>>({})
+  const [, setUploading] = useState<Record<string, boolean>>({})
 
   async function loadCourses() {
     try {
@@ -225,16 +223,6 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
     }
   }
 
-  async function loadLinks(courseId: string) {
-    try {
-      const res = await fetch(`/api/courses/${courseId}/links`)
-      if (res.ok) {
-        const links = await res.json()
-        setCourses(prev => prev.map(c => c.id === courseId ? { ...c, links } : c))
-      }
-    } catch {}
-  }
-
   async function handleCreateLink(courseId: string, e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -286,29 +274,11 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
     }
   }
 
-  async function handleReorderLinks(courseId: string, newOrder: string[]) {
-    try {
-      await fetch(`/api/courses/${courseId}/links/reorder`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ linkIds: newOrder }),
-      })
-    } catch {}
-  }
-
   function formatFileSize(bytes: number | null) {
     if (!bytes) return ""
     if (bytes < 1024) return `${bytes} B`
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-  }
-
-  function getFileIcon(mimeType: string | null) {
-    if (!mimeType) return FileText
-    if (mimeType.startsWith("image/")) return FileText
-    if (mimeType.startsWith("application/pdf")) return FileText
-    if (mimeType.startsWith("text/") || mimeType.includes("code") || mimeType.includes("javascript") || mimeType.includes("python")) return FileText
-    return FileText
   }
 
   if (!isEducation) {

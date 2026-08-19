@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db/prisma"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Plus, Edit, ExternalLink, Trash2 } from "lucide-react"
+import { Plus, Edit, ExternalLink } from "lucide-react"
 import { DeleteButton } from "@/components/admin/delete-button"
 
 export default async function AdminProjectsPage() {
