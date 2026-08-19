@@ -8,7 +8,8 @@ import { EditorLayout, type Breadcrumb } from "@/components/admin/editor-layout"
 import { FieldGroup, SectionHeader } from "@/components/admin/field-group"
 
 interface RAItem {
-  id: string; slug: string; lab: string | null; university: string; supervisor: string | null; topic: string
+  id: string; slug: string; lab: string | null; university: string; supervisor: string | null
+  supervisorUrl: string | null; collaborator: string | null; topic: string
   startDate: string; endDate: string | null; description: string | null
   outcomes: string[]; technologies: string | null; repoUrl: string | null; status: string
   createdAt: string; updatedAt: string
@@ -48,6 +49,8 @@ export default function EditResearchingPage() {
       slug: fd.get("slug") as string,
       university: fd.get("university") as string,
       supervisor: (fd.get("supervisor") as string) || undefined,
+      supervisorUrl: (fd.get("supervisorUrl") as string) || undefined,
+      collaborator: (fd.get("collaborator") as string) || undefined,
       topic: fd.get("topic") as string,
       startDate: fd.get("startDate") as string,
       endDate: (fd.get("endDate") as string) || undefined,
@@ -122,8 +125,16 @@ export default function EditResearchingPage() {
           <Input name="university" required defaultValue={item.university} />
         </FieldGroup>
       </div>
-      <FieldGroup label="Supervisor">
-        <Input name="supervisor" defaultValue={item.supervisor || ""} />
+      <div className="grid grid-cols-2 gap-4">
+        <FieldGroup label="Supervisor">
+          <Input name="supervisor" defaultValue={item.supervisor || ""} placeholder="e.g. Dr. Jane Doe" />
+        </FieldGroup>
+        <FieldGroup label="Supervisor Link" hint="e.g. Google Scholar profile">
+          <Input name="supervisorUrl" type="url" defaultValue={item.supervisorUrl || ""} placeholder="https://scholar.google.com/..." />
+        </FieldGroup>
+      </div>
+      <FieldGroup label="Research Collaboration" hint="Distinct from the supervisor — e.g. a peer researcher you work closely with">
+        <Input name="collaborator" defaultValue={item.collaborator || ""} placeholder="Working closely with Ph.D. researcher ..." />
       </FieldGroup>
       <div className="grid grid-cols-2 gap-4">
         <FieldGroup label="Start Date" required>

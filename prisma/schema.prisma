@@ -367,22 +367,24 @@ model TeachingAssistant {
 }
 
 model ResearchingAssistant {
-  id          String       @id @default(cuid())
-  slug        String       @unique
-  lab         String?
-  university  String
-  supervisor  String?
-  topic       String
-  startDate   DateTime
-  endDate     DateTime?
-  description String?
-  outcomes    Json?
-  technologies String?
-  repoUrl     String?
-  status      EntryStatus  @default(draft)
-  sortOrder   Int          @default(0)
-  version     Int          @default(1)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  deletedAt   DateTime?
+  id            String       @id @default(cuid())
+  slug          String       @unique
+  lab           String?
+  university    String
+  supervisor    String?
+  supervisorUrl String?
+  collaborator  String?
+  topic         String
+  startDate     DateTime
+  endDate       DateTime?
+  description   String?
+  outcomes      Json?
+  technologies  String?
+  repoUrl       String?
+  status        EntryStatus  @default(draft)
+  sortOrder     Int          @default(0)
+  version       Int          @default(1)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
 }

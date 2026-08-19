@@ -88,6 +88,8 @@ export const researchingSchema = z.object({
   lab: z.string().max(300).optional(),
   university: z.string().min(1).max(200),
   supervisor: z.string().max(200).optional(),
+  supervisorUrl: z.string().max(500).optional(),
+  collaborator: z.string().max(500).optional(),
   topic: z.string().min(1).max(500),
   startDate: z.string(),
   endDate: z.string().optional(),

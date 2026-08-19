@@ -18,6 +18,8 @@ export default function NewResearchingPage() {
     const data = {
       lab: (form.get("lab") as string) || undefined, slug: form.get("slug") as string,
       university: form.get("university") as string, supervisor: (form.get("supervisor") as string) || undefined,
+      supervisorUrl: (form.get("supervisorUrl") as string) || undefined,
+      collaborator: (form.get("collaborator") as string) || undefined,
       topic: form.get("topic") as string,
       startDate: form.get("startDate") as string, endDate: (form.get("endDate") as string) || undefined,
       description: (form.get("description") as string) || undefined,
@@ -45,7 +47,11 @@ export default function NewResearchingPage() {
           <div className="space-y-2"><Label htmlFor="lab">Lab</Label><Input id="lab" name="lab" placeholder="Security Lab" /></div>
           <div className="space-y-2"><Label htmlFor="university">University *</Label><Input id="university" name="university" required placeholder="Sharif University of Technology" /></div>
         </div>
-        <div className="space-y-2"><Label htmlFor="supervisor">Supervisor</Label><Input id="supervisor" name="supervisor" placeholder="Dr. Supervisor" /></div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2"><Label htmlFor="supervisor">Supervisor</Label><Input id="supervisor" name="supervisor" placeholder="Dr. Supervisor" /></div>
+          <div className="space-y-2"><Label htmlFor="supervisorUrl">Supervisor Link</Label><Input id="supervisorUrl" name="supervisorUrl" type="url" placeholder="https://scholar.google.com/..." /></div>
+        </div>
+        <div className="space-y-2"><Label htmlFor="collaborator">Research Collaboration</Label><Input id="collaborator" name="collaborator" placeholder="Working closely with Ph.D. researcher ..." /></div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2"><Label htmlFor="startDate">Start Date *</Label><Input id="startDate" name="startDate" type="date" required /></div>
           <div className="space-y-2"><Label htmlFor="endDate">End Date</Label><Input id="endDate" name="endDate" type="date" /></div>

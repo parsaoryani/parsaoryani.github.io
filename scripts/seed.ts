@@ -658,12 +658,19 @@ async function main() {
     update: {
       lab: null,
       university: "Sharif University of Technology",
-      supervisor: null,
-      topic: "Blockchain Security Research",
-      description: "Studying security and scalability challenges in cross-chain and Layer-2 protocols.",
+      supervisor: "Dr. Morteza Amini",
+      supervisorUrl: "https://scholar.google.com/citations?user=Rsmx5DYAAAAJ&hl=en",
+      collaborator: "Working closely with Ph.D. researcher Amirmohammad Aghapour",
+      topic: "Research Assistant — Blockchain Security",
+      description:
+        "Conducting research on the security and scalability of blockchain and decentralized systems, with a particular focus on protocol-level security, interoperability, and emerging challenges in blockchain infrastructure.",
       outcomes: [
-        "Investigating cross-rollup execution, state verification, and blockchain interoperability",
-        "Exploring thesis directions around secure and scalable cross-L2 systems",
+        "Studying security and scalability challenges in blockchain and decentralized protocols",
+        "Investigating cross-chain and Layer-2 systems, including interoperability, state verification, and cross-rollup communication",
+        "Analyzing protocol-level security assumptions, trust models, and potential attack surfaces",
+        "Conducting technical literature reviews and evaluating recent research in blockchain security and scalability",
+        "Supporting experimental and implementation-oriented research on blockchain infrastructure and security",
+        "Collaborating closely with Ph.D. researcher Amirmohammad Aghapour on ongoing research activities within the group",
       ],
       technologies: "",
     },
@@ -671,14 +678,21 @@ async function main() {
       slug: "blockchain-security-research",
       lab: null,
       university: "Sharif University of Technology",
-      supervisor: null,
-      topic: "Blockchain Security Research",
+      supervisor: "Dr. Morteza Amini",
+      supervisorUrl: "https://scholar.google.com/citations?user=Rsmx5DYAAAAJ&hl=en",
+      collaborator: "Working closely with Ph.D. researcher Amirmohammad Aghapour",
+      topic: "Research Assistant — Blockchain Security",
       startDate: new Date("2025-09-01"),
       endDate: undefined,
-      description: "Studying security and scalability challenges in cross-chain and Layer-2 protocols.",
+      description:
+        "Conducting research on the security and scalability of blockchain and decentralized systems, with a particular focus on protocol-level security, interoperability, and emerging challenges in blockchain infrastructure.",
       outcomes: [
-        "Investigating cross-rollup execution, state verification, and blockchain interoperability",
-        "Exploring thesis directions around secure and scalable cross-L2 systems",
+        "Studying security and scalability challenges in blockchain and decentralized protocols",
+        "Investigating cross-chain and Layer-2 systems, including interoperability, state verification, and cross-rollup communication",
+        "Analyzing protocol-level security assumptions, trust models, and potential attack surfaces",
+        "Conducting technical literature reviews and evaluating recent research in blockchain security and scalability",
+        "Supporting experimental and implementation-oriented research on blockchain infrastructure and security",
+        "Collaborating closely with Ph.D. researcher Amirmohammad Aghapour on ongoing research activities within the group",
       ],
       technologies: "",
       status: "published",
@@ -686,40 +700,8 @@ async function main() {
     },
   })
 
-  await prisma.researchingAssistant.upsert({
-    where: { slug: "ethereum-mempool-security-research" },
-    update: {
-      lab: null,
-      university: "Sharif University of Technology",
-      supervisor: null,
-      topic: "Ethereum Mempool Security Research",
-      description: "Investigating asymmetric DoS attacks against Ethereum transaction pools.",
-      outcomes: [
-        "Building a controlled multi-node Hyperledger Besu environment for reproducible experiments",
-        "Measuring mempool behavior and system resource usage under controlled workloads",
-      ],
-      technologies: "Hyperledger Besu",
-      repoUrl: "https://github.com/parsaoryani/brcc-lab",
-    },
-    create: {
-      slug: "ethereum-mempool-security-research",
-      lab: null,
-      university: "Sharif University of Technology",
-      supervisor: null,
-      topic: "Ethereum Mempool Security Research",
-      startDate: new Date("2025-09-01"),
-      endDate: undefined,
-      description: "Investigating asymmetric DoS attacks against Ethereum transaction pools.",
-      outcomes: [
-        "Building a controlled multi-node Hyperledger Besu environment for reproducible experiments",
-        "Measuring mempool behavior and system resource usage under controlled workloads",
-      ],
-      technologies: "Hyperledger Besu",
-      repoUrl: "https://github.com/parsaoryani/brcc-lab",
-      status: "published",
-      sortOrder: 1,
-    },
-  })
+  // Removed by request — no longer part of Research Assistantships.
+  await prisma.researchingAssistant.deleteMany({ where: { slug: "ethereum-mempool-security-research" } })
 
   console.log("Seed completed successfully!")
 }

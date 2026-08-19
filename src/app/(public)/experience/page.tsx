@@ -186,12 +186,27 @@ export default async function ExperiencePage() {
                 <ScrollReveal key={item.id} direction="up" delay={i * 60}>
                   <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-indigo/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
                     <h3 className="text-lg font-semibold mb-1">{item.topic}</h3>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-mist mb-3">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-mist mb-1">
                       <span className="flex items-center gap-1"><Building2 size={13} /> {item.lab ? `${item.lab} — ` : ""}{item.university}</span>
-                      {item.supervisor && <span className="flex items-center gap-1"><User size={13} /> Supervisor: {item.supervisor}</span>}
+                      {item.supervisor && (
+                        <span className="flex items-center gap-1">
+                          <User size={13} />
+                          Supervisor:{" "}
+                          {item.supervisorUrl ? (
+                            <a href={item.supervisorUrl} target="_blank" rel="noopener noreferrer" className="text-indigo hover:text-indigo/80 transition-colors underline underline-offset-2">
+                              {item.supervisor}
+                            </a>
+                          ) : (
+                            item.supervisor
+                          )}
+                        </span>
+                      )}
                       <span className="flex items-center gap-1"><Calendar size={13} /> {formatDate(item.startDate, item.endDate)}</span>
                     </div>
-                    {item.description && <p className="text-sm text-mist mb-3">{item.description}</p>}
+                    {item.collaborator && (
+                      <p className="flex items-center gap-1 text-sm text-mist/80 mb-3"><Users size={13} /> {item.collaborator}</p>
+                    )}
+                    {item.description && <p className="text-sm text-mist mb-3 mt-2">{item.description}</p>}
                     {item.outcomes && (item.outcomes as string[]).length > 0 && (
                       <div className="mb-3">
                         <p className="text-xs font-semibold text-emerald uppercase tracking-wider mb-2">Outcomes</p>
