@@ -488,6 +488,12 @@ async function main() {
   })
 
   await prisma.siteSetting.upsert({
+    where: { key: "profile_photo" },
+    update: {},
+    create: { key: "profile_photo", value: { url: "/about/now.jpg", alt: "Parsa Oryani" } },
+  })
+
+  await prisma.siteSetting.upsert({
     where: { key: "home_title" },
     update: { value: DEFAULT_TITLE_LINES.join("\n") },
     create: { key: "home_title", value: DEFAULT_TITLE_LINES.join("\n") },
