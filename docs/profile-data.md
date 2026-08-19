@@ -7,10 +7,20 @@ Human-readable source of truth for verified personal/academic information render
 ## Education
 
 ### M.Sc. in Computer Engineering
-Sharif University of Technology
+**Sharif University of Technology**
+
+* Start: September 2025
+* Status: Present
+* Academic period: Fall 2025 – Present
+* National Master's Entrance Examination Rank: 56
 
 ### B.Sc. in Computer Science
-Amirkabir University of Technology (Tehran Polytechnic)
+**Amirkabir University of Technology (Tehran Polytechnic)**
+
+* Start: September 2020
+* Completion: February 2025
+* Academic period: Fall 2020 – Fall 2024
+* National University Entrance Examination Rank: 343
 
 ## Relevant Coursework
 
@@ -35,6 +45,25 @@ Amirkabir University of Technology (Tehran Polytechnic)
 | Foundations of Probability | 18 / 20 |
 | Numerical Linear Algebra | 17.55 / 20 |
 | Foundations of Logic and Set Theory | 17.50 / 20 |
+
+### Syllabi — B.Sc. Amirkabir courses
+
+Full syllabus text lives in `scripts/seed.ts` (`bscCourses`) and renders on `/about` behind a "View syllabus" toggle. Summary:
+
+| Course | Highlight | Focus | Instructor |
+|---|---|---|---|
+| Artificial Intelligence and Lab | — | — | — |
+| Probability I | — | — | — |
+| Cryptography I | — | — | — |
+| Foundations of Matrices and Linear Algebra | — | — | — |
+| Special Topics in Cryptography | Highest Grade in Class | Lattice-Based & Post-Quantum Cryptography | — |
+| Design and Analysis of Algorithms | *(no syllabus provided)* | | |
+| Advanced Programming | C++ | — | — |
+| Foundations of Probability | *(no syllabus provided)* | | |
+| Numerical Linear Algebra | — | — | Prof. Mehdi Dehghan — Group 1 |
+| Foundations of Logic and Set Theory | *(no syllabus provided)* | | |
+
+Design and Analysis of Algorithms, Foundations of Probability, and Foundations of Logic and Set Theory currently have grade only — no syllabus content was provided for them.
 
 ## Teaching Assistant Experience
 
@@ -89,7 +118,7 @@ These fields exist as optional/nullable elsewhere in the schema (or can be added
 - Course website links
 - GitHub repositories for TA'd course materials
 - Assignment/project links
-- Syllabus documents
+- Syllabus content for Design and Analysis of Algorithms, Foundations of Probability, and Foundations of Logic and Set Theory
 - Detailed per-course descriptions beyond the concise website blurb above
 - Number of students per course
 - Number of assignments/workshops

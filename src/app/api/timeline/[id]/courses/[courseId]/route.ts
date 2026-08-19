@@ -34,6 +34,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       data: {
         name: body.name,
         grade: body.grade || null,
+        highlight: body.highlight || null,
+        instructor: body.instructor || null,
+        focus: body.focus || null,
+        topics: body.topics || null,
+        syllabus: body.syllabus || null,
         exercises: body.exercises || null,
         projects: body.projects || null,
         discussions: body.discussions || null,

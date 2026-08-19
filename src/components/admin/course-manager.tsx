@@ -11,6 +11,11 @@ type Course = {
   id: string
   name: string
   grade: string | null
+  highlight: string | null
+  instructor: string | null
+  focus: string | null
+  topics: string | null
+  syllabus: string | null
   exercises: string | null
   projects: string | null
   discussions: string | null
@@ -40,9 +45,27 @@ type CourseLink = {
 type CourseFormData = {
   name: string
   grade: string
+  highlight: string
+  instructor: string
+  focus: string
+  topics: string
+  syllabus: string
   exercises: string
   projects: string
   discussions: string
+}
+
+const emptyCourseForm: CourseFormData = {
+  name: "",
+  grade: "",
+  highlight: "",
+  instructor: "",
+  focus: "",
+  topics: "",
+  syllabus: "",
+  exercises: "",
+  projects: "",
+  discussions: "",
 }
 
 type LinkFormData = {
@@ -57,9 +80,9 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showNewForm, setShowNewForm] = useState(false)
-  const [newCourse, setNewCourse] = useState<CourseFormData>({ name: "", grade: "", exercises: "", projects: "", discussions: "" })
+  const [newCourse, setNewCourse] = useState<CourseFormData>(emptyCourseForm)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<CourseFormData>({ name: "", grade: "", exercises: "", projects: "", discussions: "" })
+  const [editForm, setEditForm] = useState<CourseFormData>(emptyCourseForm)
   const [showLinkForm, setShowLinkForm] = useState<{ courseId: string; type: "exercise" | "project" } | null>(null)
   const [newLink, setNewLink] = useState<LinkFormData>({ type: "exercise", name: "", url: "" })
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null)
@@ -115,7 +138,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
       })
       if (!res.ok) throw new Error()
       setShowNewForm(false)
-      setNewCourse({ name: "", grade: "", exercises: "", projects: "", discussions: "" })
+      setNewCourse(emptyCourseForm)
       await loadCourses()
     } catch {
       setError("Failed to create course")
@@ -314,6 +337,26 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
               <Input id="new-grade" placeholder="A, B+, 95%, etc." value={newCourse.grade} onChange={e => setNewCourse({ ...newCourse, grade: e.target.value })} />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="new-highlight">Highlight badge</Label>
+              <Input id="new-highlight" placeholder="e.g. Highest Grade in Class, C++" value={newCourse.highlight} onChange={e => setNewCourse({ ...newCourse, highlight: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-instructor">Instructor</Label>
+              <Input id="new-instructor" placeholder="e.g. Prof. Jane Doe — Group 1" value={newCourse.instructor} onChange={e => setNewCourse({ ...newCourse, instructor: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-focus">Focus</Label>
+              <Input id="new-focus" placeholder="Specialized theme, if any" value={newCourse.focus} onChange={e => setNewCourse({ ...newCourse, focus: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-topics">Topics (short, for the course card)</Label>
+              <Input id="new-topics" placeholder="Comma-separated keywords" value={newCourse.topics} onChange={e => setNewCourse({ ...newCourse, topics: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-syllabus">Full syllabus (shown behind &quot;View syllabus&quot;)</Label>
+              <Textarea id="new-syllabus" rows={4} value={newCourse.syllabus} onChange={e => setNewCourse({ ...newCourse, syllabus: e.target.value })} />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="new-exercises">Exercises / Assignments</Label>
               <Textarea id="new-exercises" rows={3} placeholder="Describe exercises, problem sets, labs..." value={newCourse.exercises} onChange={e => setNewCourse({ ...newCourse, exercises: e.target.value })} />
             </div>
@@ -327,7 +370,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
             </div>
             <div className="flex gap-3">
               <Button type="submit" disabled={submitting || !newCourse.name.trim()}>{submitting ? "Creating..." : "Create Course"}</Button>
-              <Button type="button" variant="ghost" onClick={() => { setShowNewForm(false); setNewCourse({ name: "", grade: "", exercises: "", projects: "", discussions: "" }); }}>Cancel</Button>
+              <Button type="button" variant="ghost" onClick={() => { setShowNewForm(false); setNewCourse(emptyCourseForm); }}>Cancel</Button>
             </div>
           </form>
         </div>
@@ -365,6 +408,26 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                     <Input id={`edit-grade-${course.id}`} placeholder="A, B+, 95%, etc." defaultValue={editForm.grade || course.grade || ""} onChange={e => setEditForm({ ...editForm, grade: e.target.value })} />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor={`edit-highlight-${course.id}`}>Highlight badge</Label>
+                    <Input id={`edit-highlight-${course.id}`} placeholder="e.g. Highest Grade in Class, C++" defaultValue={editForm.highlight || course.highlight || ""} onChange={e => setEditForm({ ...editForm, highlight: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`edit-instructor-${course.id}`}>Instructor</Label>
+                    <Input id={`edit-instructor-${course.id}`} placeholder="e.g. Prof. Jane Doe — Group 1" defaultValue={editForm.instructor || course.instructor || ""} onChange={e => setEditForm({ ...editForm, instructor: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`edit-focus-${course.id}`}>Focus</Label>
+                    <Input id={`edit-focus-${course.id}`} placeholder="Specialized theme, if any" defaultValue={editForm.focus || course.focus || ""} onChange={e => setEditForm({ ...editForm, focus: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`edit-topics-${course.id}`}>Topics (short, for the course card)</Label>
+                    <Input id={`edit-topics-${course.id}`} placeholder="Comma-separated keywords" defaultValue={editForm.topics || course.topics || ""} onChange={e => setEditForm({ ...editForm, topics: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`edit-syllabus-${course.id}`}>Full syllabus (shown behind &quot;View syllabus&quot;)</Label>
+                    <Textarea id={`edit-syllabus-${course.id}`} rows={4} defaultValue={editForm.syllabus || course.syllabus || ""} onChange={e => setEditForm({ ...editForm, syllabus: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor={`edit-exercises-${course.id}`}>Exercises / Assignments</Label>
                     <Textarea id={`edit-exercises-${course.id}`} rows={3} defaultValue={editForm.exercises || course.exercises || ""} onChange={e => setEditForm({ ...editForm, exercises: e.target.value })} />
                   </div>
@@ -378,17 +441,22 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                   </div>
                   <div className="flex gap-3">
                     <Button type="submit" disabled={submitting} size="sm">{submitting ? "Saving..." : "Save"}</Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => { setEditingId(null); setEditForm({ name: "", grade: "", exercises: "", projects: "", discussions: "" }); }}>Cancel</Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => { setEditingId(null); setEditForm(emptyCourseForm); }}>Cancel</Button>
                   </div>
                 </form>
               ) : (
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
                         <h3 className="font-medium text-lg">{course.name}</h3>
                         {course.grade && <span className="px-2 py-0.5 text-xs font-mono rounded bg-cyan/10 text-cyan border border-cyan/20">{course.grade}</span>}
+                        {course.highlight && <span className="px-2 py-0.5 text-xs font-mono rounded bg-amber/10 text-amber border border-amber/20">{course.highlight}</span>}
                       </div>
+                      {course.focus && <p className="text-sm mb-1"><strong>Focus:</strong> {course.focus}</p>}
+                      {course.instructor && <p className="text-sm mb-1 text-[var(--text-secondary)]">{course.instructor}</p>}
+                      {course.topics && <p className="text-sm mb-2 text-[var(--text-secondary)]"><strong>Topics:</strong> {course.topics}</p>}
+                      {course.syllabus && <p className="text-xs text-[var(--text-tertiary)] mb-2 line-clamp-2"><strong>Syllabus:</strong> {course.syllabus}</p>}
                       {(course.exercises || course.projects || course.discussions) && (
                         <div className="space-y-2 text-sm text-[var(--text-secondary)]">
                           {course.exercises && <p><strong>Exercises:</strong> {course.exercises}</p>}
@@ -398,7 +466,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                       )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingId(course.id); setEditForm({ name: course.name, grade: course.grade || "", exercises: course.exercises || "", projects: course.projects || "", discussions: course.discussions || "" }); }}><Save size={14} /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingId(course.id); setEditForm({ name: course.name, grade: course.grade || "", highlight: course.highlight || "", instructor: course.instructor || "", focus: course.focus || "", topics: course.topics || "", syllabus: course.syllabus || "", exercises: course.exercises || "", projects: course.projects || "", discussions: course.discussions || "" }); }}><Save size={14} /></Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-[var(--danger)]" onClick={() => handleDeleteCourse(course.id)}><Trash2 size={14} /></Button>
                     </div>
                   </div>

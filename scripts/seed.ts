@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
@@ -217,16 +217,38 @@ async function main() {
   }
   console.log(`${projects.length} projects created`)
 
-  // Create timeline events
+  // Timeline events — idempotent. Keyed on (type, organization) so title
+  // corrections don't create duplicates; also collapses the duplicate records
+  // left behind by earlier non-idempotent seeding.
+  async function upsertTimelineEvent(event: Prisma.TimelineEventUncheckedCreateInput) {
+    const key = { type: event.type, organization: event.organization }
+    const existing = await prisma.timelineEvent.findFirst({
+      where: key,
+      orderBy: { createdAt: "asc" },
+    })
+    if (existing) {
+      const kept = await prisma.timelineEvent.update({ where: { id: existing.id }, data: event })
+      await prisma.timelineEvent.deleteMany({ where: { ...key, id: { not: existing.id } } })
+      return kept
+    }
+    return prisma.timelineEvent.create({ data: event })
+  }
+
+  // Remove the placeholder B.Sc. Computer Engineering (Sharif) record — it
+  // conflicts with the verified B.Sc. in Computer Science (Amirkabir).
+  await prisma.timelineEvent.deleteMany({
+    where: { type: "education", organization: "Sharif University of Technology", title: { startsWith: "B.Sc." } },
+  })
+
   const timelineEvents = [
     {
       type: "education" as const,
-      title: "M.Sc. Computer Engineering",
+      title: "M.Sc. in Computer Engineering",
       organization: "Sharif University of Technology",
       location: "Tehran, Iran",
-      startDate: new Date("2023-09-01"),
+      startDate: new Date("2025-09-01"),
       endDate: null,
-      description: "Thesis: Security of Decentralized and Intelligent Systems. GPA: 4.0/4.0",
+      description: "Thesis: Security of Decentralized and Intelligent Systems. GPA: 4.0/4.0. National Master's Entrance Examination Rank: 56",
       highlights: ["Research focus on blockchain security and AI safety", "Graduate coursework in advanced cryptography, ML theory, and formal methods"],
       sortOrder: 0,
     },
@@ -240,17 +262,6 @@ async function main() {
       description: "Leading research on formal verification of cross-chain bridges and ZK-rollup security.",
       highlights: ["Published 3 papers at top venues (S&P, CCS, NeurIPS)", "Built open-source verification tooling used by 500+ developers", "Supervised 3 undergraduate research interns"],
       sortOrder: 1,
-    },
-    {
-      type: "education" as const,
-      title: "B.Sc. Computer Engineering",
-      organization: "Sharif University of Technology",
-      location: "Tehran, Iran",
-      startDate: new Date("2019-09-01"),
-      endDate: new Date("2023-07-01"),
-      description: "Thesis: Adversarial Robustness of Deep Neural Networks. GPA: 3.8/4.0",
-      highlights: ["Ranked top 5% of graduating class", "Teaching assistant for 6 courses"],
-      sortOrder: 2,
     },
     {
       type: "experience" as const,
@@ -290,71 +301,128 @@ async function main() {
       endDate: null,
       sortOrder: 6,
     },
+    {
+      type: "education" as const,
+      title: "B.Sc. in Computer Science",
+      organization: "Amirkabir University of Technology (Tehran Polytechnic)",
+      location: "Tehran, Iran",
+      startDate: new Date("2020-09-01"),
+      endDate: new Date("2025-02-01"),
+      description: "National University Entrance Examination Rank: 343",
+      sortOrder: 7,
+    },
   ]
 
+  let bscAmirkabir: Awaited<ReturnType<typeof upsertTimelineEvent>> | null = null
   for (const event of timelineEvents) {
-    await prisma.timelineEvent.create({ data: event })
+    const kept = await upsertTimelineEvent(event)
+    if (kept.type === "education" && kept.organization === "Amirkabir University of Technology (Tehran Polytechnic)") {
+      bscAmirkabir = kept
+    }
   }
-  console.log(`${timelineEvents.length} timeline events created`)
-
-  // Ensure the B.Sc. Computer Science (Amirkabir) education entry exists so
-  // its relevant coursework has a home. Additive only — the existing Sharif
-  // B.Sc. entry above is left untouched.
-  let bscAmirkabir = await prisma.timelineEvent.findFirst({
-    where: { title: "B.Sc. Computer Science", organization: "Amirkabir University of Technology (Tehran Polytechnic)" },
-  })
-  if (!bscAmirkabir) {
-    bscAmirkabir = await prisma.timelineEvent.create({
-      data: {
-        type: "education",
-        title: "B.Sc. Computer Science",
-        organization: "Amirkabir University of Technology (Tehran Polytechnic)",
-        startDate: new Date("2019-09-01"),
-        endDate: new Date("2023-07-01"),
-        sortOrder: 7,
-      },
-    })
-    console.log("B.Sc. Computer Science (Amirkabir) timeline event created")
-  }
+  console.log(`${timelineEvents.length} timeline events seeded`)
 
   const mscSharif = await prisma.timelineEvent.findFirst({
-    where: { title: "M.Sc. Computer Engineering", organization: "Sharif University of Technology" },
+    where: { type: "education", organization: "Sharif University of Technology" },
     orderBy: { createdAt: "asc" },
   })
 
-  async function ensureCourse(timelineEventId: string, name: string, grade: string, sortOrder: number) {
+  interface CourseSeed {
+    name: string
+    grade: string
+    highlight?: string
+    instructor?: string
+    focus?: string
+    topics?: string
+    syllabus?: string
+  }
+
+  async function ensureCourse(timelineEventId: string, course: CourseSeed, sortOrder: number) {
+    const { name, ...fields } = course
     const existing = await prisma.course.findFirst({ where: { timelineEventId, name } })
-    if (existing) return
-    await prisma.course.create({ data: { timelineEventId, name, grade, sortOrder } })
+    if (existing) {
+      await prisma.course.update({ where: { id: existing.id }, data: fields })
+      return
+    }
+    await prisma.course.create({ data: { timelineEventId, name, ...fields, sortOrder } })
   }
 
   if (mscSharif) {
-    const mscCourses: [string, string][] = [
-      ["Applied Cryptography", "18.9/20"],
-      ["Secure Software Systems", "18.2/20"],
+    const mscCourses: CourseSeed[] = [
+      { name: "Applied Cryptography", grade: "18.9/20" },
+      { name: "Secure Software Systems", grade: "18.2/20" },
     ]
     let order = 0
-    for (const [name, grade] of mscCourses) {
-      await ensureCourse(mscSharif.id, name, grade, order++)
+    for (const course of mscCourses) {
+      await ensureCourse(mscSharif.id, course, order++)
     }
   }
 
-  const bscCourses: [string, string][] = [
-    ["Artificial Intelligence and Lab", "20/20"],
-    ["Probability I", "19.46/20"],
-    ["Cryptography I", "18.75/20"],
-    ["Foundations of Matrices and Linear Algebra", "18.69/20"],
-    ["Special Topics in Cryptography", "18.25/20"],
-    ["Design and Analysis of Algorithms", "18/20"],
-    ["Advanced Programming", "18/20"],
-    ["Foundations of Probability", "18/20"],
-    ["Numerical Linear Algebra", "17.55/20"],
-    ["Foundations of Logic and Set Theory", "17.50/20"],
+  // Full syllabi are only included for courses the graduate provided detailed content for.
+  // The remaining Amirkabir courses (Design and Analysis of Algorithms, Foundations of
+  // Probability, Foundations of Logic and Set Theory) are seeded with grade only.
+  const bscCourses: CourseSeed[] = [
+    {
+      name: "Artificial Intelligence and Lab",
+      grade: "20/20",
+      topics: "Intelligent agents, search & heuristics, adversarial search, CSPs, probabilistic inference, supervised/unsupervised learning, neural networks, CNNs & RNNs",
+      syllabus:
+        "Intelligent agents; uninformed and informed search; heuristic search; adversarial search and game theory; constraint satisfaction problems; probabilistic inference; supervised, unsupervised, and semi-supervised learning; optimization and neural networks; associative and Hopfield networks; evolutionary computation; swarm intelligence; uncertainty and fuzzy logic. Practical work included Python, Jupyter/Colab, NumPy, Pandas, Scikit-learn, data preprocessing, EDA, regression, classification, clustering, neural networks, CNNs, and RNNs.",
+    },
+    {
+      name: "Probability I",
+      grade: "19.46/20",
+      topics: "Probability spaces, Bayes' theorem, random variables, distributions, expectation & variance, joint distributions, LLN & CLT",
+      syllabus:
+        "Probability spaces and axioms; combinatorial probability; conditional probability and Bayes' theorem; independence; discrete and continuous random variables; probability mass and density functions; cumulative distribution functions; expectation, variance, and moments; common probability distributions; joint distributions; covariance and correlation; conditional distributions and expectations; transformations of random variables; law of large numbers and central limit theorem.",
+    },
+    {
+      name: "Cryptography I",
+      grade: "18.75/20",
+      topics: "Perfect secrecy, PRGs & stream ciphers, PRFs & block ciphers, MACs, hash functions, RSA, public-key crypto, digital signatures, post-quantum intro",
+      syllabus:
+        "Classical cryptography; perfect secrecy and fundamental security concepts; pseudorandom generators and stream ciphers; pseudorandom functions and block ciphers; message integrity and message authentication codes; cryptographic hash functions; public-key encryption; RSA; public-key cryptography based on discrete-logarithm problems; digital signatures; introduction to post-quantum cryptography.",
+    },
+    {
+      name: "Foundations of Matrices and Linear Algebra",
+      grade: "18.69/20",
+      topics: "Vector spaces, linear independence & bases, linear transformations, eigenvalues & eigenvectors, diagonalization, inner-product spaces, ML applications",
+      syllabus:
+        "Groups, rings, and fields; matrix algebra and special matrices; systems of linear equations and Gaussian elimination; vector spaces and subspaces; span and generated spaces; linear independence, bases, and dimension; row and column spaces; matrix rank; change of basis; quotient spaces; linear transformations; kernel and image; matrix representation of linear maps; eigenvalues and eigenvectors; characteristic polynomials; Cayley-Hamilton theorem; diagonalization; inner-product spaces; orthogonality and orthogonal bases; and applications of linear algebra to machine learning.",
+    },
+    {
+      name: "Special Topics in Cryptography",
+      grade: "18.25/20",
+      highlight: "Highest Grade in Class",
+      focus: "Lattice-Based & Post-Quantum Cryptography",
+      topics: "Lattices, SIS, LWE, Ring-LWE, NTRU, lattice trapdoors, signatures, FHE, attribute-based encryption",
+      syllabus:
+        "Mathematical lattices; discrete Gaussian and subgaussian distributions; early lattice-based cryptography including Ajtai-Dwork, NTRU, and GGH; Short Integer Solution (SIS); Learning With Errors (LWE); Ring-SIS and Ring-LWE; lattice-based collision-resistant hashing; public-key encryption; lattice trapdoors; digital signatures; identity-based encryption; pseudorandom functions; fully homomorphic encryption; attribute-based encryption; and open problems in lattice-based cryptography.",
+    },
+    { name: "Design and Analysis of Algorithms", grade: "18/20" },
+    {
+      name: "Advanced Programming",
+      grade: "18/20",
+      highlight: "C++",
+      topics: "Object-oriented programming, templates, operator overloading, dynamic memory, inheritance, polymorphism, exception handling, STL, data structures, file I/O",
+      syllabus:
+        "C++ fundamentals; functions, references, default arguments, function overloading, and templates; object-oriented programming; classes, constructors, and destructors; encapsulation; const and static members; friend functions and the this pointer; operator overloading; dynamic memory management; copy constructors and object copying; inheritance; polymorphism; virtual functions and abstract classes; exception handling; class templates; linked lists; STL containers and algorithms; sorting and binary search; text and binary file I/O; and basic software design patterns such as Singleton.",
+    },
+    { name: "Foundations of Probability", grade: "18/20" },
+    {
+      name: "Numerical Linear Algebra",
+      grade: "17.55/20",
+      instructor: "Prof. Mehdi Dehghan — Group 1",
+      topics: "Numerical stability, Gaussian elimination, LU/Cholesky/QR factorization, least squares, iterative methods, eigenvalues & SVD, condition numbers",
+      syllabus:
+        "Numerical errors, stability, and conditioning; numerical solution of linear systems; Gaussian elimination; matrix factorizations including LU, Cholesky, and QR; least-squares problems; iterative methods for linear systems; convergence analysis; numerical computation of eigenvalues and eigenvectors; power and QR-type methods; singular value decomposition; matrix norms; condition numbers; and stable numerical matrix computations.",
+    },
+    { name: "Foundations of Logic and Set Theory", grade: "17.50/20" },
   ]
-  {
+  if (bscAmirkabir) {
     let order = 0
-    for (const [name, grade] of bscCourses) {
-      await ensureCourse(bscAmirkabir.id, name, grade, order++)
+    for (const course of bscCourses) {
+      await ensureCourse(bscAmirkabir.id, course, order++)
     }
   }
   console.log("Relevant coursework seeded")
@@ -407,14 +475,34 @@ async function main() {
     },
   ]
 
+  // Skill categories and skills — idempotent. Repeated non-idempotent seeding
+  // left duplicate category copies; collapse them to one per name, then upsert
+  // skills so re-running the seed is safe.
   for (const catData of skillCategoriesData) {
     const { skills, ...catFields } = catData
-    const category = await prisma.skillCategory.create({ data: catFields })
-    for (const skill of skills) {
-      await prisma.skill.create({ data: { ...skill, categoryId: category.id } })
+    const existing = await prisma.skillCategory.findFirst({
+      where: { name: catFields.name },
+      orderBy: { id: "asc" },
+    })
+    if (existing) {
+      await prisma.skillCategory.update({ where: { id: existing.id }, data: catFields })
+      await prisma.skillCategory.deleteMany({ where: { name: catFields.name, id: { not: existing.id } } })
+      for (const skill of skills) {
+        const existingSkill = await prisma.skill.findFirst({ where: { categoryId: existing.id, name: skill.name } })
+        if (existingSkill) {
+          await prisma.skill.update({ where: { id: existingSkill.id }, data: skill })
+        } else {
+          await prisma.skill.create({ data: { ...skill, categoryId: existing.id } })
+        }
+      }
+    } else {
+      const category = await prisma.skillCategory.create({ data: catFields })
+      for (const skill of skills) {
+        await prisma.skill.create({ data: { ...skill, categoryId: category.id } })
+      }
     }
   }
-  console.log(`${skillCategoriesData.length} skill categories created`)
+  console.log(`${skillCategoriesData.length} skill categories seeded`)
 
   // Site settings
   await prisma.siteSetting.upsert({

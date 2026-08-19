@@ -184,6 +184,11 @@ model Course {
   timelineEvent  TimelineEvent @relation(fields: [timelineEventId], references: [id], onDelete: Cascade)
   name           String
   grade          String?
+  highlight      String?
+  instructor     String?
+  focus          String?
+  topics         String?
+  syllabus       String?  @db.Text
   exercises      String?  @db.Text
   projects       String?  @db.Text
   discussions    String?  @db.Text

@@ -41,6 +41,11 @@ interface CourseShape {
   id: string
   name: string
   grade: string | null
+  highlight: string | null
+  instructor: string | null
+  focus: string | null
+  topics: string | null
+  syllabus: string | null
   exercises: string | null
   projects: string | null
   discussions: string | null
@@ -105,12 +110,36 @@ function TimelineEvent({ event, config, isLast }: { event: any; config: typeof t
               <div key={course.id} className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3 hover:border-cyan/20 transition-colors">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h5 className="font-medium text-sm text-fog">{course.name}</h5>
                       {course.grade && (
-                        <span className="px-2 py-0.5 text-xs font-mono rounded bg-emerald/10 text-emerald border border-emerald/20">{course.grade}</span>
+                        <span className="px-2 py-0.5 text-xs font-mono rounded bg-emerald/10 text-emerald border border-emerald/20">
+                          {course.grade}{course.highlight ? ` · ${course.highlight}` : ""}
+                        </span>
                       )}
                     </div>
+                    {course.focus && (
+                      <p className="text-xs text-mist/80 mt-1"><strong>Focus:</strong> {course.focus}</p>
+                    )}
+                    {course.instructor && (
+                      <p className="text-xs text-mist/60 mt-1">{course.instructor}</p>
+                    )}
+                    {course.topics && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {course.topics.split(",").map((t) => (
+                          <span key={t.trim()} className="text-xs px-2 py-0.5 rounded-full bg-slate-800/60 border border-slate-700/50 text-mist/80">{t.trim()}</span>
+                        ))}
+                      </div>
+                    )}
+                    {course.syllabus && (
+                      <details className="mt-2 group/syllabus">
+                        <summary className="cursor-pointer text-xs font-mono text-cyan/80 hover:text-cyan inline-flex items-center gap-1">
+                          View syllabus
+                          <span className="text-ash transition-transform duration-200 group-open/syllabus:rotate-180">▸</span>
+                        </summary>
+                        <p className="text-xs text-mist/80 mt-2 leading-relaxed">{course.syllabus}</p>
+                      </details>
+                    )}
                     {course.exercises && (
                       <p className="text-xs text-mist/80 mt-1"><strong>Exercises:</strong> {course.exercises}</p>
                     )}
