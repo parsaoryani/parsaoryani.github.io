@@ -30,6 +30,7 @@ async function main() {
     prisma.tag.upsert({ where: { slug: "smart-contracts" }, update: {}, create: { slug: "smart-contracts", label: "Smart Contracts" } }),
     prisma.tag.upsert({ where: { slug: "formal-verification" }, update: {}, create: { slug: "formal-verification", label: "Formal Verification" } }),
     prisma.tag.upsert({ where: { slug: "ethereum" }, update: {}, create: { slug: "ethereum", label: "Ethereum" } }),
+    prisma.tag.upsert({ where: { slug: "cryptography" }, update: {}, create: { slug: "cryptography", label: "Cryptography" } }),
   ])
   console.log(`${tags.length} tags created`)
 
@@ -138,6 +139,25 @@ async function main() {
   // Create projects
   const projects = [
     {
+      slug: "zk-mixer",
+      title: "ZK-Mixer: Regulated Anonymous Payments",
+      summary: "Zerocash POUR-protocol implementation with regulatory-compliant disclosure — unlinkable deposits and withdrawals with tiered auditor access.",
+      role: "Solo",
+      status: "published" as const,
+      year: 2026,
+      problem: "Anonymous payment systems (Zerocash) deliver transaction unlinkability but clash with AML/KYC regulation, while compliant systems trade away privacy. This project implements both: a full Zerocash-style mixer with a conditional-disclosure layer for authorized auditors.",
+      approach: "Implemented the complete POUR protocol — 32-level Merkle tree, commitment/nullifier scheme, and Bulletproof-style zk-SNARK proofs — and extended it with Morales et al. reversible unlinkability: three privacy tiers (HIGH/MEDIUM/LOW) letting users selectively enable regulatory oversight without giving up privacy by default.",
+      architecture: "Modular Python monolith under src/zkm: core (mixer, zk-proof, Merkle tree, commitments), crypto (coins, nullifiers, zk-SNARK engine, reversible unlinkability), API (FastAPI routes with JWT auth and 10+ REST endpoints), storage (SQLAlchemy with SQLite, indexed for audit trails), and security (Schnorr signatures, bcrypt password hashing). A JavaScript web frontend (frontend/) exposes the mixer as an application.",
+      challenges: "zk-SNARK proof generation is the bottleneck at ~328 proofs/sec (~3ms each) — inherent to cryptographic proofs, mitigated by caching and batch verification. Balancing three privacy tiers against audit requirements surfaced 18 threat vectors, all documented with mitigations in the threat model.",
+      results: "253 tests passing (147 unit, 25 integration, 24 API, 14 property-based, 8 performance suites) at 70% coverage with 0 mypy errors. Deposits and withdrawals complete under 500ms; Merkle operations average ~5ms; database throughput exceeds targets by 10-18x.",
+      retrospective: "The tiered privacy model proved the privacy-compliance trade-off is reconcilable, but production deployment needs PostgreSQL (SQLite is fine at current scale) and the schnorr.py (58%) and auth_routes.py (54%) modules deserve coverage parity with the rest of the codebase.",
+      techStack: ["Python", "FastAPI", "zk-SNARK", "Merkle Tree", "SQLAlchemy", "SQLite", "JWT", "JavaScript"],
+      repoUrl: "https://github.com/parsaoryani/ZK-Mixer",
+      featured: true,
+      sortOrder: 0,
+      tagIds: ["blockchain", "zk", "cryptography"],
+    },
+    {
       slug: "ethereum-cli",
       title: "Ethereum CLI (Sepolia Testnet)",
       summary: "A modular command-line interface for the Ethereum Sepolia testnet — encrypted wallet management, balance queries, ETH transfers, and transaction history export.",
@@ -153,7 +173,7 @@ async function main() {
       techStack: ["Python", "JSON-RPC", "Etherscan API", "eth-account", "cryptography", "argparse", "unittest"],
       repoUrl: "https://github.com/parsaoryani/ethereum-cli",
       featured: true,
-      sortOrder: 0,
+      sortOrder: 1,
       tagIds: ["blockchain", "ethereum"],
     },
   ]
@@ -323,6 +343,29 @@ async function main() {
     let order = 0
     for (const course of mscCourses) {
       await ensureCourse(mscSharif.id, course, order++)
+    }
+  }
+
+  // Course project link — ZK-Mixer is the Applied Cryptography course project.
+  if (mscSharif) {
+    const appliedCrypto = await prisma.course.findFirst({
+      where: { timelineEventId: mscSharif.id, name: "Applied Cryptography" },
+    })
+    if (appliedCrypto) {
+      const existingLink = await prisma.courseLink.findFirst({
+        where: { courseId: appliedCrypto.id, name: "ZK-Mixer" },
+      })
+      if (!existingLink) {
+        await prisma.courseLink.create({
+          data: {
+            courseId: appliedCrypto.id,
+            type: "project",
+            name: "ZK-Mixer",
+            url: "https://github.com/parsaoryani/ZK-Mixer",
+            sortOrder: 0,
+          },
+        })
+      }
     }
   }
 

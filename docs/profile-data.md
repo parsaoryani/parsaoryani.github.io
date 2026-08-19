@@ -31,6 +31,8 @@ Human-readable source of truth for verified personal/academic information render
 | Applied Cryptography | 18.9 / 20 |
 | Secure Software Systems | 18.2 / 20 |
 
+Applied Cryptography's course project is **ZK-Mixer** (https://github.com/parsaoryani/ZK-Mixer) — linked from this course's section on `/about`. Slides for the presentation are pending (to be added via the admin panel).
+
 ### B.Sc. in Computer Science — Amirkabir University of Technology (Tehran Polytechnic)
 
 | Course | Grade |
@@ -109,6 +111,21 @@ Reverse chronological order.
 ## Projects
 
 Reverse chronological order. Only verified projects with real repositories are listed — earlier placeholder projects (`zk-bridge-verifier`, `agentic-ai-guardrails`, `private-ml-on-chain`) were removed because their repositories do not exist.
+
+### ZK-Mixer: Regulated Anonymous Payments
+- **Repo:** https://github.com/parsaoryani/ZK-Mixer
+- **Role:** Solo
+- **Year:** 2026
+- **Context:** Course project for **Applied Cryptography** (M.Sc., Sharif University of Technology) — linked from that course's section on `/about`
+- **Summary:** "Zerocash POUR-protocol implementation with regulatory-compliant disclosure — unlinkable deposits and withdrawals with tiered auditor access."
+- **Tech stack:** Python, FastAPI, zk-SNARK (Bulletproof-style), Merkle tree, SQLAlchemy, SQLite, JWT, JavaScript
+- **Highlights:**
+  - Full Zerocash POUR protocol: 32-level Merkle tree, commitment/nullifier scheme, double-spend prevention
+  - Morales et al. reversible unlinkability with three privacy tiers (HIGH/MEDIUM/LOW) for conditional auditor disclosure
+  - 253 tests passing (unit, integration, API, property-based, performance) at 70% coverage, 0 mypy errors
+  - Deposits/withdrawals under 500ms; Merkle ops ~5ms average; DB throughput 10-18x above targets
+  - 18 threat vectors analyzed in THREAT_MODEL.md; IEEE-style research paper in docs/RESEARCH_PAPER.md
+- **Planned follow-ups:** PostgreSQL migration for production; raise `schnorr.py` (58%) and `auth_routes.py` (54%) coverage
 
 ### Ethereum CLI (Sepolia Testnet)
 - **Repo:** https://github.com/parsaoryani/ethereum-cli
