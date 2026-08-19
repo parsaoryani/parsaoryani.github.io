@@ -1,11 +1,9 @@
 import { Container, Section } from "@/components/layout/container"
-import { SkillCluster } from "@/components/content/skill-cluster"
+import { TechnicalFoundations } from "@/components/content/technical-foundations"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeader } from "@/components/ui/section-header"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { prisma } from "@/lib/db/prisma"
-import { getSkillCategories } from "@/lib/db/queries"
-import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
 import { Sparkles, ArrowUpRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -19,12 +17,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AboutPage() {
-  const [skillCategoriesResult, photoSetting] = await Promise.all([
-    safeQuery(getSkillCategories(), "skill categories"),
-    prisma.siteSetting.findUnique({ where: { key: "profile_photo" } }),
-  ])
-  const skillCategories = skillCategoriesResult.data ?? []
-
+  const photoSetting = await prisma.siteSetting.findUnique({ where: { key: "profile_photo" } })
   const photo = photoSetting?.value as { url?: string; alt?: string } | null
 
   return (
@@ -87,17 +80,13 @@ export default async function AboutPage() {
           </div>
         </ScrollReveal>
 
-        {skillCategoriesResult.error && (
-          <QueryErrorFallback error="Some background content could not be loaded." className="mb-8" />
-        )}
-
         <div id="skills">
           <ScrollReveal direction="up">
             <SectionHeader
               title="Skills"
               accent="cyan"
             />
-            <SkillCluster categories={skillCategories} />
+            <TechnicalFoundations />
           </ScrollReveal>
         </div>
       </Container>
