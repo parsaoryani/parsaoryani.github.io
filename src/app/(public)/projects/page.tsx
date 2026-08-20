@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllProjects, getAllTags } from "@/lib/db/queries"
 import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
+import { getAvailableProjectTags } from "@/lib/projects/available-project-tags"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { FolderGit2, Sparkles } from "lucide-react"
@@ -27,6 +28,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
   ])
   const projects = projectsResult.data ?? []
   const tags = tagsResult.data ?? []
+  const availableTags = getAvailableProjectTags(projects, tags)
 
   const filteredProjects = tag
     ? projects.filter((p) => p.tags.some((pt) => pt.tag.slug === tag))
@@ -53,7 +55,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
           <QueryErrorFallback error="Some content could not be loaded. The page may be incomplete." className="mb-8" />
         )}
 
-        {tags.length > 0 && <TagFilter tags={tags} activeTag={tag} />}
+        {availableTags.length > 0 && <TagFilter tags={availableTags} activeTag={tag} />}
 
         {/* Result count and clear filter */}
         <div className="flex items-center justify-between mb-4">
@@ -61,7 +63,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
             {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""}
             {tag && (
               <span>
-                {" "}tagged &ldquo;{tags.find((t) => t.slug === tag)?.label || tag}&rdquo;
+                {" "}tagged &ldquo;{availableTags.find((t) => t.slug === tag)?.label || tag}&rdquo;
                 <Link href="/projects" className="ml-2 text-cyan hover:underline">
                   Clear filter
                 </Link>

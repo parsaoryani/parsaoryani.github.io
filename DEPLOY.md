@@ -4,6 +4,126 @@ Complete deployment instructions for Parsa Oryani's personal academic website.
 
 ---
 
+## Current Live Setup
+
+Use this section first when redeploying the current site.
+
+| Item | Current value |
+|---|---|
+| Production URL | `https://parsaoryani-psharifce.vercel.app` |
+| Vercel workspace slug | `psharifce` |
+| Vercel project name | `parsaoryani` |
+| Vercel project ID | `prj_zdwnItPmugU5W2h7o7OW97hWSstV` |
+| Vercel team ID | `team_pPb9WrynklKBpKG6v7oljca6` |
+| Neon project ID | `mute-cake-90732993` |
+| Neon database | `personal_website` |
+| Neon role | `personal_website_owner` |
+| Required Node version | `22.x` |
+| Admin path | Set by `ADMIN_PATH` in Vercel, currently `x7k2-console` |
+
+### Quick Redeploy
+
+Run from the repo root:
+
+```bash
+# 1. Confirm auth
+npx --yes vercel@59.3.0 whoami
+npx --yes neonctl auth whoami
+
+# 2. Verify before deploy
+npm test
+npm run typecheck
+npm run lint
+npm run build
+
+# 3. Deploy production
+npx --yes vercel@59.3.0 deploy --prod --yes --archive tgz
+
+# 4. Smoke-test the live site
+open https://parsaoryani-psharifce.vercel.app
+open https://parsaoryani-psharifce.vercel.app/about
+open https://parsaoryani-psharifce.vercel.app/projects
+```
+
+The canonical production alias should remain:
+
+```text
+parsaoryani-psharifce.vercel.app
+```
+
+If Vercel creates the old generated alias again, remove it:
+
+```bash
+npx --yes vercel@59.3.0 alias rm personal-website-seven-sooty-47.vercel.app --yes
+npx --yes vercel@59.3.0 alias list
+```
+
+### Current Environment Variables
+
+Set these in Vercel for both **Production** and **Preview** unless noted.
+
+| Key | Current value |
+|---|---|
+| `DATABASE_URL` | Neon pooled URL. Retrieve it with the command below; do not commit it. |
+| `NEXT_PUBLIC_SITE_URL` | `https://parsaoryani-psharifce.vercel.app` |
+| `ADMIN_PATH` | `x7k2-console` |
+
+Retrieve the current Neon pooled connection string:
+
+```bash
+npx --yes neonctl connection-string \
+  --project-id mute-cake-90732993 \
+  --database-name personal_website \
+  --role-name personal_website_owner \
+  --pooled \
+  --ssl require
+```
+
+Refresh Vercel env vars from the CLI:
+
+```bash
+DB_URL="$(npx --yes neonctl connection-string \
+  --project-id mute-cake-90732993 \
+  --database-name personal_website \
+  --role-name personal_website_owner \
+  --pooled \
+  --ssl require | tail -n 1)"
+
+npx --yes vercel@59.3.0 env add DATABASE_URL production,preview \
+  --value "$DB_URL" --yes --sensitive --force
+
+npx --yes vercel@59.3.0 env add NEXT_PUBLIC_SITE_URL production,preview \
+  --value "https://parsaoryani-psharifce.vercel.app" --yes --no-sensitive --force
+
+npx --yes vercel@59.3.0 env add ADMIN_PATH production,preview \
+  --value "x7k2-console" --yes --no-sensitive --force
+```
+
+After changing `NEXT_PUBLIC_SITE_URL`, redeploy. Values prefixed with
+`NEXT_PUBLIC_` are inlined at build time.
+
+### First-Time Recovery From Empty Database
+
+Only run seed when setting up a new empty database or intentionally restoring
+initial content:
+
+```bash
+DB_URL="$(npx --yes neonctl connection-string \
+  --project-id mute-cake-90732993 \
+  --database-name personal_website \
+  --role-name personal_website_owner \
+  --pooled \
+  --ssl require | tail -n 1)"
+
+DATABASE_URL="$DB_URL" npx prisma migrate deploy
+DATABASE_URL="$DB_URL" npm run db:seed
+```
+
+Do not run `npm run db:seed` casually on an existing production database unless
+you have checked the seed script behavior first.
+
+---
+
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
@@ -26,7 +146,7 @@ Complete deployment instructions for Parsa Oryani's personal academic website.
 
 | Requirement | Version |
 |---|---|
-| Node.js | >= 20 |
+| Node.js | 22.x |
 | PostgreSQL | >= 14 |
 | npm | >= 10 |
 
@@ -37,7 +157,7 @@ Complete deployment instructions for Parsa Oryani's personal academic website.
 | Variable | Required | Description |
 |---|---|---|
 | `DATABASE_URL` | **Yes** | PostgreSQL connection string |
-| `NEXT_PUBLIC_SITE_URL` | **Yes** | Production URL (e.g., `https://parsaoryani.me`) |
+| `NEXT_PUBLIC_SITE_URL` | **Yes** | Exact production origin, currently `https://parsaoryani-psharifce.vercel.app` |
 | `ADMIN_PATH` | No | Admin route slug (default: `x7k2-console`) |
 | `RESEND_API_KEY` | No | Resend API key for contact form emails |
 | `SITE_DOMAIN` | No | Email domain for Resend sender address |
@@ -59,7 +179,7 @@ Use a managed service that provides connection pooling:
 
 | Provider | Free Tier | Pooling |
 |---|---|---|
-| [Neon](https://neon.tech) | 0.5 GB | Yes (`?pgbouncer=true`) |
+| [Neon](https://neon.tech) | 0.5 GB | Yes (`-pooler` host + `sslmode=require`) |
 | [Supabase](https://supabase.com) | 500 MB | Yes (via Supavisor) |
 | [Railway](https://railway.app) | $5 credit | Yes |
 | [Render](https://render.com) | 90 days | Yes |
@@ -67,7 +187,7 @@ Use a managed service that provides connection pooling:
 Connection string format:
 
 ```
-postgresql://user:password@host:5432/dbname?pgbouncer=true
+postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech/dbname?sslmode=require
 ```
 
 ### Option B: Self-Hosted PostgreSQL
@@ -181,7 +301,7 @@ Set in Vercel Dashboard → Settings → Environment Variables, or via
 |---|---|---|
 | `DATABASE_URL` | Neon **pooled** URL | See step 1 |
 | `ADMIN_PATH` | your secret admin segment | Keep it non-obvious; it is the only thing hiding the admin route |
-| `NEXT_PUBLIC_SITE_URL` | `https://<project>.vercel.app` | Drives canonical URLs, `sitemap.xml`, `robots.txt` |
+| `NEXT_PUBLIC_SITE_URL` | `https://parsaoryani-psharifce.vercel.app` | Drives canonical URLs, `sitemap.xml`, `robots.txt`; must exactly match the production origin |
 
 **Optional — the site runs correctly without all of these:**
 
@@ -192,7 +312,7 @@ Set in Vercel Dashboard → Settings → Environment Variables, or via
 | `R2_ENDPOINT`, `R2_BUCKET_NAME`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Admin uploads fall back to local disk — **see the warning below** |
 | `REVALIDATION_TOKEN` | ISR webhook endpoint is unused |
 
-**Do not set `JWT_SECRET`.** It remains in `.env` from an earlier auth
+**Do not set `JWT_SECRET`.** It remains in some local `.env` files from an earlier auth
 implementation but is no longer referenced anywhere in the codebase.
 
 #### Known constraints on the free tier
@@ -257,7 +377,7 @@ Zero-config Next.js hosting with edge functions, analytics, and automatic SSL.
 
 - **Build Command:** `prisma generate && next build`
 - **Install Command:** `npm install`
-- **Node.js Version:** 20 (in Project Settings → General)
+- **Node.js Version:** `22.x` from `package.json#engines`
 
 #### 3. Set Environment Variables
 
@@ -266,8 +386,7 @@ In Vercel Dashboard → Settings → Environment Variables:
 | Key | Value | Environment |
 |---|---|---|
 | `DATABASE_URL` | `postgresql://...` | Production, Preview |
-| `NEXT_PUBLIC_SITE_URL` | `https://parsaoryani.me` | Production |
-| `NEXT_PUBLIC_SITE_URL` | `https://<preview-url>.vercel.app` | Preview |
+| `NEXT_PUBLIC_SITE_URL` | `https://parsaoryani-psharifce.vercel.app` | Production, Preview |
 | `ADMIN_PATH` | `x7k2-console` | Production, Preview |
 
 #### 4. Deploy
@@ -277,10 +396,10 @@ In Vercel Dashboard → Settings → Environment Variables:
 npm i -g vercel
 
 # Deploy to production
-vercel --prod
+npx --yes vercel@59.3.0 deploy --prod --yes --archive tgz
 
 # Or deploy preview
-vercel
+npx --yes vercel@59.3.0 deploy
 ```
 
 #### 5. Run Migrations (First Deploy)
@@ -504,8 +623,8 @@ For DigitalOcean, Linode, Hetzner, AWS EC2, etc.
 # Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js 20
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# Install Node.js 22
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # Install PostgreSQL
@@ -655,7 +774,7 @@ Can't reach database server at localhost:5432
 **Fix:**
 1. Verify `DATABASE_URL` in `.env` points to the correct host
 2. For managed databases, ensure IP allowlisting includes your deploy server
-3. For PgBouncer connections, add `?pgbouncer=true` to the URL
+3. For Neon serverless, use the pooled `-pooler` host with `?sslmode=require`
 
 ### Hydration Mismatch Warning
 
@@ -693,7 +812,7 @@ pm2 restart personal-site  # or equivalent
 ```
 personalWebsite/
 ├── prisma/
-│   ├── schema.prisma          # Database schema (17 models)
+│   ├── schema.prisma          # Database schema (21 models)
 │   └── migrations/            # Migration history
 ├── scripts/
 │   └── seed.ts                # Initial data seeding
@@ -716,7 +835,7 @@ personalWebsite/
 │   │   ├── content/           # Content cards
 │   │   └── layout/            # Navigation, footer
 │   ├── lib/
-│   │   ├── auth/              # JWT + session management
+│   │   ├── auth/              # Database-backed admin sessions
 │   │   ├── db/                # Prisma client
 │   │   └── validation/        # Zod schemas
 │   └── middleware.ts          # Route protection + CSRF
@@ -732,7 +851,7 @@ personalWebsite/
 | Component | Purpose | Required? |
 |---|---|---|
 | PostgreSQL | Primary database | **Yes** |
-| Node.js >= 20 | Runtime | **Yes** |
+| Node.js 22.x | Runtime | **Yes** |
 | Resend | Transactional email | No |
 | Cloudflare R2 | File storage | No |
 | Redis | Session store (future) | No |
@@ -744,13 +863,13 @@ npm install
   └── postinstall: prisma generate
 
 npm run build
-  └── next build → .next/ (standalone output)
+  └── next build → .next/
 
 npx prisma migrate deploy
   └── Applies pending migrations
 
 npm start
-  └── node server.js (port 3000)
+  └── next start (port 3000)
 ```
 
 ---
@@ -760,7 +879,7 @@ npm start
 | Variable | Format | Example |
 |---|---|---|
 | `DATABASE_URL` | `postgresql://user:pass@host:5432/db` | `postgresql://siteuser:abc123@db.example.com:5432/personal_site` |
-| `NEXT_PUBLIC_SITE_URL` | Full URL with protocol | `https://parsaoryani.me` |
+| `NEXT_PUBLIC_SITE_URL` | Full URL with protocol | `https://parsaoryani-psharifce.vercel.app` |
 | `ADMIN_PATH` | URL slug | `x7k2-console` |
 | `RESEND_API_KEY` | `re_` prefix | `re_abc123def456` |
 | `SITE_DOMAIN` | Domain name | `parsaoryani.me` |
