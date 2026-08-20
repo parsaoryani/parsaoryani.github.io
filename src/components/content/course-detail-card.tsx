@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { FileText, Link as LinkIcon, FolderGit2 } from "lucide-react"
+import { FileText, Link as LinkIcon, Presentation, Code2, ArrowUpRight } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 interface CourseFileShape {
   id: string
@@ -30,25 +31,46 @@ export interface CourseDetailShape {
   links?: CourseLinkShape[]
 }
 
-function linkChipLabel(link: CourseLinkShape): string {
-  if (link.type === "slides") return "Slides"
-  if (link.url.includes("docs.google.com/presentation")) return "Slides"
-  return "Implementation"
+/**
+ * What kind of artifact a link points at. The label is derived from the
+ * destination rather than assumed, so a deck reads as "Slides" and an internal
+ * route reads as "Project page" instead of everything defaulting to
+ * "Implementation". `rank` keeps the order stable regardless of DB row order.
+ */
+function resolveArtifact(link: CourseLinkShape): { label: string; Icon: LucideIcon; rank: number } {
+  const url = link.url
+  if (link.type === "slides" || url.includes("docs.google.com/presentation")) {
+    return { label: "Slides", Icon: Presentation, rank: 2 }
+  }
+  if (url.includes("github.com") || url.includes("gitlab.com")) {
+    return { label: "Repository", Icon: Code2, rank: 1 }
+  }
+  if (url.startsWith("/")) {
+    return { label: "Project page", Icon: ArrowUpRight, rank: 0 }
+  }
+  return { label: "Link", Icon: LinkIcon, rank: 3 }
 }
 
-function ProjectLinkChip({ link }: { link: CourseLinkShape }) {
-  const label = linkChipLabel(link)
-  const className = "inline-flex items-center gap-1 px-2 py-1 text-xs font-mono rounded bg-cyan/10 border border-cyan/20 text-cyan hover:bg-cyan/20 transition-colors"
+const CHIP_CLASS =
+  "group/chip inline-flex items-center gap-1.5 rounded-md border border-slate-700/60 bg-slate-800/50 px-2 py-0.5 text-[11px] font-mono text-mist transition-colors hover:border-cyan/40 hover:bg-cyan/10 hover:text-cyan"
+
+function ProjectLinkChip({ link, projectName }: { link: CourseLinkShape; projectName: string }) {
+  const { label, Icon } = resolveArtifact(link)
+  const icon = <Icon size={11} className="shrink-0 text-cyan/70 transition-colors group-hover/chip:text-cyan" />
+  // Screen readers hear the project name too — "Slides" alone is ambiguous
+  // when a course lists several projects.
+  const ariaLabel = `${label} — ${projectName}`
+
   if (link.url.startsWith("/")) {
     return (
-      <Link href={link.url} className={className}>
-        <LinkIcon size={10} /> {label}
+      <Link href={link.url} className={CHIP_CLASS} aria-label={ariaLabel}>
+        {icon} {label}
       </Link>
     )
   }
   return (
-    <a href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
-      <LinkIcon size={10} /> {label}
+    <a href={link.url} target="_blank" rel="noopener noreferrer" className={CHIP_CLASS} aria-label={ariaLabel}>
+      {icon} {label}
     </a>
   )
 }
@@ -62,7 +84,10 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
       group.links.push(link)
       return acc
     }, {})
-  )
+  ).map((project) => ({
+    ...project,
+    links: [...project.links].sort((a, b) => resolveArtifact(a).rank - resolveArtifact(b).rank),
+  }))
 
   return (
     <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-4 hover:border-cyan/20 transition-colors">
@@ -115,20 +140,24 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
         </div>
       )}
       {projects.length > 0 && (
-        <div className="mt-3 space-y-2">
-          <p className="text-xs font-semibold text-cyan uppercase tracking-wider">Project</p>
-          {projects.map((project) => (
-            <div key={project.name} className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg border border-slate-700/50 bg-slate-800/40">
-              <span className="flex items-center gap-1.5 text-sm text-fog">
-                <FolderGit2 size={13} className="text-cyan shrink-0" /> {project.name}
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {project.links.map((link) => (
-                  <ProjectLinkChip key={link.id} link={link} />
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className="mt-3.5">
+          <p className="text-[11px] font-mono uppercase tracking-wider text-ash mb-2">
+            {projects.length > 1 ? "Course projects" : "Course project"}
+          </p>
+          <ul className="space-y-2.5">
+            {projects.map((project) => (
+              // Links sit directly beside the title rather than pushed to the far
+              // edge, so each artifact stays visually tied to its own project.
+              <li key={project.name} className="border-l border-cyan/25 pl-3">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                  <span className="text-sm text-fog leading-snug">{project.name}</span>
+                  {project.links.map((link) => (
+                    <ProjectLinkChip key={link.id} link={link} projectName={project.name} />
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       {exerciseLinks.length > 0 && (
