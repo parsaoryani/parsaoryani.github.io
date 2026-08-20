@@ -8,6 +8,7 @@ This directory separates durable guidance from project history and design review
 | `reviews/` | UX, IA, accessibility, and product-design reviews | [Personal site UX review](reviews/PERSONAL_SITE_UX_IA_REVIEW.md) |
 | `status/` | Progress notes and historical implementation records | [Progress](status/PROGRESS.md) |
 | `profile-data.md` | Verified academic/personal data mirrored by `scripts/seed.ts` | [Profile data](profile-data.md) |
+| `BLOCKCHAIN_VISUAL_IDENTITY_PROPOSAL.md` | Design-only proposal for a blockchain/protocol-security visual identity — not yet implemented | [Blockchain visual identity proposal](BLOCKCHAIN_VISUAL_IDENTITY_PROPOSAL.md) |
 | `superpowers/plans/` | Task-level implementation plans for multi-step changes | [File organization plan](superpowers/plans/2026-08-08-professional-file-organization.md) |
 
 ## Where code belongs
