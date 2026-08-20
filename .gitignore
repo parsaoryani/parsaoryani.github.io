@@ -35,6 +35,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local service/tool state
+.neon
+.codebase-memory/
+
 # dev mail capture
 .mail-dev/
 

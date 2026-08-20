@@ -1,0 +1,5 @@
+.neon
+.codebase-memory/
+.env*
+.next/
+node_modules/

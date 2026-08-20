@@ -1,9 +1,10 @@
 import type { NextConfig } from "next"
 
 const isProd = process.env.NODE_ENV === "production"
+const isVercel = process.env.VERCEL === "1"
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  ...(isVercel ? {} : { output: "standalone" }),
   // Keep Turbopack rooted at this application when a parent workspace has another lockfile.
   turbopack: {
     root: process.cwd(),

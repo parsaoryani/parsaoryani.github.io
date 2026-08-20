@@ -37,11 +37,14 @@ async function uploadToR2(file: File, key: string): Promise<string> {
 async function uploadToLocal(file: File, key: string): Promise<string> {
   const fs = await import("fs/promises")
   const path = await import("path")
-  const dir = path.join(process.cwd(), UPLOAD_DIR)
+  // turbopackIgnore: UPLOAD_DIR is env-configurable, so static analysis cannot
+  // scope these paths and traces the entire project (including public/) into the
+  // serverless bundle. Opting out keeps the deployed function small.
+  const dir = path.join(/*turbopackIgnore: true*/ process.cwd(), UPLOAD_DIR)
   await fs.mkdir(dir, { recursive: true })
 
   const arrayBuffer = await file.arrayBuffer()
-  const filePath = path.join(dir, key)
+  const filePath = path.join(/*turbopackIgnore: true*/ dir, key)
   await fs.writeFile(filePath, Buffer.from(arrayBuffer))
 
   return `/uploads/${key}`

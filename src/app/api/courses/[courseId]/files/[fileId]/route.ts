@@ -24,7 +24,9 @@ export async function DELETE(
 
     // Delete from storage
     if (file.url.startsWith("/uploads/")) {
-      const filePath = path.join(process.cwd(), file.url)
+      // turbopackIgnore: file.url is a runtime DB value, so static analysis
+      // cannot scope this path and traces the entire project into the bundle.
+      const filePath = path.join(/*turbopackIgnore: true*/ process.cwd(), file.url)
       await fs.unlink(filePath).catch(() => {})
     }
 

@@ -108,6 +108,140 @@ npm run db:seed
 
 ## Deployment Options
 
+### Fully Free Deployment (Recommended Path)
+
+Total cost: **$0/month, permanent.** No credit card required for the core stack.
+
+#### Why a static free host will not work
+
+GitHub Pages, Netlify's static tier, Cloudflare Pages in static mode, and
+Surge serve **static files only**. This application cannot run on any of them.
+It requires a Node.js runtime *and* a PostgreSQL database, because it has:
+
+- 35 API routes (`src/app/api/**/route.ts`)
+- 28 admin pages behind session-based auth
+- Middleware/proxy for admin-path rewriting
+- 21 Prisma models backed by PostgreSQL
+
+#### The free stack
+
+| Layer | Service | Free tier | Why this one |
+|---|---|---|---|
+| Runtime | **Vercel Hobby** | Free, no card, non-commercial | Built by the Next.js team; zero-config for this framework |
+| Database | **Neon** | 0.5 GB, scales to zero | Serverless-native Postgres with a built-in connection pooler |
+| Domain | **`*.vercel.app`** | Free, automatic, SSL included | Issued on first deploy — see §6 for nicer free domains |
+| File storage *(optional)* | **Cloudflare R2** | 10 GB, no egress fees | Only needed if you upload media via the admin panel |
+| Email *(optional)* | **Resend** | 3,000 emails/month | Only needed for contact-form notifications |
+
+Vercel's Hobby plan is restricted to non-commercial use. A personal academic
+portfolio qualifies.
+
+#### Step 1 — Create the database (Neon)
+
+1. Sign up at <https://neon.tech> and create a project
+2. Copy the **pooled** connection string — the host contains `-pooler`
+
+> **Important:** use the pooled string, not the direct one. `src/lib/db/prisma.ts`
+> only caches the client on `globalThis` outside production, so each serverless
+> invocation may open a new connection. The direct endpoint will exhaust
+> connections under load; the pooler will not.
+
+```
+postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech/dbname?sslmode=require
+```
+
+#### Step 2 — Apply schema and seed data
+
+Run locally, pointed at Neon:
+
+```bash
+DATABASE_URL="<neon-pooled-url>" npx prisma migrate deploy
+DATABASE_URL="<neon-pooled-url>" npm run db:seed
+```
+
+#### Step 3 — Deploy to Vercel
+
+```bash
+npx vercel login      # interactive — opens a browser
+npx vercel link       # link this directory to a Vercel project
+npx vercel --prod     # deploy
+```
+
+Or import the repository at <https://vercel.com/new> for automatic
+deploy-on-push.
+
+#### Step 4 — Environment variables
+
+Set in Vercel Dashboard → Settings → Environment Variables, or via
+`npx vercel env add <NAME> production`.
+
+**Required:**
+
+| Key | Value | Notes |
+|---|---|---|
+| `DATABASE_URL` | Neon **pooled** URL | See step 1 |
+| `ADMIN_PATH` | your secret admin segment | Keep it non-obvious; it is the only thing hiding the admin route |
+| `NEXT_PUBLIC_SITE_URL` | `https://<project>.vercel.app` | Drives canonical URLs, `sitemap.xml`, `robots.txt` |
+
+**Optional — the site runs correctly without all of these:**
+
+| Key | Effect if unset |
+|---|---|
+| `RESEND_API_KEY` | Contact form still works and still stores messages in the database; only the email notification is skipped |
+| `SITE_DOMAIN` | Defaults to `parsaoryani.me` in email templates |
+| `R2_ENDPOINT`, `R2_BUCKET_NAME`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Admin uploads fall back to local disk — **see the warning below** |
+| `REVALIDATION_TOKEN` | ISR webhook endpoint is unused |
+
+**Do not set `JWT_SECRET`.** It remains in `.env` from an earlier auth
+implementation but is no longer referenced anywhere in the codebase.
+
+#### Known constraints on the free tier
+
+**0. `NEXT_PUBLIC_SITE_URL` must exactly match the origin you browse.**
+`src/middleware.ts` performs a CSRF origin check: in production, any
+`POST`/`PUT`/`PATCH`/`DELETE` carrying a `session_token` cookie is rejected with
+`403 Invalid origin` unless the request's `Origin` header matches
+`NEXT_PUBLIC_SITE_URL`. It defaults to `https://parsaoryani.me`, so **leaving it
+unset breaks every admin write on a `.vercel.app` domain.** Set it to the exact
+production origin.
+
+Note this also means admin writes will 403 on Vercel *preview* deployment URLs
+(`<project>-<hash>.vercel.app`), since those differ from the production alias.
+Use the production URL for admin work. Public pages and the contact form are
+unaffected — they carry no session cookie.
+
+**0b. The build requires a reachable database.**
+Verified: `next build` exits `1` without a live `DATABASE_URL`. The homepage and
+several other routes call Prisma during prerendering without a fallback. Create
+and migrate the Neon database **before** the first Vercel deployment, and make
+sure `DATABASE_URL` is present for the Build step, not just at runtime.
+
+**1. Admin file uploads need R2 on Vercel.**
+`src/app/api/upload/route.ts` writes to `./uploads` when R2 is not configured.
+Vercel's filesystem is ephemeral and read-only outside `/tmp`, so uploaded files
+will not persist. Either configure Cloudflare R2 (free tier: 10 GB) or commit
+media to `public/` instead of uploading through the admin panel.
+
+**2. Contact-form email needs a real domain.**
+Resend requires DNS verification of the sending domain, which is impossible on
+`*.vercel.app`. Until a custom domain is attached, leave `RESEND_API_KEY` unset —
+the contact form still records every message, readable in the admin inbox.
+
+**3. Neon free tier scales to zero.**
+The first request after idle incurs a short cold start. Acceptable for a
+portfolio; no configuration needed.
+
+#### Alternative free runtimes
+
+| Service | Free tier | Trade-off |
+|---|---|---|
+| **Render** | Free web service | Spins down after ~15 min idle; cold starts can reach ~50s |
+| **Fly.io** | Limited free allowance | Needs Docker — a `Dockerfile` already exists in this repo |
+| **Netlify** | Free | Next.js runtime supported but less seamless than Vercel |
+| **Railway** | Trial credit only | No longer a genuinely free tier |
+
+---
+
 ### Vercel (Recommended)
 
 Zero-config Next.js hosting with edge functions, analytics, and automatic SSL.
@@ -163,13 +297,68 @@ Or add a **Vercel Post-Build Hook** in Project Settings → Git:
 npx prisma migrate deploy && npm run db:seed
 ```
 
-#### 6. Custom Domain
+#### 6. Domain
 
-1. Vercel Dashboard → Settings → Domains
-2. Add `parsaoryani.me`
-3. Configure DNS:
-   - Type: `A` → Name: `@` → Value: `76.76.21.21`
-   - Type: `CNAME` → Name: `www` → Value: `cname.vercel-dns.com`
+All three options below are free. See
+[Fully Free Deployment](#fully-free-deployment-recommended-path) for the
+hosting and database side.
+
+##### Free option A — Vercel subdomain (immediate, zero setup)
+
+Every Vercel project gets a free public domain automatically on first deploy:
+
+```
+https://<project-name>.vercel.app
+```
+
+No DNS, no configuration, automatic SSL, free forever. This is live the moment
+the first deployment succeeds, and it is the fallback that every option below
+builds on top of.
+
+##### Free option B — free `.me` via GitHub Student Developer Pack (recommended)
+
+As an enrolled student you can claim a **free one-year `.me` domain** from
+Namecheap through the [GitHub Student Developer Pack](https://education.github.com/pack).
+This is the most appropriate option for a site sent to professors and research
+labs — `parsaoryani.me` reads as a personal academic domain, whereas a
+`.vercel.app` address reads as a deployment preview.
+
+1. Verify student status at <https://education.github.com/pack> (Sharif email)
+2. Claim the Namecheap `.me` offer
+3. Register `parsaoryani.me`
+4. Attach it to Vercel using the DNS records in the table below
+
+Note: free for the first year; renewal is paid. Set a calendar reminder.
+
+##### Free option C — developer subdomain (free, permanent, no student status)
+
+Community-run registries that grant free subdomains via a pull request:
+
+| Registry | Result | Notes |
+|---|---|---|
+| [is-a.dev](https://github.com/is-a-dev/register) | `parsaoryani.is-a.dev` | Developer-oriented, active, usually merged in days |
+| [js.org](https://github.com/js-org/js.org) | `parsaoryani.js.org` | For JavaScript projects |
+| [eu.org](https://nic.eu.org) | `parsaoryani.eu.org` | Free and permanent, but manual approval can take weeks |
+
+Each requires opening a PR that points the subdomain at the Vercel deployment
+(`CNAME` → `cname.vercel-dns.com`).
+
+##### Attaching any custom domain to Vercel
+
+1. Vercel Dashboard → Settings → Domains → Add
+2. Configure DNS at the registrar:
+
+| Type | Name | Value |
+|---|---|---|
+| `A` | `@` | `76.76.21.21` |
+| `CNAME` | `www` | `cname.vercel-dns.com` |
+
+3. Update `NEXT_PUBLIC_SITE_URL` in Vercel to the new origin and redeploy, so
+   canonical URLs, `sitemap.xml`, and `robots.txt` emit the correct host.
+
+**Recommended sequence:** deploy first and take the free `.vercel.app` domain
+(option A) so the site is live, then attach option B or C later without any
+redeployment risk.
 
 ---
 
