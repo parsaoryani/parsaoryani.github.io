@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { FileText, Link as LinkIcon, Presentation, Code2, ArrowUpRight } from "lucide-react"
+import { FileText, Link as LinkIcon, Presentation, Code2, ArrowUpRight, ChevronRight, UserRound } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 interface CourseFileShape {
@@ -103,22 +103,44 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
         <p className="text-sm text-mist/80 mt-1"><strong>Focus:</strong> {course.focus}</p>
       )}
       {course.instructor && (
-        <p className="text-sm text-mist/60 mt-1">{course.instructor}</p>
+        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ash">
+          <UserRound size={12} className="shrink-0 text-ash/70" />
+          {course.instructor}
+        </p>
       )}
       {course.topics && (
-        <div className="mt-2 flex flex-wrap gap-1.5">
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
           {course.topics.split(",").map((t) => (
             <span key={t.trim()} className="text-xs px-2 py-0.5 rounded-full bg-slate-800/60 border border-slate-700/50 text-mist/80">{t.trim()}</span>
           ))}
         </div>
       )}
       {course.syllabus && (
-        <details className="mt-2 group/syllabus">
-          <summary className="cursor-pointer text-xs font-mono text-cyan/80 hover:text-cyan inline-flex items-center gap-1">
-            View syllabus
-            <span className="text-ash transition-transform duration-200 group-open/syllabus:rotate-180">▸</span>
+        <details className="mt-3 group/syllabus">
+          <summary className="flex cursor-pointer list-none items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-ash transition-colors hover:text-cyan">
+            <ChevronRight size={12} className="shrink-0 transition-transform duration-200 group-open/syllabus:rotate-90" />
+            Syllabus
           </summary>
-          <p className="text-sm text-mist/80 mt-2 leading-relaxed">{course.syllabus}</p>
+          {/* Syllabi are stored as semicolon-separated topics; render them as a
+              scannable list, and fall back to prose when there is no delimiter. */}
+          {(() => {
+            const items = course.syllabus
+              .split(";")
+              .map((s) => s.trim())
+              .filter(Boolean)
+            if (items.length < 2) {
+              return <p className="mt-2 border-l border-slate-700/60 pl-3 text-[13px] leading-relaxed text-mist/80">{course.syllabus}</p>
+            }
+            return (
+              <ul className="mt-2 space-y-1 border-l border-slate-700/60 pl-3">
+                {items.map((item) => (
+                  // Clauses are split mid-sentence, so lift the first letter
+                  // rather than rewriting the stored text.
+                  <li key={item} className="text-[13px] leading-relaxed text-mist/80 first-letter:uppercase">{item}</li>
+                ))}
+              </ul>
+            )
+          })()}
         </details>
       )}
       {course.exercises && (
