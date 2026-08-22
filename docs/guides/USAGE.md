@@ -83,6 +83,45 @@ Editors should:
 4. Use Archive/Trash for removal rather than destructive browser confirmations.
 5. Review revision history before restoring an older version.
 
+## Course homework assets
+
+Coursework files shown on `/education/[slug]` are rendered from `CourseFile`
+records attached to each seeded course, grouped under their `HW<n>` label in
+the Exercises panel. `CourseFile.url` points at the file's location in
+[github.com/parsaoryani/courses](https://github.com/parsaoryani/courses) —
+`blob/main/...` for a single file, `tree/main/...` for a homework whose
+assignment is its own subfolder — not at a local path under `public/`. This
+site never hosts coursework files itself.
+
+`CourseFile.description` is a one-line summary shown under the file name;
+`course.exercises` is a flat per-course summary that
+`parseHomeworkExplanations()` in `course-detail-card.tsx` splits into one
+explanation per `HW<n>`, rendered above that homework's links.
+
+To add or update coursework files:
+
+1. Add the file to the `masters/<course-slug>/` tree in the
+   [courses repo](https://github.com/parsaoryani/courses) and push.
+2. Add or edit its entry in `scripts/data/sync-masters-coursework.ts`
+   (`CourseUpdate.files`), with the exact GitHub URL and a short description.
+3. Run it against the target database:
+
+   ```bash
+   npx tsx scripts/data/sync-masters-coursework.ts          # local
+   DATABASE_URL="<neon-pooled-url>" npx tsx scripts/data/sync-masters-coursework.ts   # production
+   ```
+
+   The script is idempotent — it skips any `CourseFile` whose name already
+   exists under that course, so it is safe to re-run.
+4. Open `http://localhost:4321/education/sharif-university-of-technology` and
+   confirm the file appears under the right `HW<n>` group with its
+   description and a working GitHub link.
+
+`scripts/data/link-coursework-to-github.ts` and
+`scripts/data/sharif-course-syllabi.ts` are one-off scripts already applied
+to both environments (URL migration and syllabus/topics/instructor content,
+respectively) — kept for reference, not part of the normal edit flow.
+
 ## Database and migrations
 
 `prisma/schema.prisma` is the source of truth. Apply committed migrations with `npm run db:migrate:deploy` in deployment environments. Do not edit an applied migration; create a new migration for schema changes. Back up before reset or restore operations.

@@ -4,7 +4,7 @@ This directory separates durable guidance from project history and design review
 
 | Area | Purpose | Entry point |
 |---|---|---|
-| `guides/` | Current architecture, setup, usage, and design blueprint | [Architecture](guides/ARCHITECTURE.md), [Usage](guides/USAGE.md) |
+| `guides/` | Current architecture, setup, usage, coursework assets, and design blueprint | [Architecture](guides/ARCHITECTURE.md), [Usage](guides/USAGE.md) |
 | `reviews/` | UX, IA, accessibility, and product-design reviews | [Personal site UX review](reviews/PERSONAL_SITE_UX_IA_REVIEW.md) |
 | `status/` | Progress notes and historical implementation records | [Progress](status/PROGRESS.md) |
 | `profile-data.md` | Verified academic/personal data mirrored by `scripts/seed.ts` | [Profile data](profile-data.md) |
