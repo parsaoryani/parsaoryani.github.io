@@ -1,0 +1,1188 @@
+{
+  "schemaVersion": 1,
+  "settings": {
+    "home_title": "Security and Scalability for\nDecentralized Systems",
+    "home_description": "I study how decentralized systems can be made more secure, scalable, and trustworthy through rigorous systems research, cryptographic design, and practical evaluation.",
+    "research_directions": [
+      {
+        "title": "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
+        "description": "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
+        "tags": [
+          "Blockchain Security",
+          "Cross-Chain",
+          "Layer 2",
+          "Distributed Systems"
+        ]
+      },
+      {
+        "title": "Ethereum Mempool Security and Asymmetric DoS",
+        "description": "Investigating denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.",
+        "tags": [
+          "Ethereum",
+          "Security",
+          "Mempool",
+          "DoS",
+          "Systems"
+        ],
+        "href": "/projects/brcc-lab",
+        "linkLabel": "View BRCC lab"
+      }
+    ],
+    "hidden_timeline_sections": [],
+    "nav_research_visible": false,
+    "profile_photo": {
+      "url": "/about/now.jpg",
+      "alt": "Parsa Oryani"
+    },
+    "contact_description": null,
+    "contact_emails": [],
+    "contact_links": [],
+    "contact_location": null
+  },
+  "publications": [],
+  "projects": [
+    {
+      "id": "cmt0cxi9i000dz55c7o8onlze",
+      "slug": "zk-mixer",
+      "title": "ZK-Mixer: Regulated Anonymous Payments",
+      "summary": "Zerocash POUR-protocol implementation with regulatory-compliant disclosure — unlinkable deposits and withdrawals with tiered auditor access.",
+      "role": "Solo",
+      "year": 2026,
+      "problem": "Anonymous payment systems (Zerocash) deliver transaction unlinkability but clash with AML/KYC regulation, while compliant systems trade away privacy. This project implements both: a full Zerocash-style mixer with a conditional-disclosure layer for authorized auditors.",
+      "approach": "Implemented the complete POUR protocol — 32-level Merkle tree, commitment/nullifier scheme, and Bulletproof-style zk-SNARK proofs — and extended it with Morales et al. reversible unlinkability: three privacy tiers (HIGH/MEDIUM/LOW) letting users selectively enable regulatory oversight without giving up privacy by default.",
+      "architecture": "Modular Python monolith under src/zkm: core (mixer, zk-proof, Merkle tree, commitments), crypto (coins, nullifiers, zk-SNARK engine, reversible unlinkability), API (FastAPI routes with JWT auth and 10+ REST endpoints), storage (SQLAlchemy with SQLite, indexed for audit trails), and security (Schnorr signatures, bcrypt password hashing). A JavaScript web frontend (frontend/) exposes the mixer as an application.",
+      "challenges": "zk-SNARK proof generation is the bottleneck at ~328 proofs/sec (~3ms each) — inherent to cryptographic proofs, mitigated by caching and batch verification. Balancing three privacy tiers against audit requirements surfaced 18 threat vectors, all documented with mitigations in the threat model.",
+      "results": "253 tests passing (147 unit, 25 integration, 24 API, 14 property-based, 8 performance suites) at 70% coverage with 0 mypy errors. Deposits and withdrawals complete under 500ms; Merkle operations average ~5ms; database throughput exceeds targets by 10-18x.",
+      "retrospective": "The tiered privacy model proved the privacy-compliance trade-off is reconcilable, but production deployment needs PostgreSQL (SQLite is fine at current scale) and the schnorr.py (58%) and auth_routes.py (54%) modules deserve coverage parity with the rest of the codebase.",
+      "techStack": [
+        "Python",
+        "FastAPI",
+        "zk-SNARK",
+        "Merkle Tree",
+        "SQLAlchemy",
+        "SQLite",
+        "JWT",
+        "JavaScript"
+      ],
+      "repoUrl": "https://github.com/parsaoryani/ZK-Mixer",
+      "demoUrl": null,
+      "featured": true,
+      "sortOrder": 0,
+      "ogImageUrl": null,
+      "tags": [
+        {
+          "tagId": "cmskkdgqw0004z5i2y5wv87jz",
+          "tag": {
+            "id": "cmskkdgqw0004z5i2y5wv87jz",
+            "slug": "blockchain",
+            "label": "Blockchain",
+            "description": null,
+            "color": null
+          }
+        },
+        {
+          "tagId": "cmskkdgql0001z5i2xywtpe80",
+          "tag": {
+            "id": "cmskkdgql0001z5i2xywtpe80",
+            "slug": "zk",
+            "label": "Zero-Knowledge",
+            "description": null,
+            "color": null
+          }
+        },
+        {
+          "tagId": "cmt0cxi8p0006z55c3rfe6j2y",
+          "tag": {
+            "id": "cmt0cxi8p0006z55c3rfe6j2y",
+            "slug": "cryptography",
+            "label": "Cryptography",
+            "description": null,
+            "color": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "cmt0c67r0000cz5m5c37gl2on",
+      "slug": "ethereum-cli",
+      "title": "Ethereum CLI (Sepolia Testnet)",
+      "summary": "A modular command-line interface for the Ethereum Sepolia testnet — encrypted wallet management, balance queries, ETH transfers, and transaction history export.",
+      "role": "Solo",
+      "year": 2025,
+      "problem": "Interacting with Ethereum from the terminal usually means pulling in web3.py and fighting its API surface. This tool needed to cover the essential Sepolia workflows — wallet management, balances, transfers, and history — in a lightweight, modular CLI that keeps private keys safe.",
+      "approach": "Built on direct JSON-RPC calls to any standard endpoint (Infura, Alchemy, GetBlock) instead of web3.py, paired with the Etherscan API for efficient transaction-history retrieval. Wallets are stored encrypted on disk, and every sensitive operation is gated behind a user password.",
+      "architecture": "Four modules plus a thin entry point: wallet.py (generate, import, list, use, show — encrypted storage via the cryptography library), rpc_client.py (JSON-RPC client with retry logic for rate limits and timeouts, checksum-validated addresses), transaction.py (build/sign/send ETH transfers, status lookups, history and JSON export via Etherscan), and main.py (argparse command parsing behind the executable cli script). Network settings live in config/settings.json; secrets are loaded from .env.",
+      "challenges": "Staying safe without a heavyweight library: private keys are never stored in plaintext and require a password for export, addresses are validated against Ethereum checksum format, transient RPC failures (HTTP 429, timeouts) are retried, and the tool is restricted to Sepolia to prevent accidental use of test keys against mainnet funds.",
+      "results": "Full wallet lifecycle, balances in both ETH and Wei, signed ETH transfers, transaction status and history, and JSON export. 74% overall test coverage across the three modules (transaction.py at 86%, its tests at 99%).",
+      "retrospective": "Direct JSON-RPC kept dependencies minimal and made provider switching trivial, but wallet.py (38%) and rpc_client.py (59%) still lag on coverage — the next pass should add wallet error-path and network failure tests to push past 80%. ERC-20 transfers and smart-contract interactions are the natural next features.",
+      "techStack": [
+        "Python",
+        "JSON-RPC",
+        "Etherscan API",
+        "eth-account",
+        "cryptography",
+        "argparse",
+        "unittest"
+      ],
+      "repoUrl": "https://github.com/parsaoryani/ethereum-cli",
+      "demoUrl": null,
+      "featured": true,
+      "sortOrder": 1,
+      "ogImageUrl": null,
+      "tags": [
+        {
+          "tagId": "cmskkdgqw0004z5i2y5wv87jz",
+          "tag": {
+            "id": "cmskkdgqw0004z5i2y5wv87jz",
+            "slug": "blockchain",
+            "label": "Blockchain",
+            "description": null,
+            "color": null
+          }
+        },
+        {
+          "tagId": "cmt0c67qb0008z5m5q9x4xqly",
+          "tag": {
+            "id": "cmt0c67qb0008z5m5q9x4xqly",
+            "slug": "ethereum",
+            "label": "Ethereum",
+            "description": null,
+            "color": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "cmt0hvefy000cz515ere15u75",
+      "slug": "brcc-lab",
+      "title": "BRCC: Besu Research Control Center",
+      "summary": "A local control plane for running reproducible mempool/DoS experiments on a 4-validator Hyperledger Besu QBFT network — safety-gated network lifecycle, configuration impact analysis, and full experiment reproducibility metadata.",
+      "role": "Solo",
+      "year": 2025,
+      "problem": "Studying mempool/DoS behavior on Ethereum-family clients needs a private multi-validator network whose configuration changes have a known blast radius, plus enough execution metadata that a result can be explained or repeated later — that tooling didn't exist off the shelf.",
+      "approach": "The system enforces one rule end to end: Build → Verify → Observe → Baseline → Stress → Compare → Reproduce — nothing destructive or high-load runs until the network is confirmed healthy and monitoring is live. Configuration changes go through a draft/diff/impact/apply workflow that classifies every edit from NO_RESTART up to destructive CHAIN_RESET or NETWORK_REGENERATE, requiring explicit confirmation before anything destructive runs.",
+      "architecture": "A FastAPI backend (Python, shared ecosystem with the Web3.py experiment tooling) drives Docker Compose to manage 4 Besu QBFT validator containers, with Prometheus for time-series metrics and PostgreSQL for run/config metadata. A React + TypeScript + Vite frontend talks only to the control API over REST/WebSocket — the browser never controls Docker or calls Besu directly, which keeps the privilege boundary, audit trail, and CORS story simple. Validator keys are kept separate from chain data so identity survives a reset.",
+      "challenges": "Privilege separation between browser, API, and Docker; making destructive operations (chain reset, validator regeneration) require an explicit confirmed impact class instead of a same-click action; and a real metrics gap — cAdvisor can't resolve container names on Docker Desktop/macOS without the docker socket mounted, so CPU/memory default to Besu's own process_*/jvm_* metrics instead, which work everywhere the JVM runs.",
+      "results": "Overview, Topology, Nodes, Mempool, Consensus, Experiments, Compare, Config, and Logs pages are complete and reflect live backend state (an unavailable metric renders \"Unavailable\", never a fake zero). One experiment workload (steady-rate baseline) is implemented, with reproducibility metadata (Besu image, chain ID, genesis hash, git commit, network generation, txpool type) recorded on every run.",
+      "retrospective": "The impact-classified apply flow made destructive network changes safe to iterate on quickly. Several workloads are scoped but not yet built — burst, many-senders, future-nonce, replacement-churn, txpool comparison, ingress topology, and recovery-time — recorded so the design intent isn't lost even though they aren't scheduled yet.",
+      "techStack": [
+        "Python",
+        "FastAPI",
+        "React",
+        "TypeScript",
+        "Vite",
+        "PostgreSQL",
+        "Prometheus",
+        "Grafana",
+        "Docker Compose",
+        "Hyperledger Besu",
+        "QBFT"
+      ],
+      "repoUrl": "https://github.com/parsaoryani/brcc-lab",
+      "demoUrl": null,
+      "featured": true,
+      "sortOrder": 2,
+      "ogImageUrl": null,
+      "tags": [
+        {
+          "tagId": "cmskkdgqw0004z5i2y5wv87jz",
+          "tag": {
+            "id": "cmskkdgqw0004z5i2y5wv87jz",
+            "slug": "blockchain",
+            "label": "Blockchain",
+            "description": null,
+            "color": null
+          }
+        },
+        {
+          "tagId": "cmt0c67qb0008z5m5q9x4xqly",
+          "tag": {
+            "id": "cmt0c67qb0008z5m5q9x4xqly",
+            "slug": "ethereum",
+            "label": "Ethereum",
+            "description": null,
+            "color": null
+          }
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "id": "cmskkdgqw0004z5i2y5wv87jz",
+      "slug": "blockchain",
+      "label": "Blockchain",
+      "description": null,
+      "color": null
+    },
+    {
+      "id": "cmt0cxi8p0006z55c3rfe6j2y",
+      "slug": "cryptography",
+      "label": "Cryptography",
+      "description": null,
+      "color": null
+    },
+    {
+      "id": "cmt0c67qb0008z5m5q9x4xqly",
+      "slug": "ethereum",
+      "label": "Ethereum",
+      "description": null,
+      "color": null
+    },
+    {
+      "id": "cmskkdgql0001z5i2xywtpe80",
+      "slug": "zk",
+      "label": "Zero-Knowledge",
+      "description": null,
+      "color": null
+    }
+  ],
+  "timelineEvents": [
+    {
+      "id": "cmskkdgub000ez5i284sp3sy3",
+      "type": "education",
+      "title": "M.Sc. in Computer Engineering",
+      "organization": "Sharif University of Technology",
+      "location": "Tehran, Iran",
+      "startDate": "2025-09-01T00:00:00.000Z",
+      "endDate": null,
+      "description": "National Master's Entrance Examination Rank: 56",
+      "highlights": [
+        "Research focus on blockchain security and AI safety",
+        "Graduate coursework in advanced cryptography, ML theory, and formal methods"
+      ],
+      "url": null,
+      "sortOrder": 0,
+      "courses": [
+        {
+          "id": "cmt03ok4y000nz5kahnnx8woz",
+          "name": "Applied Cryptography",
+          "grade": "18.9 / 20",
+          "highlight": null,
+          "instructor": "Dr. Masoumeh Koochak Shooshtari",
+          "focus": "Formal security definitions, reduction-based proofs, and practical protocol design across classical and modern cryptography",
+          "topics": "Perfect secrecy and OTP, Pseudorandomness and PRGs, CPA/CCA security, PRFs and block ciphers, MACs and HMAC, Authenticated encryption, Hash functions, AES and differential cryptanalysis, RSA and Diffie-Hellman, Elliptic curves, Digital signatures and PKI, Post-quantum cryptography",
+          "syllabus": "Secret-key cryptography foundations; Public-key infrastructure and key exchange; Digital signatures and verification; Security models and reductions; Advanced cryptographic constructions",
+          "exercises": null,
+          "projects": "ZK-Mixer: Zero-knowledge mixer implementation demonstrating advanced cryptographic protocol design",
+          "discussions": null,
+          "sortOrder": 0,
+          "files": [],
+          "links": [
+            {
+              "id": "cmt31qfec0001z59ao258vtub",
+              "type": "project",
+              "name": "ZK-Mixer",
+              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
+              "sortOrder": 0
+            }
+          ]
+        },
+        {
+          "id": "cmt03ok50000pz5kam1434loi",
+          "name": "Secure Software Systems",
+          "grade": "18.2 / 20",
+          "highlight": null,
+          "instructor": "Dr. Mehdi Kharrazi",
+          "focus": "Software security theory with practical exploitation, static/dynamic analysis, automated testing, and AI-assisted vulnerability detection",
+          "topics": "Memory-corruption vulnerabilities, Control-flow hijacking and ROP, Control-Flow Integrity, Taint analysis, Symbolic and concolic execution, Fuzzing, ML-based vulnerability detection, Code property graphs, LLMs for security analysis, Automated patch generation",
+          "syllabus": "Secure software engineering fundamentals; Vulnerability analysis and exploitation techniques; Runtime and static defense mechanisms; Automated software security testing; AI-assisted security analysis",
+          "exercises": "HW1: Memory corruption & exploitation (format string, ROP, CVE analysis, remote pwn). HW2: Fuzzing (Atheris) + static analysis (AST + Z3). HW3: LLM-based vulnerability detection (context strategies, 3-stage pipeline, patch generation, model comparison). See files for details.",
+          "projects": "Agentic Vulnerability Detection: Iterative LLM agent with CodeQL integration, SARIF parsing, confidence scoring, tools for regex/grep extraction, dangerous pattern detection, caller identification; analyzed nginx (10K+ LOC); 10-page report on architecture, execution traces, comparative analysis, real-world findings",
+          "discussions": null,
+          "sortOrder": 1,
+          "files": [
+            {
+              "id": "cmt31pgq50001z5yq4y4uxpyy",
+              "name": "HW1: Memory Corruption & Exploitation",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw1.pdf",
+              "description": "Format string, ROP, CVE exploitation, remote pwn challenges",
+              "kind": "pdf",
+              "size": 52379,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgq80003z5yq2tjuwnz1",
+              "name": "HW2: Fuzzing & Static Analysis",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw2.pdf",
+              "description": "Atheris fuzzing, SAT static analyzer with Z3",
+              "kind": "pdf",
+              "size": 53718,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgqb0005z5yqh3b1q0kj",
+              "name": "HW3: LLM-Based Vulnerability Detection",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw3.pdf",
+              "description": "Context strategies, 3-stage pipeline, patch generation, model comparison",
+              "kind": "pdf",
+              "size": 85461,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgqd0007z5yqv406g6ce",
+              "name": "Project: Agentic Vulnerability Detection",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/ce815-041-project.pdf",
+              "description": "Iterative LLM agent with CodeQL integration, nginx analysis",
+              "kind": "pdf",
+              "size": 68490,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            }
+          ],
+          "links": [
+            {
+              "id": "cmt31qfef0003z59aotjkm702",
+              "type": "project",
+              "name": "Agentic Vulnerability Detection",
+              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
+              "sortOrder": 0
+            }
+          ]
+        },
+        {
+          "id": "cmt0d38jq000gz520h7pbsv13",
+          "name": "Formal Methods in Information Security",
+          "grade": null,
+          "highlight": null,
+          "instructor": "Dr. Morteza Amini",
+          "focus": "Formal modeling of security policies and verification of secure systems using logical and structural reasoning",
+          "topics": "Discretionary and mandatory access control, Role-based access control, Bell-LaPadula, Harrison-Ruzzo-Ullman, Lattice-based information flow, Classical and modal logic, Information-flow control, Security protocol verification",
+          "syllabus": "Access-control models; Security policies and reasoning; Logic-based verification techniques; Information flow and confidentiality; Formal protocol analysis",
+          "exercises": "HW1: Access control models & policy specification. HW2: Logic-based reasoning & information flow control. HW3: Formal protocol verification. All in English & Persian. See files for details.",
+          "projects": "Formal Verification of ZK-Rollup Security Mechanisms: Applied formal methods to verify security properties of ZK-Rollup protocols",
+          "discussions": null,
+          "sortOrder": 2,
+          "files": [
+            {
+              "id": "cmt31pgqn0009z5yqwsi2p05c",
+              "name": "HW1: Access Control Models (English)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW1_EN.pdf",
+              "description": "Access control models and policy specification",
+              "kind": "pdf",
+              "size": 94238,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgqq000bz5yq267dcmmh",
+              "name": "HW1: Access Control Models (Persian)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW1_FA.pdf",
+              "description": "Access control models and policy specification (Persian)",
+              "kind": "pdf",
+              "size": 267139,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgqs000dz5yq10et57ep",
+              "name": "HW2: Logic & Information Flow (English)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW2_EN.pdf",
+              "description": "Security policies, logic-based reasoning, information flow",
+              "kind": "pdf",
+              "size": 91612,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgqv000fz5yqo96139oo",
+              "name": "HW2: Logic & Information Flow (Persian)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW2_FA.pdf",
+              "description": "Security policies, logic-based reasoning, information flow (Persian)",
+              "kind": "pdf",
+              "size": 223551,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgqx000hz5yq7sl0h1c8",
+              "name": "HW3: Protocol Verification (English)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW3_EN.pdf",
+              "description": "Formal protocol verification and analysis",
+              "kind": "pdf",
+              "size": 141532,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgr1000jz5yq7p6z13md",
+              "name": "HW3: Protocol Verification (Persian)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW3_FA.pdf",
+              "description": "Formal protocol verification and analysis (Persian)",
+              "kind": "pdf",
+              "size": 318986,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            }
+          ],
+          "links": [
+            {
+              "id": "cmt31qfeg0005z59ahnrwp2js",
+              "type": "project",
+              "name": "Formal Verification of ZK-Rollup Security Mechanisms",
+              "url": "#",
+              "sortOrder": 0
+            }
+          ]
+        },
+        {
+          "id": "cmt0d38jr000iz520ymur9obt",
+          "name": "Deep Learning",
+          "grade": null,
+          "highlight": null,
+          "instructor": "Dr. Soleymani",
+          "focus": "Foundational theory and applied practical work in model development, evaluation, and analysis across deep learning paradigms from classical MLPs to modern transformers, generative models, and foundation-model style training",
+          "topics": "MLPs and backpropagation, Optimization and generalization, CNNs, RNNs and LSTMs, Attention and Transformers, Large language models, State-space models, VAEs and GANs, Diffusion models, Self-supervised learning, CLIP and foundation models, Graph neural networks",
+          "syllabus": "Neural network foundations; Modern deep learning architectures; Optimization and training workflow; Representation learning and transfer; Generative and multimodal models",
+          "exercises": "5 HWs × 3 parts each: HW1 (PyTorch basics, NumPy NN from scratch, optimization), HW2 (CNNs, vision, RNNs/LSTMs), HW3 (Transformers, LLMs, state-space), HW4 (VAEs, GANs, diffusion), HW5 (Self-supervised, CLIP, DALL-E, GNNs, interpretability). See files for details.",
+          "projects": "All assignments are structured as multi-part practical exercises (P1–P3 each) combining implementation, experiments, and conceptual analysis; no separate final project — the 5 homeworks collectively cover the full deep learning pipeline from classical networks to frontier generative models.",
+          "discussions": null,
+          "sortOrder": 3,
+          "files": [
+            {
+              "id": "cmt31pgst000zz5yqj6j6ad1o",
+              "name": "HW1 P1: PyTorch Basics",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw1/P1_HW1",
+              "description": "Tensor creation, indexing, slicing, constructors, dtypes, operations",
+              "kind": "ipynb",
+              "size": 20007119,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgsx0011z5yquxku7i8b",
+              "name": "HW1 P2: NN from Scratch (NumPy)",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw1/P2_HW1",
+              "description": "Affine/ReLU/Sigmoid forward-backward, FullyConnectedNet, Solver, gradient checking",
+              "kind": "ipynb",
+              "size": 136804,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgu50013z5yqe5f02jwm",
+              "name": "HW1 P3: Optimization Methods",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw1/P3_HW1",
+              "description": "GD, Momentum, RMSProp, Adam, second-order methods, visualization",
+              "kind": "ipynb",
+              "size": 2112359,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgud0015z5yqngpxmb2z",
+              "name": "HW2 P1: Emoji Classification",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw2/P1-HW2",
+              "description": "CNN for emoji classification",
+              "kind": "ipynb",
+              "size": 1344321,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgul0017z5yqmwt3xlt5",
+              "name": "HW2 P2: CAPTCHA Segmentation",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw2/P2-HW2",
+              "description": "CNN for CAPTCHA segmentation",
+              "kind": "ipynb",
+              "size": 3139112,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgup0019z5yqawyo6jbd",
+              "name": "HW2 P3: RNN Implementation",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw2/P3-HW2",
+              "description": "Custom LSTM/RNN implementation",
+              "kind": "ipynb",
+              "size": 78782,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgus001bz5yqqasbhvoe",
+              "name": "HW3 P1",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw3/P1-HW3.ipynb",
+              "description": "Transformer/attention exercises",
+              "kind": "ipynb",
+              "size": 849441,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pguv001dz5yq9anfrv7v",
+              "name": "HW3 P2: Inference Techniques",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/deep-learning/HW/hw3/P2-HW3",
+              "description": "LLM inference: CoT, self-consistency, few-shot, self-refinement",
+              "kind": "ipynb",
+              "size": 111474,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgux001fz5yqu3dxvvfs",
+              "name": "HW3 P3",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw3/P3-HW3.ipynb",
+              "description": "State-space models",
+              "kind": "ipynb",
+              "size": 81220,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pguy001hz5yq0ssr0z3q",
+              "name": "HW4 P1: README",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw4/P1_HW4/README.txt",
+              "description": "VAE/GAN exercises",
+              "kind": "txt",
+              "size": 757,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgv2001jz5yqzfngdk33",
+              "name": "HW4 P2: Diffusion Models",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw4/P2_HW4.ipynb",
+              "description": "Diffusion models",
+              "kind": "ipynb",
+              "size": 710914,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgva001lz5yqd958rj6b",
+              "name": "HW4 P3: Advanced Generative",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw4/P3_HW4.ipynb",
+              "description": "Advanced generative models",
+              "kind": "ipynb",
+              "size": 813877,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgvg001nz5yq2haok1p7",
+              "name": "HW5 P1: Self-Supervised Learning",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw5/P1_HW5.ipynb",
+              "description": "Self-supervised/contrastive learning",
+              "kind": "ipynb",
+              "size": 68831,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgvz001pz5yqmn6iy211",
+              "name": "HW5 P2: CLIP/Multimodal",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw5/P2_HW5.ipynb",
+              "description": "CLIP/multimodal alignment",
+              "kind": "ipynb",
+              "size": 4602707,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgww001rz5yqzcehj58x",
+              "name": "HW5 P3: DALL-E/GNNs/Interpretability",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/deep-learning/HW/hw5/P3_HW5.ipynb",
+              "description": "DALL-E/GNNs/interpretability",
+              "kind": "ipynb",
+              "size": 8491342,
+              "mimeType": "application/octet-stream",
+              "sortOrder": 0
+            }
+          ],
+          "links": []
+        },
+        {
+          "id": "cmt0d38js000kz520r9ypqq4v",
+          "name": "Foundations and Applications of Blockchain",
+          "grade": null,
+          "highlight": null,
+          "instructor": "Dr. Amir Mahdi Sadeghzadeh",
+          "focus": "Core distributed systems and cryptographic ideas applied to real blockchain protocols, consensus design, scalability, and practical application-level analysis",
+          "topics": "Cryptographic primitives, Merkle trees, Nakamoto consensus, P2P networks, Bitcoin Script, Safety and liveness, Sharding, Proof of stake, EVM and Solidity, Payment channels, Rollups, ZK data privacy",
+          "syllabus": "Blockchain foundations; Decentralized protocols and consensus; Smart contracts and execution environments; Scalability and privacy techniques; Applications and analysis of blockchain systems",
+          "exercises": "HW1: Blockchain foundations (mempool, Merkle trees, P2P, mining, Bitcoin Script). HW2: Consensus & selfish mining (protocol divergence, difficulty, mempool, safety/liveness, simulator). HW3: Network efficiency & smart contracts (propagation, reentrancy, NFT sale). See files for details.",
+          "projects": "opML: Optimistic Machine Learning on Blockchain — Optimistic execution of ML inference on-chain with fraud proofs. ZKsync Protocol: Analysis and implementation of ZK-Rollup scaling solution with zero-knowledge proofs.",
+          "discussions": null,
+          "sortOrder": 4,
+          "files": [
+            {
+              "id": "cmt31pgra000lz5yqtg2sq5zm",
+              "name": "HW1: Blockchain Foundations (English)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/foundations-and-applications-of-blockchain/HW/hw1/HW1_Blockchain_EN.pdf",
+              "description": "Mempool, Merkle trees, P2P network, mining difficulty, Bitcoin Script",
+              "kind": "pdf",
+              "size": 95182,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgrd000nz5yqctdyrz6z",
+              "name": "HW1: Blockchain Foundations (Persian)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/foundations-and-applications-of-blockchain/HW/hw1/HW1_Blockchain_FA.pdf",
+              "description": "Mempool, Merkle trees, P2P network, mining difficulty, Bitcoin Script (Persian)",
+              "kind": "pdf",
+              "size": 128897,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgrl000tz5yqzn222zqx",
+              "name": "HW2 Practical: Selfish Mining Simulator",
+              "url": "https://github.com/parsaoryani/courses/tree/main/masters/foundations-and-applications-of-blockchain/HW/hw2/Practical",
+              "description": "Selfish mining simulator with difficulty retargeting experiments",
+              "kind": "pdf",
+              "size": 645,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgrg000pz5yqo0o3gikz",
+              "name": "HW2: Consensus, Mempools, Selfish Mining (English)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/foundations-and-applications-of-blockchain/HW/hw2/HW2_Blockchain_EN.pdf",
+              "description": "Protocol divergence, difficulty, mempool, safety/liveness, selfish mining",
+              "kind": "pdf",
+              "size": 80702,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgrj000rz5yqbokq5uhz",
+              "name": "HW2: Consensus, Mempools, Selfish Mining (Persian)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/foundations-and-applications-of-blockchain/HW/hw2/HW2_Blockchain_FA.pdf",
+              "description": "Protocol divergence, difficulty, mempool, safety/liveness, selfish mining (Persian)",
+              "kind": "pdf",
+              "size": 127278,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgrn000vz5yql2ceqce5",
+              "name": "HW3: Network Efficiency & Smart Contracts (English)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/foundations-and-applications-of-blockchain/HW/hw3/HW3_Blockchain_EN.pdf",
+              "description": "Network propagation, reentrancy, NFT sale contract security",
+              "kind": "pdf",
+              "size": 131362,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31pgrq000xz5yqlr92u651",
+              "name": "HW3: Network Efficiency & Smart Contracts (Persian)",
+              "url": "https://github.com/parsaoryani/courses/blob/main/masters/foundations-and-applications-of-blockchain/HW/hw3/HW3_Blockchain_FA.pdf",
+              "description": "Network propagation, reentrancy, NFT sale contract security (Persian)",
+              "kind": "pdf",
+              "size": 139777,
+              "mimeType": "application/pdf",
+              "sortOrder": 0
+            }
+          ],
+          "links": [
+            {
+              "id": "cmt31qfeh0007z59avlso45j6",
+              "type": "project",
+              "name": "opML: Optimistic Machine Learning on Blockchain",
+              "url": "#",
+              "sortOrder": 0
+            },
+            {
+              "id": "cmt31qfei0009z59asmuky5oh",
+              "type": "project",
+              "name": "ZKsync Protocol",
+              "url": "#",
+              "sortOrder": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmt03ok4u000lz5ka5jevebqj",
+      "type": "education",
+      "title": "B.Sc. in Computer Science",
+      "organization": "Amirkabir University of Technology (Tehran Polytechnic)",
+      "location": "Tehran, Iran",
+      "startDate": "2020-09-01T00:00:00.000Z",
+      "endDate": "2025-02-01T00:00:00.000Z",
+      "description": "National University Entrance Examination Rank: 343",
+      "highlights": null,
+      "url": null,
+      "sortOrder": 7,
+      "courses": [
+        {
+          "id": "cmt03ok51000rz5kah1q1snii",
+          "name": "Artificial Intelligence and Lab",
+          "grade": "20/20",
+          "highlight": null,
+          "instructor": "Dr. Ghatee",
+          "focus": null,
+          "topics": "Intelligent agents, search & heuristics, adversarial search, CSPs, probabilistic inference, supervised/unsupervised learning, neural networks, CNNs & RNNs",
+          "syllabus": "Intelligent agents; uninformed and informed search; heuristic search; adversarial search and game theory; constraint satisfaction problems; probabilistic inference; supervised, unsupervised, and semi-supervised learning; optimization and neural networks; associative and Hopfield networks; evolutionary computation; swarm intelligence; uncertainty and fuzzy logic. Practical work included Python, Jupyter/Colab, NumPy, Pandas, Scikit-learn, data preprocessing, EDA, regression, classification, clustering, neural networks, CNNs, and RNNs.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 0,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok52000tz5kasuyj7rkh",
+          "name": "Probability I",
+          "grade": "19.46/20",
+          "highlight": null,
+          "instructor": "Dr. Asili",
+          "focus": null,
+          "topics": "Probability spaces, Bayes' theorem, random variables, distributions, expectation & variance, joint distributions, LLN & CLT",
+          "syllabus": "Probability spaces and axioms; combinatorial probability; conditional probability and Bayes' theorem; independence; discrete and continuous random variables; probability mass and density functions; cumulative distribution functions; expectation, variance, and moments; common probability distributions; joint distributions; covariance and correlation; conditional distributions and expectations; transformations of random variables; law of large numbers and central limit theorem.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 1,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok53000vz5karsc0xqqm",
+          "name": "Cryptography I",
+          "grade": "18.75/20",
+          "highlight": null,
+          "instructor": "Dr. Ali",
+          "focus": null,
+          "topics": "Perfect secrecy, PRGs & stream ciphers, PRFs & block ciphers, MACs, hash functions, RSA, public-key crypto, digital signatures, post-quantum intro",
+          "syllabus": "Classical cryptography; perfect secrecy and fundamental security concepts; pseudorandom generators and stream ciphers; pseudorandom functions and block ciphers; message integrity and message authentication codes; cryptographic hash functions; public-key encryption; RSA; public-key cryptography based on discrete-logarithm problems; digital signatures; introduction to post-quantum cryptography.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 2,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok53000xz5kazp0op8qe",
+          "name": "Foundations of Matrices and Linear Algebra",
+          "grade": "18.69/20",
+          "highlight": null,
+          "instructor": "Dr. Najafi",
+          "focus": null,
+          "topics": "Vector spaces, linear independence & bases, linear transformations, eigenvalues & eigenvectors, diagonalization, inner-product spaces, ML applications",
+          "syllabus": "Groups, rings, and fields; matrix algebra and special matrices; systems of linear equations and Gaussian elimination; vector spaces and subspaces; span and generated spaces; linear independence, bases, and dimension; row and column spaces; matrix rank; change of basis; quotient spaces; linear transformations; kernel and image; matrix representation of linear maps; eigenvalues and eigenvectors; characteristic polynomials; Cayley-Hamilton theorem; diagonalization; inner-product spaces; orthogonality and orthogonal bases; and applications of linear algebra to machine learning.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 3,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok54000zz5ka0zmm583m",
+          "name": "Special Topics in Cryptography",
+          "grade": "18.25/20",
+          "highlight": "Highest Grade in Class",
+          "instructor": "Dr. Ali",
+          "focus": "Lattice-Based & Post-Quantum Cryptography",
+          "topics": "Lattices, SIS, LWE, Ring-LWE, NTRU, lattice trapdoors, signatures, FHE, attribute-based encryption",
+          "syllabus": "Mathematical lattices; discrete Gaussian and subgaussian distributions; early lattice-based cryptography including Ajtai-Dwork, NTRU, and GGH; Short Integer Solution (SIS); Learning With Errors (LWE); Ring-SIS and Ring-LWE; lattice-based collision-resistant hashing; public-key encryption; lattice trapdoors; digital signatures; identity-based encryption; pseudorandom functions; fully homomorphic encryption; attribute-based encryption; and open problems in lattice-based cryptography.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 4,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok550011z5ka0uc853px",
+          "name": "Design and Analysis of Algorithms",
+          "grade": "18/20",
+          "highlight": null,
+          "instructor": "Dr. Shirali-Shahreza",
+          "focus": null,
+          "topics": null,
+          "syllabus": null,
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 5,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok560013z5kanjiqrvbk",
+          "name": "Advanced Programming",
+          "grade": "18/20",
+          "highlight": "C++",
+          "instructor": "Dr. Asgaripour",
+          "focus": null,
+          "topics": "Object-oriented programming, templates, operator overloading, dynamic memory, inheritance, polymorphism, exception handling, STL, data structures, file I/O",
+          "syllabus": "C++ fundamentals; functions, references, default arguments, function overloading, and templates; object-oriented programming; classes, constructors, and destructors; encapsulation; const and static members; friend functions and the this pointer; operator overloading; dynamic memory management; copy constructors and object copying; inheritance; polymorphism; virtual functions and abstract classes; exception handling; class templates; linked lists; STL containers and algorithms; sorting and binary search; text and binary file I/O; and basic software design patterns such as Singleton.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 6,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok560015z5kax04zkf0d",
+          "name": "Foundations of Probability",
+          "grade": "18/20",
+          "highlight": null,
+          "instructor": "Dr. Gorji",
+          "focus": null,
+          "topics": null,
+          "syllabus": null,
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 7,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok570017z5kazy2wlwvj",
+          "name": "Numerical Linear Algebra",
+          "grade": "17.55/20",
+          "highlight": null,
+          "instructor": "Dr. Dehghan",
+          "focus": null,
+          "topics": "Numerical stability, Gaussian elimination, LU/Cholesky/QR factorization, least squares, iterative methods, eigenvalues & SVD, condition numbers",
+          "syllabus": "Numerical errors, stability, and conditioning; numerical solution of linear systems; Gaussian elimination; matrix factorizations including LU, Cholesky, and QR; least-squares problems; iterative methods for linear systems; convergence analysis; numerical computation of eigenvalues and eigenvectors; power and QR-type methods; singular value decomposition; matrix norms; condition numbers; and stable numerical matrix computations.",
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 8,
+          "files": [],
+          "links": []
+        },
+        {
+          "id": "cmt03ok580019z5kaknrk0rsf",
+          "name": "Foundations of Logic and Set Theory",
+          "grade": "17.50/20",
+          "highlight": null,
+          "instructor": "Dr. Roshandel Tavana",
+          "focus": null,
+          "topics": null,
+          "syllabus": null,
+          "exercises": null,
+          "projects": null,
+          "discussions": null,
+          "sortOrder": 9,
+          "files": [],
+          "links": []
+        }
+      ]
+    }
+  ],
+  "skillCategories": [
+    {
+      "id": "cmt0fu4u0000iz59juok1txxu",
+      "name": "Decentralized Systems",
+      "sortOrder": 0,
+      "skills": [
+        {
+          "id": "cmt0fu4u2000kz59jeabu5xuz",
+          "name": "Blockchain",
+          "proficiency": "advanced",
+          "sortOrder": 0
+        },
+        {
+          "id": "cmt0fu4u3000mz59j3jygm4ie",
+          "name": "Ethereum",
+          "proficiency": "advanced",
+          "sortOrder": 1
+        },
+        {
+          "id": "cmt0fu4u4000oz59j9c1utesj",
+          "name": "Solana",
+          "proficiency": "advanced",
+          "sortOrder": 2
+        },
+        {
+          "id": "cmt0fu4u5000qz59jxnqg73m3",
+          "name": "Layer 2",
+          "proficiency": "advanced",
+          "sortOrder": 3
+        },
+        {
+          "id": "cmt0fu4u5000sz59jz6iyk78y",
+          "name": "Cross-Chain Protocols",
+          "proficiency": "advanced",
+          "sortOrder": 4
+        },
+        {
+          "id": "cmt0fu4u5000uz59juclnyxwr",
+          "name": "DeFi",
+          "proficiency": "advanced",
+          "sortOrder": 5
+        }
+      ]
+    },
+    {
+      "id": "cmt0fu4u6000vz59jjw4g12bs",
+      "name": "Security & Cryptography",
+      "sortOrder": 1,
+      "skills": [
+        {
+          "id": "cmt0fu4u6000xz59jyp0bued6",
+          "name": "Applied Cryptography",
+          "proficiency": "advanced",
+          "sortOrder": 0
+        },
+        {
+          "id": "cmt0fu4u7000zz59jtbyu598u",
+          "name": "Zero-Knowledge Proofs",
+          "proficiency": "advanced",
+          "sortOrder": 1
+        },
+        {
+          "id": "cmt0fu4u70011z59jhqao3qj8",
+          "name": "Protocol Security",
+          "proficiency": "advanced",
+          "sortOrder": 2
+        },
+        {
+          "id": "cmt0fu4u70013z59j07tz6lzy",
+          "name": "Smart Contract Security",
+          "proficiency": "advanced",
+          "sortOrder": 3
+        },
+        {
+          "id": "cmt0fu4u70015z59jcpnpcggt",
+          "name": "Formal Methods",
+          "proficiency": "advanced",
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "id": "cmt0fu4u80016z59jg26iffd9",
+      "name": "Distributed Systems",
+      "sortOrder": 2,
+      "skills": [
+        {
+          "id": "cmt0fu4u90018z59jyllm7mnh",
+          "name": "Consensus",
+          "proficiency": "advanced",
+          "sortOrder": 0
+        },
+        {
+          "id": "cmt0fu4u9001az59js6c9to58",
+          "name": "Blockchain Scalability",
+          "proficiency": "advanced",
+          "sortOrder": 1
+        },
+        {
+          "id": "cmt0fu4ua001cz59jn53ytr9h",
+          "name": "Interoperability",
+          "proficiency": "advanced",
+          "sortOrder": 2
+        },
+        {
+          "id": "cmt0fu4ua001ez59jo4msj29e",
+          "name": "Transaction Processing",
+          "proficiency": "advanced",
+          "sortOrder": 3
+        },
+        {
+          "id": "cmt0fu4ua001gz59j2peflhv6",
+          "name": "System Evaluation",
+          "proficiency": "advanced",
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "id": "cmt0fu4ud001hz59j6njod0zk",
+      "name": "Programming & Tools",
+      "sortOrder": 3,
+      "skills": [
+        {
+          "id": "cmt0fu4ue001jz59jq2yhvvph",
+          "name": "Python",
+          "proficiency": "advanced",
+          "sortOrder": 0
+        },
+        {
+          "id": "cmt0fu4ue001lz59jauxa1x31",
+          "name": "Rust",
+          "proficiency": "advanced",
+          "sortOrder": 1
+        },
+        {
+          "id": "cmt0fu4uf001nz59j6k1uyr8i",
+          "name": "Solidity",
+          "proficiency": "advanced",
+          "sortOrder": 2
+        },
+        {
+          "id": "cmt0fu4uf001pz59j3iprs6ok",
+          "name": "TypeScript",
+          "proficiency": "advanced",
+          "sortOrder": 3
+        },
+        {
+          "id": "cmt0fu4uf001rz59jor8fbnwh",
+          "name": "Docker",
+          "proficiency": "advanced",
+          "sortOrder": 4
+        },
+        {
+          "id": "cmt0fu4ug001tz59jjh95jgrb",
+          "name": "Git",
+          "proficiency": "advanced",
+          "sortOrder": 5
+        }
+      ]
+    },
+    {
+      "id": "cmt0fu4uh001uz59jm46372mk",
+      "name": "Additional Interests",
+      "sortOrder": 4,
+      "skills": [
+        {
+          "id": "cmt0fu4uh001wz59jy2aiod2c",
+          "name": "Machine Learning",
+          "proficiency": "proficient",
+          "sortOrder": 0
+        },
+        {
+          "id": "cmt0fu4uh001yz59jtc2u1mf8",
+          "name": "Adversarial ML",
+          "proficiency": "proficient",
+          "sortOrder": 1
+        },
+        {
+          "id": "cmt0fu4ui0020z59jexotpvnx",
+          "name": "Reinforcement Learning",
+          "proficiency": "proficient",
+          "sortOrder": 2
+        }
+      ]
+    }
+  ],
+  "teachingAssistants": [
+    {
+      "id": "cmt03ok5v002lz5ka5e3sgta2",
+      "slug": "computer-networks-ta-sharif",
+      "course": "Computer Networks",
+      "level": "undergraduate",
+      "university": "Sharif University of Technology",
+      "professor": "Dr. Sadeghzadeh",
+      "startDate": "2026-02-01T00:00:00.000Z",
+      "endDate": "2026-06-15T00:00:00.000Z",
+      "description": "Designed and graded theoretical and practical assignments for the undergraduate Computer Networks course.",
+      "highlights": [
+        "Designed theoretical assignments",
+        "Designed practical assignments",
+        "Graded theoretical and practical assignments"
+      ],
+      "technologies": null,
+      "sortOrder": 0
+    },
+    {
+      "id": "cmt03ok5x002mz5kanano2km8",
+      "slug": "machine-learning-ta-sharif",
+      "course": "Machine Learning",
+      "level": "undergraduate",
+      "university": "Sharif University of Technology",
+      "professor": "Dr. Motahari",
+      "startDate": "2026-02-01T00:00:00.000Z",
+      "endDate": "2026-06-15T00:00:00.000Z",
+      "description": "Designed theoretical assignments and evaluated student submissions for the undergraduate Machine Learning course.",
+      "highlights": [
+        "Designed theoretical assignments",
+        "Graded assignments"
+      ],
+      "technologies": null,
+      "sortOrder": 1
+    },
+    {
+      "id": "cmt03ok5y002nz5kasxbk1wcl",
+      "slug": "ai-and-lab-ta-aut",
+      "course": "Artificial Intelligence and Lab",
+      "level": "undergraduate",
+      "university": "Amirkabir University of Technology",
+      "professor": "Dr. Ghatee",
+      "startDate": "2025-02-01T00:00:00.000Z",
+      "endDate": "2025-06-15T00:00:00.000Z",
+      "description": "Designed and graded theoretical and practical assignments for the Artificial Intelligence and Lab course.",
+      "highlights": [
+        "Designed theoretical assignments",
+        "Designed practical assignments",
+        "Graded theoretical and practical assignments"
+      ],
+      "technologies": null,
+      "sortOrder": 2
+    },
+    {
+      "id": "cmt03ok5z002oz5kajaeo7q1g",
+      "slug": "linear-algebra-ta-aut",
+      "course": "Foundations of Matrices and Linear Algebra",
+      "level": "undergraduate",
+      "university": "Amirkabir University of Technology",
+      "professor": "Dr. Najafi",
+      "startDate": "2023-09-01T00:00:00.000Z",
+      "endDate": "2024-01-15T00:00:00.000Z",
+      "description": "Designed and graded assignments and quizzes, and conducted problem-solving and review sessions.",
+      "highlights": [
+        "Designed assignments",
+        "Designed quizzes",
+        "Graded assignments and quizzes",
+        "Conducted problem-solving sessions",
+        "Conducted review sessions",
+        "Answered students' questions during exercise/review sessions"
+      ],
+      "technologies": null,
+      "sortOrder": 3
+    },
+    {
+      "id": "cmt03ok60002pz5kaomv77zk6",
+      "slug": "advanced-programming-ta-aut",
+      "course": "Advanced Programming",
+      "level": "undergraduate",
+      "university": "Amirkabir University of Technology",
+      "professor": "Dr. Bejani",
+      "startDate": "2023-02-01T00:00:00.000Z",
+      "endDate": "2023-06-15T00:00:00.000Z",
+      "description": "Designed and graded programming assignments and practical projects, and conducted workshops and problem-solving sessions.",
+      "highlights": [
+        "Designed programming assignments",
+        "Designed practical projects",
+        "Graded assignments and projects",
+        "Conducted workshops",
+        "Conducted problem-solving and review sessions"
+      ],
+      "technologies": null,
+      "sortOrder": 4
+    }
+  ],
+  "researchingAssistants": [
+    {
+      "id": "cmt0fu4uw002cz59jg7tv4lud",
+      "slug": "blockchain-security-research",
+      "lab": null,
+      "university": "Sharif University of Technology",
+      "supervisor": "Dr. Morteza Amini",
+      "supervisorUrl": "https://scholar.google.com/citations?user=Rsmx5DYAAAAJ&hl=en",
+      "collaborator": "Working closely with Ph.D. researcher Amirmohammad Aghapour",
+      "topic": "Research Assistant — Blockchain Security",
+      "startDate": "2025-09-01T00:00:00.000Z",
+      "endDate": null,
+      "description": "Conducting research on the security and scalability of blockchain and decentralized systems, with a particular focus on protocol-level security, interoperability, and emerging challenges in blockchain infrastructure.",
+      "outcomes": [
+        "Studying security and scalability challenges in blockchain and decentralized protocols",
+        "Investigating cross-chain and Layer-2 systems, including interoperability, state verification, and cross-rollup communication",
+        "Analyzing protocol-level security assumptions, trust models, and potential attack surfaces",
+        "Conducting technical literature reviews and evaluating recent research in blockchain security and scalability",
+        "Supporting experimental and implementation-oriented research on blockchain infrastructure and security",
+        "Collaborating closely with Ph.D. researcher Amirmohammad Aghapour on ongoing research activities within the group"
+      ],
+      "technologies": "",
+      "repoUrl": null,
+      "sortOrder": 0
+    }
+  ],
+  "media": []
+}

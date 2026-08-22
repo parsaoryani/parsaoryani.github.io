@@ -4,7 +4,7 @@ import { ViewportVideo } from "@/components/content/viewport-video"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeader } from "@/components/ui/section-header"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { prisma } from "@/lib/db/prisma"
+import { getSiteSetting } from "@/lib/public-data"
 import { Sparkles, ArrowUpRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -73,8 +73,7 @@ const aboutStorySections = [
 ]
 
 export default async function AboutPage() {
-  const photoSetting = await prisma.siteSetting.findUnique({ where: { key: "profile_photo" } })
-  const photo = (photoSetting?.value as { url?: string; alt?: string } | null) ?? { url: "/about/now.jpg", alt: "Parsa Oryani" }
+  const photo = (await getSiteSetting("profile_photo")) ?? { url: "/about/now.jpg", alt: "Parsa Oryani" }
 
   return (
     <Section className="pt-32">

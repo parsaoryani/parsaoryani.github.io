@@ -1,12 +1,12 @@
 "use client"
 
 import { MouseGlow } from "@/components/ui/mouse-glow"
-import type { SkillCategory, Skill } from "@prisma/client"
+import type { PublicSkillCategory } from "@/lib/public-data"
 import { memo } from "react"
 import { cn } from "@/lib/utils/cn"
 
 interface SkillClusterProps {
-  categories: (SkillCategory & { skills: Skill[] })[]
+  categories: PublicSkillCategory[]
 }
 
 const proficiencyColors: Record<string, { badge: string; glow: string; ring: string }> = {

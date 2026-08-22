@@ -18,12 +18,9 @@ function publication(overrides: Partial<PubProps["publication"]> = {}): PubProps
     venue: "IEEE Symposium on Security & Privacy",
     venueType: "conference",
     year: 2026,
-    status: "published",
     featured: false,
     sortOrder: 0,
     publishedAt: BASE_DATE,
-    createdAt: BASE_DATE,
-    updatedAt: BASE_DATE,
     abstract: null,
     tldr: "We prove bridge invariants hold under adversarial conditions.",
     contributions: null,
@@ -35,11 +32,8 @@ function publication(overrides: Partial<PubProps["publication"]> = {}): PubProps
     bibtex: null,
     citationCount: null,
     ogImageUrl: null,
-    version: 1,
-    deletedAt: null,
     tags: [
       {
-        publicationId: "p1",
         tagId: "tg1",
         tag: {
           id: "tg1",
@@ -47,8 +41,6 @@ function publication(overrides: Partial<PubProps["publication"]> = {}): PubProps
           label: "Security",
           description: null,
           color: null,
-          createdAt: BASE_DATE,
-          updatedAt: BASE_DATE,
         },
       },
     ],

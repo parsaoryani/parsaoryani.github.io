@@ -16,6 +16,7 @@ import {
   Camera,
   Settings,
   Shield,
+  UploadCloud,
   Bug,
   LogOut,
   ExternalLink,
@@ -69,6 +70,7 @@ const adminNavGroups: AdminNavGroup[] = [
     label: "System",
     items: [
       { href: "settings", label: "Settings", icon: Settings },
+      { href: "static-publish", label: "Static Publish", icon: UploadCloud, devOnly: true },
       { href: "security", label: "Security", icon: Shield },
       { href: "mail-dev", label: "Mail Dev", icon: Bug, devOnly: true },
     ],

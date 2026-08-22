@@ -2,12 +2,12 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FolderGit2, ExternalLink, Code2, ArrowUpRight } from "lucide-react"
-import type { Project, ProjectTag, Tag } from "@prisma/client"
+import type { PublicProject } from "@/lib/public-data"
 import { memo } from "react"
 import { MouseGlow } from "@/components/ui/mouse-glow"
 
 interface ProjectCardProps {
-  project: Project & { tags: (ProjectTag & { tag: Tag })[] }
+  project: PublicProject
 }
 
 const roleColors: Record<string, "default" | "secondary" | "outline" | "success" | "warning"> = {
@@ -21,7 +21,7 @@ const roleColors: Record<string, "default" | "secondary" | "outline" | "success"
 const MAX_VISIBLE_TECH = 6
 
 export const ProjectCard = memo(function ProjectCard({ project }: ProjectCardProps) {
-  const techStack = project.techStack as string[] | null
+  const techStack = project.techStack
   const visibleTech = techStack?.slice(0, MAX_VISIBLE_TECH) ?? null
   const hiddenTechCount = techStack ? techStack.length - MAX_VISIBLE_TECH : 0
 

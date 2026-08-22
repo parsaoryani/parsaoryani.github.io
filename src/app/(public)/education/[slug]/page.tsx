@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { getTimelineEvents } from "@/lib/db/queries"
+import { getEducationEventBySlug, getEducationEvents } from "@/lib/public-data"
 import { CourseDetailCard } from "@/components/content/course-detail-card"
 import { slugify } from "@/lib/utils/slugify"
 import { GraduationCap, ArrowLeft, Calendar } from "lucide-react"
@@ -13,15 +13,12 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-async function getEducationEvent(slug: string) {
-  const events = await getTimelineEvents()
-  return events.find((e) => e.type === "education" && slugify(e.organization) === slug) ?? null
-}
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   try {
-    const events = await getTimelineEvents()
-    return events.filter((e) => e.type === "education").map((e) => ({ slug: slugify(e.organization) }))
+    const events = await getEducationEvents()
+    return events.map((e) => ({ slug: slugify(e.organization) }))
   } catch {
     return []
   }
@@ -29,7 +26,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const event = await getEducationEvent(slug).catch(() => null)
+  const event = await getEducationEventBySlug(slug).catch(() => null)
   if (!event) return {}
   return {
     title: `${event.title} — Coursework`,
@@ -46,7 +43,7 @@ function formatDate(date: Date, endDate?: Date | null) {
 
 export default async function EducationDetailPage({ params }: Props) {
   const { slug } = await params
-  const event = await getEducationEvent(slug).catch(() => null)
+  const event = await getEducationEventBySlug(slug).catch(() => null)
   if (!event) notFound()
 
   return (

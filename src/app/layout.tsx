@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google"
 import "@/styles/globals.css"
 import { ClientLayout } from "@/components/layout/client-layout"
-import { getSiteSetting } from "@/lib/db/queries"
+import { getSiteSetting } from "@/lib/public-data"
 import { NAV_RESEARCH_SETTING_KEY, parseShowResearch } from "@/lib/site/visibility"
 
 const inter = Inter({

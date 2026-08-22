@@ -17,6 +17,7 @@ import {
   Clock,
   PenLine,
   AlertTriangle,
+  UploadCloud,
 } from "lucide-react"
 
 export default async function AdminDashboardPage() {
@@ -66,6 +67,7 @@ export default async function AdminDashboardPage() {
     { href: "skills", label: "Skills", count: skillCount, icon: MessageSquare, color: "from-cyan to-emerald", newLink: "skills" },
     { href: "messages", label: "Messages", count: msgCount, icon: Mail, color: "from-indigo to-purple", badge: `${msgCount} new` },
     { href: "settings", label: "Settings", icon: Settings, color: "from-slate to-mist" },
+    { href: "static-publish", label: "Static Publish", icon: UploadCloud, color: "from-cyan to-emerald" },
     { href: "security", label: "Security", icon: Shield, color: "from-ash to-slate" },
   ]
 

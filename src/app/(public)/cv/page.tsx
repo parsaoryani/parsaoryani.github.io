@@ -2,14 +2,12 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { getTimelineEvents, getSkillCategories, getAllPublications, getAllResearchExperience, getAllTeachingExperience } from "@/lib/db/queries"
-import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
+import { getTimelineEvents, getSkillCategories, getAllPublications, getAllResearchExperience, getAllTeachingExperience } from "@/lib/public-data"
+import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, HeartHandshake, Sparkles, Code2, UserCheck, Mail } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
-import type { TimelineEvent, SkillCategory, Publication, ResearchingAssistant, TeachingAssistant, Skill } from "@prisma/client"
-
-type SkillCategoryWithSkills = SkillCategory & { skills: Skill[] }
+import type { PublicTimelineEvent, PublicSkillCategory, PublicPublication, PublicResearchAssistant, PublicTeachingAssistant } from "@/lib/public-data"
 
 export const metadata: Metadata = {
   title: "CV",
@@ -87,7 +85,7 @@ export default async function CVPage() {
               <h2 className="text-lg font-semibold font-mono text-cyan uppercase tracking-wider mb-6 flex items-center gap-3">
                 <GraduationCap size={16} /> Education
               </h2>
-              {events.filter((e: TimelineEvent) => e.type === "education").map((event: TimelineEvent) => (
+              {events.filter((e: PublicTimelineEvent) => e.type === "education").map((event: PublicTimelineEvent) => (
                 <div key={event.id} className="relative pl-6 pb-6 last:pb-0 border-l border-slate-700/50">
                   <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-cyan" />
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
@@ -102,7 +100,7 @@ export default async function CVPage() {
                   {event.description && <p className="text-sm text-mist/70 mt-1">{event.description}</p>}
                   {event.highlights && (
                     <ul className="mt-2 space-y-0.5">
-                      {(event.highlights as string[]).map((h, i) => (
+                      {event.highlights.map((h, i) => (
                         <li key={i} className="text-sm text-mist flex items-start gap-2">
                           <span className="mt-1.5 w-1 h-1 rounded-full bg-cyan/40 shrink-0" />
                           {h}
@@ -119,7 +117,7 @@ export default async function CVPage() {
               <h2 className="text-lg font-semibold font-mono text-indigo uppercase tracking-wider mb-6 flex items-center gap-3">
                 <Briefcase size={16} /> Experience
               </h2>
-              {events.filter((e: TimelineEvent) => e.type === "experience").map((event: TimelineEvent) => (
+              {events.filter((e: PublicTimelineEvent) => e.type === "experience").map((event: PublicTimelineEvent) => (
                 <div key={event.id} className="relative pl-6 pb-6 last:pb-0 border-l border-slate-700/50">
                   <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-indigo" />
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
@@ -134,7 +132,7 @@ export default async function CVPage() {
                   {event.description && <p className="text-sm text-mist/70 mt-1">{event.description}</p>}
                   {event.highlights && (
                     <ul className="mt-2 space-y-0.5">
-                      {(event.highlights as string[]).map((h, i) => (
+                      {event.highlights.map((h, i) => (
                         <li key={i} className="text-sm text-mist flex items-start gap-2">
                           <span className="mt-1.5 w-1 h-1 rounded-full bg-indigo/40 shrink-0" />
                           {h}
@@ -152,7 +150,7 @@ export default async function CVPage() {
                 <Award size={16} /> Skills
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
-                {skillCategories.map((cat: SkillCategoryWithSkills) => (
+                {skillCategories.map((cat: PublicSkillCategory) => (
                   <div key={cat.id} className="p-4 rounded-xl border border-slate-700/50 bg-slate-900/50">
                     <h3 className="text-xs font-mono uppercase tracking-widest text-emerald mb-3">{cat.name}</h3>
                     <p className="text-sm text-mist">
@@ -168,7 +166,7 @@ export default async function CVPage() {
               <h2 className="text-lg font-semibold font-mono text-amber uppercase tracking-wider mb-6 flex items-center gap-3">
                 <Award size={16} /> Awards &amp; Honors
               </h2>
-              {events.filter((e: TimelineEvent) => e.type === "award").map((event: TimelineEvent) => (
+              {events.filter((e: PublicTimelineEvent) => e.type === "award").map((event: PublicTimelineEvent) => (
                 <div key={event.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                   <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-amber" />
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
@@ -191,12 +189,12 @@ export default async function CVPage() {
                 <h2 className="text-lg font-semibold font-mono text-cyan uppercase tracking-wider mb-6 flex items-center gap-3">
                   <Sparkles size={16} /> Publications
                 </h2>
-                {publications.map((pub: Publication) => (
+                {publications.map((pub: PublicPublication) => (
                   <div key={pub.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-cyan" />
                     <h3 className="font-semibold">{pub.title}</h3>
                     <p className="text-sm text-mist">{pub.venue} ({pub.year})</p>
-                    <p className="text-xs text-ash mt-1 font-mono">{(pub.authors as Array<{ name: string }> || []).map((a) => a.name).join(", ")}</p>
+                    <p className="text-xs text-ash mt-1 font-mono">{pub.authors.map((a) => a.name).join(", ")}</p>
                     {pub.tldr && <p className="text-sm text-mist/70 mt-1 line-clamp-2">{pub.tldr}</p>}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pub.pdfUrl && (
@@ -220,7 +218,7 @@ export default async function CVPage() {
                 <h2 className="text-lg font-semibold font-mono text-emerald uppercase tracking-wider mb-6 flex items-center gap-3">
                   <Sparkles size={16} /> Research Experience
                 </h2>
-                {researchExperience.map((exp: ResearchingAssistant) => (
+                {researchExperience.map((exp: PublicResearchAssistant) => (
                   <div key={exp.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-emerald" />
                     <h3 className="font-semibold">{exp.topic}</h3>
@@ -239,7 +237,7 @@ export default async function CVPage() {
                 <h2 className="text-lg font-semibold font-mono text-amber uppercase tracking-wider mb-6 flex items-center gap-3">
                   <Sparkles size={16} /> Teaching Experience
                 </h2>
-                {teachingExperience.map((exp: TeachingAssistant) => (
+                {teachingExperience.map((exp: PublicTeachingAssistant) => (
                   <div key={exp.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-amber" />
                     <h3 className="font-semibold">{exp.course}</h3>
@@ -253,12 +251,12 @@ export default async function CVPage() {
             )}
 
             {/* Service */}
-            {events.filter((e: TimelineEvent) => e.type === "service").length > 0 && (
+            {events.filter((e: PublicTimelineEvent) => e.type === "service").length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold font-mono text-mist uppercase tracking-wider mb-6 flex items-center gap-3">
                   <HeartHandshake size={16} /> Service
                 </h2>
-                {events.filter((e: TimelineEvent) => e.type === "service").map((event: TimelineEvent) => (
+                {events.filter((e: PublicTimelineEvent) => e.type === "service").map((event: PublicTimelineEvent) => (
                   <div key={event.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-slate-600" />
                     <h3 className="font-semibold text-sm">{event.title}</h3>

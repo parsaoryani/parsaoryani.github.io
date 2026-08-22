@@ -1,27 +1,20 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
-import { ProjectCard } from "@/components/content/project-card"
-import { TagFilter } from "@/components/content/tag-filter"
+import { ProjectBrowser } from "@/components/content/project-browser"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { getAllProjects, getAllTags } from "@/lib/db/queries"
-import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
+import { getAllProjects, getAllTags } from "@/lib/public-data"
+import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { getAvailableProjectTags } from "@/lib/projects/available-project-tags"
-import Link from "next/link"
 import type { Metadata } from "next"
-import { FolderGit2, Sparkles } from "lucide-react"
+import { Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Systems and security projects in blockchain, cryptography, and decentralized applications.",
 }
 
-interface Props {
-  searchParams: Promise<{ tag?: string }>
-}
-
-export default async function ProjectsPage({ searchParams }: Props) {
-  const { tag } = await searchParams
+export default async function ProjectsPage() {
   const [projectsResult, tagsResult] = await Promise.all([
     safeQuery(getAllProjects(), "projects"),
     safeQuery(getAllTags(), "tags"),
@@ -29,10 +22,6 @@ export default async function ProjectsPage({ searchParams }: Props) {
   const projects = projectsResult.data ?? []
   const tags = tagsResult.data ?? []
   const availableTags = getAvailableProjectTags(projects, tags)
-
-  const filteredProjects = tag
-    ? projects.filter((p) => p.tags.some((pt) => pt.tag.slug === tag))
-    : projects
 
   return (
     <Section className="pt-32">
@@ -55,39 +44,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
           <QueryErrorFallback error="Some content could not be loaded. The page may be incomplete." className="mb-8" />
         )}
 
-        {availableTags.length > 0 && <TagFilter tags={availableTags} activeTag={tag} />}
-
-        {/* Result count and clear filter */}
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-mist font-mono">
-            {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""}
-            {tag && (
-              <span>
-                {" "}tagged &ldquo;{availableTags.find((t) => t.slug === tag)?.label || tag}&rdquo;
-                <Link href="/projects" className="ml-2 text-cyan hover:underline">
-                  Clear filter
-                </Link>
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project, i) => (
-            <ScrollReveal key={project.id} direction="up" delay={i * 80} className="h-full">
-              <ProjectCard project={project} />
-            </ScrollReveal>
-          ))}
-        </div>
-
-        {filteredProjects.length === 0 && !projectsResult.error && (
-          <div className="text-center py-20">
-            <FolderGit2 size={40} className="mx-auto text-slate-700 mb-4" />
-            <p className="text-mist font-mono text-sm">
-              No projects found{tag ? ` for tag "${tag}"` : ""}.
-            </p>
-          </div>
-        )}
+        {!projectsResult.error && <ProjectBrowser projects={projects} tags={availableTags} />}
       </Container>
     </Section>
   )

@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { getProjectBySlug, getAllProjects } from "@/lib/db/queries"
+import { getProjectBySlug, getAllProjects } from "@/lib/public-data"
 import Link from "next/link"
 import { ArrowLeft, ExternalLink, Code2, FolderGit2 } from "lucide-react"
 import type { Metadata } from "next"
@@ -11,6 +11,8 @@ import type { Metadata } from "next"
 interface Props {
   params: Promise<{ slug: string }>
 }
+
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   try {
@@ -43,7 +45,7 @@ export default async function ProjectPage({ params }: Props) {
   const project = await getProjectBySlug(slug).catch(() => null)
   if (!project) notFound()
 
-  const techStack = project.techStack as string[] | null
+  const techStack = project.techStack
 
   const sections = [
     { title: "Problem", content: project.problem, key: "problem" },

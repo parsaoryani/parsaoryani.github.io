@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next"
 
+export const dynamic = "force-static"
+
 const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
 
 export default function robots(): MetadataRoute.Robots {

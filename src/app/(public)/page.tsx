@@ -7,8 +7,8 @@ import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
 import { TechnicalFoundations } from "@/components/content/technical-foundations"
-import { prisma } from "@/lib/db/prisma"
-import { parseHomeDescription, parseHomeTitle, parseResearchDirections, RESEARCH_DIRECTIONS_SETTING_KEY } from "@/lib/home/hero"
+import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
+import { getSiteSettings } from "@/lib/public-data"
 import Link from "next/link"
 import { Fragment } from "react"
 import { ArrowUpRight, ArrowDown, FileText, Code2, Mail, ChevronRight, Sparkles, Target, Compass, Network, UserCheck } from "lucide-react"
@@ -45,15 +45,10 @@ const heroJumpLinks = [
 ]
 
 export default async function HomePage() {
-  const [homeTitle, homeDescription, researchDirectionsSetting] = await Promise.all([
-    prisma.siteSetting.findUnique({ where: { key: "home_title" } }),
-    prisma.siteSetting.findUnique({ where: { key: "home_description" } }),
-    prisma.siteSetting.findUnique({ where: { key: RESEARCH_DIRECTIONS_SETTING_KEY } }),
-  ])
-
-  const titleLines = parseHomeTitle(homeTitle?.value)
-  const description = parseHomeDescription(homeDescription?.value)
-  const researchDirections = parseResearchDirections(researchDirectionsSetting?.value)
+  const settings = await getSiteSettings()
+  const titleLines = parseHomeTitle(settings.home_title)
+  const description = parseHomeDescription(settings.home_description)
+  const researchDirections = settings.research_directions
 
   return (
     <>

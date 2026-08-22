@@ -2,13 +2,13 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FileText, Code2, ExternalLink, Quote, ArrowUpRight, BookOpen } from "lucide-react"
-import type { Publication, PublicationTag, Tag } from "@prisma/client"
+import type { PublicPublication } from "@/lib/public-data"
 import { cn } from "@/lib/utils/cn"
 import { memo } from "react"
 import { MouseGlow } from "@/components/ui/mouse-glow"
 
 interface PublicationCardProps {
-  publication: Publication & { tags: (PublicationTag & { tag: Tag })[] }
+  publication: PublicPublication
   showAbstract?: boolean
 }
 
@@ -23,7 +23,7 @@ const venueLabels: Record<string, string> = {
 }
 
 export const PublicationCard = memo(function PublicationCard({ publication, showAbstract }: PublicationCardProps) {
-  const authors = publication.authors as Array<{ name: string; isMe?: boolean }>
+  const authors = publication.authors
 
   return (
     <Link href={`/research/${publication.slug}`} className="block group">

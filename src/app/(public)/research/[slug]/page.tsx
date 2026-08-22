@@ -3,8 +3,8 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { getPublicationBySlug, getAllPublications } from "@/lib/db/queries"
-import { safeQuery } from "@/lib/db/query-result"
+import { getPublicationBySlug, getAllPublications } from "@/lib/public-data"
+import { safeQuery } from "@/lib/public-data/query-result"
 import Link from "next/link"
 import { ArrowLeft, FileText, Code2, ExternalLink, BookOpen } from "lucide-react"
 import { BibTeXCopy } from "@/components/content/bibtex-copy"
@@ -13,6 +13,8 @@ import type { Metadata } from "next"
 interface Props {
   params: Promise<{ slug: string }>
 }
+
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   try {
@@ -40,8 +42,8 @@ export default async function PublicationPage({ params }: Props) {
   const pub = result.data
   if (!pub) notFound()
 
-  const authors = pub.authors as Array<{ name: string; isMe?: boolean }>
-  const contributions = (pub.contributions as Array<{ text: string }> | string[] | null) ?? []
+  const authors = pub.authors
+  const contributions = pub.contributions ?? []
 
   const jsonLd = {
     "@context": "https://schema.org",

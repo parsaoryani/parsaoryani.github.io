@@ -1,9 +1,9 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils/cn"
-import type { Tag } from "@prisma/client"
+import type { PublicTag } from "@/lib/public-data"
 
 interface TagFilterProps {
-  tags: Tag[]
+  tags: PublicTag[]
   activeTag?: string
 }
 

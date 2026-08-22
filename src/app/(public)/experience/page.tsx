@@ -1,9 +1,8 @@
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { prisma } from "@/lib/db/prisma"
-import { getTimelineEvents } from "@/lib/db/queries"
-import { safeQuery, QueryErrorFallback } from "@/lib/db/query-result"
+import { getAllResearchExperience, getAllTeachingExperience, getTimelineEvents } from "@/lib/public-data"
+import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { slugify } from "@/lib/utils/slugify"
 import {
   Sparkles,
@@ -24,7 +23,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
-import type { TimelineEvent as TimelineEventModel } from "@prisma/client"
+import type { PublicTimelineEvent } from "@/lib/public-data"
 
 export const revalidate = 3600
 
@@ -51,7 +50,7 @@ const typeConfig: Record<string, SectionConfig> = {
   publication_milestone: { icon: AwardIcon, label: "Publication Milestone", color: "text-amber", dotColor: "bg-amber", anchor: "publications" },
 }
 
-function TimelineEventItem({ event, config, isLast }: { event: TimelineEventModel & { courses?: { id: string }[] }; config: SectionConfig; isLast: boolean }) {
+function TimelineEventItem({ event, config, isLast }: { event: PublicTimelineEvent; config: SectionConfig; isLast: boolean }) {
   const Icon = config.icon
   const courseCount = event.courses?.length ?? 0
   return (
@@ -100,14 +99,8 @@ function TimelineEventItem({ event, config, isLast }: { event: TimelineEventMode
 export default async function ExperiencePage() {
   const [eventsResult, researchResult, teachingResult] = await Promise.all([
     safeQuery(getTimelineEvents(), "timeline events"),
-    safeQuery(
-      prisma.researchingAssistant.findMany({ where: { status: "published" }, orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }] }),
-      "research experience"
-    ),
-    safeQuery(
-      prisma.teachingAssistant.findMany({ where: { status: "published" }, orderBy: [{ startDate: "desc" }, { sortOrder: "asc" }] }),
-      "teaching experience"
-    ),
+    safeQuery(getAllResearchExperience(), "research experience"),
+    safeQuery(getAllTeachingExperience(), "teaching experience"),
   ])
   const events = eventsResult.data ?? []
   const researchItems = researchResult.data ?? []

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "sourceKey": "SiteSetting:profile_photo.url",
+      "publicPath": "/about/now.jpg",
+      "sha256": "c07b8a37da45c7f49d762c71729290853d2a6fa7f038c9d41206ee03a94ee880",
+      "bytes": 112011,
+      "mimeType": "image/jpeg"
+    }
+  ]
+}

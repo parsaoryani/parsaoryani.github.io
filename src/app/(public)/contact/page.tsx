@@ -1,9 +1,9 @@
 import { Container, Section } from "@/components/layout/container"
-import { ContactForm } from "@/components/content/contact-form"
+import { ContactSurface } from "@/components/content/contact-surface"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin, Send } from "lucide-react"
-import { prisma } from "@/lib/db/prisma"
+import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin } from "lucide-react"
+import { getSiteSettings } from "@/lib/public-data"
 import Link from "next/link"
 import type { Metadata } from "next"
 
@@ -16,29 +16,20 @@ export const metadata: Metadata = {
 
 const iconMap: Record<string, typeof Mail> = { Mail, Code2, UserCheck, GraduationCap }
 
-async function getSetting(key: string) {
-  const s = await prisma.siteSetting.findUnique({ where: { key } })
-  return s?.value as Record<string, unknown> | undefined
-}
-
 export default async function ContactPage() {
-  const [descSetting, emailsSetting, linksSetting, locSetting] = await Promise.all([
-    getSetting("contact_description"),
-    getSetting("contact_emails"),
-    getSetting("contact_links"),
-    getSetting("contact_location"),
-  ])
+  const settings = await getSiteSettings()
 
-  const description = (descSetting?.text as string) || "I am always open to research discussions, collaboration opportunities, and PhD position inquiries. Feel free to reach out."
-  const emails = (emailsSetting as Array<{ label: string; address: string }> | undefined) || [
+  const description = settings.contact_description?.text || "I am always open to research discussions, collaboration opportunities, and PhD position inquiries. Feel free to reach out."
+  const emails = settings.contact_emails.length > 0 ? settings.contact_emails : [
     { label: "Email", address: "parsa.oryani82@sharif.edu" },
     { label: "Email (Personal)", address: "parsa.oryani@gmail.com" },
   ]
-  const links = (linksSetting as Array<{ label: string; url: string; desc: string; icon?: string }> | undefined) || [
+  const links = settings.contact_links.length > 0 ? settings.contact_links : [
     { label: "GitHub", url: "https://github.com/parsaoryani", desc: "@parsaoryani", icon: "Code2" },
     { label: "LinkedIn", url: "https://www.linkedin.com/in/parsa-oryani/", desc: "in/parsa-oryani", icon: "UserCheck" },
   ]
-  const location = (locSetting as { city?: string; note?: string } | undefined) || { city: "Tehran, Iran", note: "Available for virtual meetings worldwide" }
+  const location = settings.contact_location || { city: "Tehran, Iran", note: "Available for virtual meetings worldwide" }
+  const primaryEmail = emails[0]?.address || "parsa.oryani82@sharif.edu"
 
   const allMethods = [
     ...emails.map((e) => ({ href: `mailto:${e.address}`, label: e.label || "Email", desc: e.address, icon: Mail })),
@@ -61,15 +52,7 @@ export default async function ContactPage() {
         </ScrollReveal>
 
         <div className="max-w-4xl grid md:grid-cols-5 gap-10">
-            <div className="md:col-span-3">
-              <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm">
-                <div className="flex items-center gap-2 mb-6">
-                  <Send size={16} className="text-cyan" />
-                  <h2 className="text-lg font-semibold text-gradient">Send a message</h2>
-                </div>
-                <ContactForm />
-              </div>
-            </div>
+            <ContactSurface primaryEmail={primaryEmail} />
 
             <div className="md:col-span-2 space-y-6">
               <div className="p-6 rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">

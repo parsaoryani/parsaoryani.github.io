@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { ProjectCard } from "@/components/content/project-card"
 
-const BASE_DATE = new Date("2025-06-01")
-
 type ProjectProps = Parameters<typeof ProjectCard>[0]
 
 function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps["project"] {
@@ -13,7 +11,6 @@ function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps
     title: "Ethereum CLI (Sepolia Testnet)",
     summary: "A modular CLI for the Ethereum Sepolia testnet.",
     role: "Solo",
-    status: "published",
     featured: false,
     sortOrder: 0,
     year: 2025,
@@ -27,13 +24,8 @@ function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps
     repoUrl: null,
     demoUrl: null,
     ogImageUrl: null,
-    version: 1,
-    createdAt: BASE_DATE,
-    updatedAt: BASE_DATE,
-    deletedAt: null,
     tags: [
       {
-        projectId: "pr1",
         tagId: "tg1",
         tag: {
           id: "tg1",
@@ -41,8 +33,6 @@ function project(overrides: Partial<ProjectProps["project"]> = {}): ProjectProps
           label: "Blockchain",
           description: null,
           color: null,
-          createdAt: BASE_DATE,
-          updatedAt: BASE_DATE,
         },
       },
     ],
