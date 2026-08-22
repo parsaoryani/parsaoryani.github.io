@@ -588,7 +588,7 @@ CI validates committed snapshot but cannot compare it to local DB. Local `static
 
 - [x] Workflow and Pages source.
 - [x] GitHub Pages configured for workflow deployment.
-- [ ] Final URL verification after first Actions deployment completes.
+- [x] Final URL verification after first Actions deployment completes.
 - [x] Initial local publish/operator guide.
 - [x] Troubleshooting, rollback, and custom-domain guide.
 - [ ] Rollback drill: deploy fixture/content commit A, deploy B, revert B, and confirm Pages content/hash matches A.

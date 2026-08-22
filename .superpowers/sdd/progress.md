@@ -9,7 +9,7 @@ Task 4: mostly complete (owner/development/env-gated API, admin page, navigation
 Task 5: partial (static contact boundary, client project filtering, dynamicParams=false, compatibility routes, sitemap, and robots added; full base-path/media and metadata/canonical/Open Graph/JSON-LD pass still pending)
 Task 6: complete for current implementation (temporary static workspace, provider/contact swaps, static config, confined recreation, and forbidden copied-source/reference scan added)
 Task 7: partial (Node 22 database-free static verify, forbidden output pattern validation, route/link/asset/size validation, and atomic out promotion pass; browser viewport smoke validation still pending)
-Task 8: partial (GitHub Pages workflow, Pages workflow configuration, and operator guide added; final URL verification after first Actions deployment and rollback drill still pending)
+Task 8: partial (GitHub Pages workflow, Pages workflow configuration, final URL verification, and operator guide added; rollback drill still pending)
 
 Latest verification:
 
@@ -20,3 +20,4 @@ Latest verification:
 - `PATH="/opt/homebrew/opt/node@22/bin:$PATH" npm run static:verify` passed without database access and promoted root `out/`.
 - `PATH="/opt/homebrew/opt/node@22/bin:$PATH" npm run build` passed for normal local/server mode.
 - GitHub Pages was configured through the GitHub API on 2026-08-22 with `build_type=workflow`.
+- First Pages deployment completed successfully in GitHub Actions run `32590089711`; `https://parsaoryani.github.io/` returned HTTP 200.
