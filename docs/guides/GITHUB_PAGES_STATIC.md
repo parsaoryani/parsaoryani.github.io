@@ -25,6 +25,13 @@ This repository keeps the local Prisma-backed admin app as the editing source of
 
 The repository must be public for this account plan. Pages is configured to use **Build and deployment > Source: GitHub Actions**. The workflow at `.github/workflows/pages.yml` runs typecheck, tests, `static:verify`, uploads `out/`, and deploys to `https://parsaoryani.github.io/`.
 
+Current deployment:
+
+- Latest commit: `72d26dd`
+- Latest successful Pages run: `32590189995`
+- Live URL: `https://parsaoryani.github.io/`
+- Verified response: HTTP 200
+
 Check deployment status:
 
 ```bash
@@ -62,3 +69,4 @@ For a custom domain, keep `NEXT_PUBLIC_BASE_PATH=""`, set `NEXT_PUBLIC_SITE_URL`
 - The local export command is gated by `NODE_ENV=development` and `ALLOW_LOCAL_STATIC_EXPORT=1`.
 - Do not use Git LFS for Pages assets.
 - Current coursework file links that point to GitHub remain external navigation links; committed root-relative assets are validated during `static:verify`.
+- Remote HTTPS asset mirroring is intentionally left as a post-launch hardening item; use root-relative committed assets or `/uploads/**` assets for export-managed media today.

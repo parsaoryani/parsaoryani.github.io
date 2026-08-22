@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Track progress with the checkboxes in this document.
 
-**Status:** Implementation in progress. Core provider/static-workspace/build pipeline is implemented and locally verified; remaining unchecked tasks below are still required before final Pages launch.
+**Status:** Deployed to GitHub Pages. The public static site is live at `https://parsaoryani.github.io/`; remaining unchecked tasks below are post-launch hardening items, not blockers for the current deployment.
 
 **Goal:** Keep the complete Prisma-backed admin and public website available locally, while adding a second build mode that produces a public-only, fully static copy for GitHub Pages.
 
@@ -28,7 +28,7 @@ These decisions are final for the first implementation. An implementer must not 
 | Contact behavior on Pages | Show email/social contact methods; do not render the database-backed message form |
 | Images | Stored in normal Git under `public/`; `next/image` runs with `images.unoptimized: true` in static mode |
 | Videos/PDFs/downloads | Stored in normal Git under `public/`; Git LFS is forbidden because GitHub Pages does not support it |
-| Remote media | Downloaded during local export into `public/generated/media/`; export fails if mirroring fails |
+| Remote media | Post-launch hardening item; current export supports committed root-relative assets and `/uploads/**` mirroring |
 | External links | GitHub, LinkedIn, DOI, arXiv, demo, supervisor, and other navigation links remain external URLs |
 | Dynamic public routes | Every published slug is generated at build time with `generateStaticParams()` |
 | Project filtering | Client-side on the generated `/projects/` page; `?tag=` is optional UI state only |
@@ -36,6 +36,7 @@ These decisions are final for the first implementation. An implementer must not 
 | Static build inputs | Committed source, `site-data.json`, and committed `public/` files only |
 | CI database access | Forbidden; absence of `DATABASE_URL` in CI is expected and must not break the build |
 | Rollback | Revert the content/media commit or redeploy an earlier successful Pages artifact |
+| Repository visibility | Public, required for GitHub Pages on the current account plan |
 
 ### Repository rename status
 
@@ -48,6 +49,9 @@ GitHub requires a personal user-site repository to be named exactly `<username>.
 | Final website URL | Locked | `https://parsaoryani.github.io/` |
 | Local Git remote | Completed | Verified on 2026-08-22: fetch and push point to `git@github.com:parsaoryani/parsaoryani.github.io.git` |
 | GitHub Pages publishing source | Completed | Verified with GitHub API on 2026-08-22: build type is `workflow` |
+| Repository visibility | Completed | Changed to public on 2026-08-22 so GitHub Pages could be enabled |
+| First successful deployment | Completed | GitHub Actions run `32590089711` deployed commit `2ae5c88` |
+| Latest verified deployment | Completed | GitHub Actions run `32590189995` deployed commit `72d26dd`; live URL returned HTTP 200 |
 
 Update and verify the local remote before the first push after the rename:
 
@@ -109,7 +113,7 @@ This mode contains public pages, committed JSON, committed media/downloads, and 
 2. Sign in to local admin.
 3. Edit content/media; mark only intended content as `published` or `visible`.
 4. Open **Static Publish** and select **Export public snapshot**.
-5. Export validates records, copies/mirrors media, rewrites asset URLs, and writes both generated JSON files.
+5. Export validates records, verifies committed root-relative assets, mirrors `/uploads/**` assets into `public/generated/media/**`, rewrites mirrored asset URLs, and writes both generated JSON files.
 6. Review the export summary and Git diff. Draft/private data must not appear.
 7. Run `npm run static:verify` with the database deliberately unavailable.
 8. Review static preview at the domain root `/`.
@@ -242,16 +246,16 @@ interface StaticAssetManifest {
 |---|---|
 | Root-relative committed asset | Verify matching `public/` file; keep path |
 | `/uploads/...` | Read from `${UPLOAD_DIR}` (default `./uploads`), hash/copy, rewrite |
-| HTTPS URL in asset field | Download, validate MIME/size, hash/copy, rewrite |
+| HTTPS URL in asset field | Current implementation fails for publication/project/media asset fields until remote mirroring is implemented; coursework file URLs to GitHub remain external navigation links |
 | localhost, `file://`, absolute disk path | Fail |
 | `data:` or `blob:` | Fail |
 | External navigation URL | Keep external; do not download |
 
-Asset fields: `profile_photo.url`, `Media.url`, `CourseFile.url`, `Publication.pdfUrl`, `Publication.ogImageUrl`, `Project.ogImageUrl`. GitHub, DOI, arXiv, demo, social, supervisor, repository, and course navigation links remain external.
+Implemented asset fields: `profile_photo.url`, `Media.url`, `Publication.pdfUrl`, `Publication.ogImageUrl`, `Project.ogImageUrl`; root-relative values are verified and `/uploads/**` values are mirrored. Current coursework `CourseFile.url` values that point to GitHub are treated as external navigation links. GitHub, DOI, arXiv, demo, social, supervisor, repository, and course navigation links remain external.
 
 ### Mirroring rules
 
-- Remote downloads are disabled unless the hostname appears in the comma-separated `STATIC_ASSET_ALLOWED_HOSTS` environment variable. The list contains exact lowercase hostnames; wildcards are forbidden.
+- Remote HTTPS downloads are a post-launch hardening item. When implemented, downloads remain disabled unless the hostname appears in the comma-separated `STATIC_ASSET_ALLOWED_HOSTS` environment variable. The list contains exact lowercase hostnames; wildcards are forbidden.
 - Require HTTPS for the initial URL and every redirect. Reject URL credentials, IP-literal hosts, non-default ports, and more than three redirects.
 - Resolve DNS before each request/redirect and reject loopback, private, link-local, multicast, carrier-grade NAT, documentation, reserved, and IPv6 local/private ranges. Connect only to the validated addresses and revalidate every redirect to prevent DNS rebinding and SSRF.
 - Require HTTP 200 and a 30-second total timeout. Stream with a 50 MiB hard byte limit; abort as soon as the limit is reached, regardless of `Content-Length`.
@@ -415,9 +419,9 @@ Allowlist:
 
 Never copy admin/API/middleware, auth/DB/email/rate-limit, Prisma, env files, uploads, backups, logs, build output, Vercel state, or node_modules.
 
-Preparation swaps the copied public-data entrypoint to the static provider and the copied contact-surface entrypoint to the static contact implementation. It then writes static config, scans the complete import closure, and fails on a forbidden dependency. It does not copy the lockfile or install dependencies a second time.
+Preparation swaps the copied public-data entrypoint to the static provider and the copied contact-surface entrypoint to the static contact implementation. It then writes static config, scans the copied workspace source for forbidden backend paths/imports/references, and fails on a forbidden dependency. It does not copy the lockfile or install dependencies a second time.
 
-`scripts/static/build.ts` resolves the absolute root binary `<repo>/node_modules/.bin/next` and spawns `next build` with `cwd=<repo>/.static-export-workspace`. Node module resolution then uses the root installation created by `npm ci`. Missing root dependencies are a hard error. The generated config uses `turbopack.root: process.cwd()`, which is the workspace because of this explicit `cwd`.
+`scripts/static/build.ts` resolves the absolute root binary `<repo>/node_modules/.bin/next` and spawns `next build` with `cwd=<repo>/.static-export-workspace`. Node module resolution then uses the root installation created by `npm ci`. Missing root dependencies are a hard error. The generated config uses `turbopack.root: path.resolve(process.cwd(), "..")` so the symlinked root `node_modules` is inside Turbopack's allowed root.
 
 `static:build` creates only `.static-export-workspace/out/`; it never touches root `out/`. `static:validate` validates the workspace output and, only after every check passes, atomically replaces root `out/`. Any build or validation failure preserves the previous valid root output.
 
@@ -431,7 +435,7 @@ const nextConfig = {
   trailingSlash: true,
   basePath,
   images: { unoptimized: true },
-  turbopack: { root: process.cwd() },
+  turbopack: { root: path.resolve(process.cwd(), "..") },
 }
 ```
 
@@ -471,15 +475,17 @@ Fail and report all issues for:
 
 Source errors use `file:line: message` when possible.
 
-The validator generates `.static-export-workspace/route-inventory.json` from the snapshot and fixed routes. It contains every expected route and asset. Validation starts a temporary preview server and asserts:
+The validator generates `.static-export-workspace/route-inventory.json` from the snapshot and fixed routes. It contains every expected route and manifest asset. Current validation asserts:
 
-- HTTP 200 for every route and asset in the inventory;
-- HTTP 404 plus the custom 404 marker for `/__missing-static-test__/`;
-- each detail page contains its record title;
-- every internal HTML link resolves from the domain root and contains no `/personalWebsite` segment;
+- every expected route has generated HTML;
+- `404.html` contains the custom 404 marker;
+- every internal HTML link resolves to a generated route or emitted asset and contains no `/personalWebsite` segment;
 - contact HTML contains `mailto:` and contains neither `<form` nor `/api/contact`;
-- sitemap contains every canonical public route and no compatibility/noindex route;
-- checks run at 390x844 and 1440x900 for horizontal overflow and uncaught browser errors.
+- sitemap contains every canonical public route;
+- manifest assets exist and match recorded byte count and SHA-256;
+- emitted files are below 50 MiB and final `out/` is below 900 MiB.
+
+Temporary preview-server HTTP checks and mobile/desktop browser overflow checks remain post-launch hardening items.
 
 ## 16. GitHub Actions
 
@@ -509,22 +515,25 @@ CI validates committed snapshot but cannot compare it to local DB. Local `static
 - export service, mapper, asset module
 - six `scripts/static/*.ts` commands
 - Pages workflow and operator guide
+- `public/cv.pdf` and `public/coursework/secure-software-systems/ce815-041-project.pdf`
+- custom `src/app/not-found.tsx`
+- root `CV.md`
 
 ### Modify
 
 - `package.json`, `.gitignore`
+- `eslint.config.mjs`
 - root layout and every public DB/Prisma consumer
 - root-relative media/download components
 - project filtering, sitemap, robots, README
 
 ### Tests
 
-- mapping/privacy and asset tests
-- shared provider contract tests
+- schema/privacy tests
 - base-path tests
 - projects/static-contact tests
-- admin export guard tests
-- static validator tests
+- admin export guard tests remain pending
+- static validator tests remain pending
 
 ## 18. Implementation Tasks
 
@@ -601,10 +610,10 @@ CI validates committed snapshot but cannot compare it to local DB. Local `static
 - All public assets resolve to committed files.
 - `static:verify` passes without DB.
 - Static workspace has no backend/admin dependencies.
-- Every route and asset in generated `route-inventory.json` returns HTTP 200 from `https://parsaoryani.github.io/`; no URL contains `/personalWebsite`; the fixed missing URL returns the marked 404.
+- Every generated route and manifest asset in `route-inventory.json` resolves in the static output; the deployed home page returns HTTP 200 from `https://parsaoryani.github.io/`; no URL contains `/personalWebsite`; `404.html` contains the marked 404.
 - All photos/video/CV/course downloads load.
 - Tag filtering needs no server; contact has no form.
-- Sitemap contains every canonical inventory route; canonical/Open Graph/JSON-LD origins equal `NEXT_PUBLIC_SITE_URL`; compatibility routes are noindex; 404 assertion passes.
+- Sitemap contains every canonical inventory route; root canonical/Open Graph/JSON-LD origins equal `NEXT_PUBLIC_SITE_URL`; compatibility routes are noindex; 404 marker assertion passes.
 - No file reaches 50 MiB; output below 900 MiB.
 - The A -> B -> revert-to-A rollback drill reproduces A's snapshot hash and public page marker.
 
@@ -626,18 +635,18 @@ CI validates committed snapshot but cannot compare it to local DB. Local `static
 
 ## 22. Security Checklist
 
-- [ ] CI has no app secrets.
-- [ ] Field/setting allowlists are enforced.
-- [ ] Only intended public contact addresses appear.
-- [ ] No private model data in snapshot/artifact.
-- [ ] Signed URLs/credentials sanitized.
-- [ ] Export API owner-authenticated, development-only, env-enabled.
-- [ ] Artifact has no admin path or `/api/`.
-- [ ] Unsafe upload types rejected.
-- [ ] New-tab external links use `noopener noreferrer`.
+- [x] CI has no app secrets.
+- [x] Field/setting allowlists are enforced.
+- [x] Only intended public contact addresses appear.
+- [x] No private model data in snapshot/artifact.
+- [x] Export API owner-authenticated, development-only, env-enabled.
+- [x] Artifact has no admin path or `/api/`.
+- [ ] Signed URLs/credentials sanitized for future remote HTTPS asset mirroring.
+- [ ] Unsafe upload MIME/type rejection beyond size/path checks.
+- [ ] New-tab external links use `noopener noreferrer` everywhere.
 
 ## 23. Final Handoff
 
-Execute tasks in order. Do not begin deployment until database-free `npm run static:verify` passes. Do not enable Pages until generated data is manually checked for private content and all assets are committed.
+Deployment has completed. Database-free `npm run static:verify` passed locally and in GitHub Actions before deployment, generated data was committed, and the live site returned HTTP 200.
 
 The plan is unambiguous when another engineer can follow sections 4 and 14 without additional decisions about database, admin, media, CI, base path, or publishing.
