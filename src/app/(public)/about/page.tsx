@@ -159,6 +159,7 @@ export default async function AboutPage() {
             <p className="text-xs font-mono uppercase tracking-widest text-cyan mb-8">Along the way</p>
           </ScrollReveal>
 
+          {/* B.Sc. Graduation */}
           <ScrollReveal direction="up" className="max-w-sm mx-auto">
             <figure className="group">
               <div className="relative rounded-xl overflow-hidden border border-slate-700/50 aspect-[3/4]">
@@ -179,27 +180,92 @@ export default async function AboutPage() {
             </figure>
           </ScrollReveal>
 
-          <ScrollReveal direction="up" delay={100} className="max-w-2xl mx-auto text-center my-14">
-            <p className="text-mist leading-relaxed">
-              Graduation marked the end of one important chapter, but also the beginning of a deeper journey
-              into research, systems, and security.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal direction="up" delay={200} className="max-w-3xl mx-auto">
-            <figure>
-              <div className="relative rounded-xl overflow-hidden border border-slate-700/50 aspect-[16/9]">
+          {/* Graduation Video + Quote */}
+          <ScrollReveal direction="up" delay={150} className="max-w-3xl mx-auto">
+            <div className="space-y-4">
+              <figure className="relative rounded-xl overflow-hidden border border-slate-700/50 aspect-[16/9]">
                 <ViewportVideo
                   src="/about/graduation.mp4"
                   poster="/about/graduation-poster.jpg"
                   ariaLabel="Graduates celebrating and throwing their graduation caps"
                   className="absolute inset-0"
                 />
-              </div>
-              <figcaption className="mt-3 text-sm text-fog font-medium">
-                Closing one chapter. Starting the next.
+              </figure>
+              <figcaption className="mt-3 text-center text-mist leading-relaxed">
+                <p className="text-sm text-fog font-medium">Closing one chapter. Starting the next.</p>
+                <p className="text-xs text-mist/70 mt-1">
+                  Graduation marked the end of one important chapter, but also the beginning of a deeper journey
+                  into research, systems, and security.
+                </p>
               </figcaption>
-            </figure>
+            </div>
+          </ScrollReveal>
+
+          {/* THE NEXT STEP: GRADUATE STUDIES */}
+          <ScrollReveal direction="up" delay={200} className="max-w-3xl mx-auto">
+            <div className="space-y-4">
+              <h3 className="font-mono text-xs uppercase tracking-widest text-cyan">THE NEXT STEP: GRADUATE STUDIES</h3>
+              <div className="space-y-3 text-mist leading-relaxed">
+                <p>
+                  After completing my B.Sc. at Amirkabir University of Technology, I decided to pursue deeper
+                  research. My goal was to work on blockchain security and decentralized systems — areas where
+                  cryptographic rigor meets real-world protocol design.
+                </p>
+                <p>
+                  I prepared for the national M.Sc. Computer Engineering entrance exam for around three months.
+                  With approximately 18,000 participants, I achieved rank 16. This led me to pursue an M.Sc. in
+                  Secure Computing at Sharif University of Technology.
+                </p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* ENTERING RESEARCH */}
+          <ScrollReveal direction="up" delay={250} className="max-w-3xl mx-auto">
+            <div className="space-y-4">
+              <h3 className="font-mono text-xs uppercase tracking-widest text-cyan">ENTERING RESEARCH</h3>
+              <div className="space-y-3 text-mist leading-relaxed">
+                <p>
+                  During my M.Sc., my focus became more research-oriented. My current interests span:
+                </p>
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Blockchain security
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Cryptography
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Distributed systems
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Cross-chain interoperability
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Layer-2 scalability
+                  </li>
+                </ul>
+                <p>
+                  I emphasize both theoretical research and practical system implementation — believing that the
+                  most impactful work emerges when security guarantees, protocol design, and real system behavior
+                  meet.
+                </p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* CURRENT FOCUS */}
+          <ScrollReveal direction="up" delay={300} className="max-w-3xl mx-auto">
+            <div className="space-y-4">
+              <h3 className="font-mono text-xs uppercase tracking-widest text-cyan">CURRENT FOCUS</h3>
+              <div className="space-y-3 text-mist leading-relaxed">
+                <p>
+                  My current priority is research collaboration with researchers in related fields. I am actively
+                  seeking academic collaborations, research projects, and opportunities to contribute to impactful
+                  work in blockchain security, cryptography, and decentralized systems.
+                </p>
+              </div>
+            </div>
           </ScrollReveal>
         </div>
 
