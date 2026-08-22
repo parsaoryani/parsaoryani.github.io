@@ -1,5 +1,4 @@
 import { Container, Section } from "@/components/layout/container"
-import { ContactSurface } from "@/components/content/contact-surface"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin, Send } from "lucide-react"
@@ -32,7 +31,6 @@ export default async function ContactPage() {
     ? links
     : [{ label: "Telegram", url: "https://t.me/parsaoryanii", desc: "@parsaoryanii", icon: "Send" }, ...links]
   const location = settings.contact_location || { city: "Tehran, Iran", note: "Available for virtual meetings worldwide" }
-  const primaryEmail = emails[0]?.address || "parsa.oryani82@sharif.edu"
 
   const allMethods = [
     ...emails.map((e) => ({ href: `mailto:${e.address}`, label: e.label || "Email", desc: e.address, icon: Mail })),
@@ -54,44 +52,43 @@ export default async function ContactPage() {
           </div>
         </ScrollReveal>
 
-        <div className="max-w-4xl grid md:grid-cols-5 gap-10">
-            <ContactSurface primaryEmail={primaryEmail} telegramUrl="https://t.me/parsaoryanii" />
-
-            <div className="md:col-span-2 space-y-6">
-              <div className="p-6 rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
-                <h2 className="text-sm font-semibold text-gradient mb-5">Connect</h2>
-                <div className="space-y-3">
-                  {allMethods.map((method) => (
-                    <Link
-                      key={method.label}
-                      href={method.href}
-                      target={method.href.startsWith("http") ? "_blank" : undefined}
-                      rel={method.href.startsWith("http") ? "noreferrer" : undefined}
-                      className="flex items-center gap-4 p-4 rounded-xl border border-slate-700/50 bg-slate-800/30 hover:border-cyan/20 hover:bg-slate-800/50 transition-all duration-300 group"
-                    >
-                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-cyan/10 to-indigo/10 border border-cyan/10 group-hover:border-cyan/30 transition-colors">
-                        <method.icon size={16} className="text-cyan" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-fog">{method.label}</p>
-                        <p className="text-xs text-ash font-mono truncate">{method.desc}</p>
-                      </div>
-                      <ExternalLink size={14} className="text-slate-600 group-hover:text-cyan transition-colors shrink-0" />
-                    </Link>
-                  ))}
+        <div className="max-w-4xl">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {allMethods.map((method) => (
+              <Link
+                key={method.label}
+                href={method.href}
+                target={method.href.startsWith("http") ? "_blank" : undefined}
+                rel={method.href.startsWith("http") ? "noreferrer" : undefined}
+                className="group flex min-h-32 flex-col justify-between rounded-2xl border border-slate-700/50 bg-slate-900/50 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan/25 hover:bg-slate-800/50"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-cyan/10 bg-gradient-to-br from-cyan/10 to-indigo/10 transition-colors group-hover:border-cyan/30">
+                    <method.icon size={17} className="text-cyan" />
+                  </div>
+                  <ExternalLink size={15} className="shrink-0 text-slate-600 transition-colors group-hover:text-cyan" />
                 </div>
-              </div>
+                <div className="mt-7 min-w-0">
+                  <h2 className="text-sm font-semibold text-fog">{method.label}</h2>
+                  <p className="mt-1 truncate font-mono text-xs text-ash">{method.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
 
-              <div className="p-6 rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
-                <h2 className="text-sm font-semibold text-gradient mb-3">Location</h2>
-                <div className="flex items-center gap-3 text-mist">
-                  <MapPin size={16} className="text-cyan shrink-0" />
+          <div className="mt-5 rounded-2xl border border-slate-700/50 bg-slate-900/40 p-5 backdrop-blur-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-gradient">Location</h2>
+                <div className="mt-3 flex items-center gap-3 text-mist">
+                  <MapPin size={16} className="shrink-0 text-cyan" />
                   <span className="text-sm">{location.city}</span>
                 </div>
-                <p className="text-xs text-ash mt-3 font-mono">{location.note}</p>
               </div>
+              <p className="font-mono text-xs text-ash sm:text-right">{location.note}</p>
             </div>
           </div>
+        </div>
       </Container>
     </Section>
   )
