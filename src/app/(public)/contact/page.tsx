@@ -1,7 +1,7 @@
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin, Send } from "lucide-react"
+import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin } from "lucide-react"
 import { getSiteSettings } from "@/lib/public-data"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "Get in touch with Parsa Oryani.",
 }
 
-const iconMap: Record<string, typeof Mail> = { Mail, Code2, UserCheck, GraduationCap, Send }
+const iconMap: Record<string, typeof Mail> = { Mail, Code2, UserCheck, GraduationCap }
 
 export default async function ContactPage() {
   const settings = await getSiteSettings()
@@ -27,14 +27,11 @@ export default async function ContactPage() {
     { label: "GitHub", url: "https://github.com/parsaoryani", desc: "@parsaoryani", icon: "Code2" },
     { label: "LinkedIn", url: "https://www.linkedin.com/in/parsa-oryani/", desc: "in/parsa-oryani", icon: "UserCheck" },
   ]
-  const contactLinks = links.some((link) => link.url === "https://t.me/parsaoryanii")
-    ? links
-    : [{ label: "Telegram", url: "https://t.me/parsaoryanii", desc: "@parsaoryanii", icon: "Send" }, ...links]
   const location = settings.contact_location || { city: "Tehran, Iran", note: "Available for virtual meetings worldwide" }
 
   const allMethods = [
     ...emails.map((e) => ({ href: `mailto:${e.address}`, label: e.label || "Email", desc: e.address, icon: Mail })),
-    ...contactLinks.map((l) => ({ href: l.url, label: l.label, desc: l.desc, icon: iconMap[l.icon || ""] || ExternalLink })),
+    ...links.map((l) => ({ href: l.url, label: l.label, desc: l.desc, icon: iconMap[l.icon || ""] || ExternalLink })),
   ]
 
   return (
