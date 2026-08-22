@@ -3,10 +3,12 @@ import { Send } from "lucide-react"
 
 interface ContactSurfaceProps {
   primaryEmail: string
+  telegramUrl?: string
 }
 
-export function ContactSurface({ primaryEmail: _primaryEmail }: ContactSurfaceProps) {
+export function ContactSurface({ primaryEmail: _primaryEmail, telegramUrl: _telegramUrl }: ContactSurfaceProps) {
   void _primaryEmail
+  void _telegramUrl
 
   return (
     <div className="md:col-span-3">
