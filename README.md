@@ -10,7 +10,7 @@ npx prisma generate
 npm run dev
 ```
 
-Open `http://localhost:4321`. Database setup, seed data, admin usage, tunnels, and deployment are documented in [docs/guides/USAGE.md](docs/guides/USAGE.md) and [DEPLOY.md](DEPLOY.md).
+Open `http://localhost:4321`. Deployment notes are documented in [DEPLOY.md](DEPLOY.md); local planning and status notes are intentionally kept out of Git.
 
 ## Commands
 
@@ -54,7 +54,6 @@ src/
 prisma/                Schema and database migrations
 scripts/               Seed, database, deployment, and setup scripts
 public/                Static assets served as-is
-docs/                  Guides, reviews, status notes, and implementation plans
 ```
 
 ## Organization rules
@@ -64,17 +63,11 @@ docs/                  Guides, reviews, status notes, and implementation plans
 - Put domain behavior behind small, testable interfaces in `src/lib`; keep database and authentication access out of presentational components.
 - Use kebab-case for file names and named exports for reusable modules.
 - Keep operational scripts in `scripts/db`, `scripts/deploy`, or `scripts/setup.sh`.
-- Put durable documentation in the taxonomy described by [docs/README.md](docs/README.md).
+- Keep private planning notes, reviews, and scratch documentation local-only.
 
 ## Documentation
 
-- [Documentation index](docs/README.md)
-- [Architecture guide](docs/guides/ARCHITECTURE.md)
-- [Usage and admin guide](docs/guides/USAGE.md)
 - [Deployment guide](DEPLOY.md)
-- [Public/admin UX review](docs/reviews/PERSONAL_SITE_UX_IA_REVIEW.md)
-- [Project progress](docs/status/PROGRESS.md)
-- [Verified profile data](docs/profile-data.md)
 
 ## Verification before handoff
 

@@ -41,6 +41,10 @@ yarn-error.log*
 .neon
 .codebase-memory/
 
+# local-only project notes and implementation plans
+/docs/
+/.superpowers/
+
 # dev mail capture
 .mail-dev/
 
