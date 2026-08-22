@@ -109,6 +109,31 @@ function groupFilesByHomework(files: CourseFileShape[]): { label: string; files:
     .map(([label, files]) => ({ label, files }))
 }
 
+/**
+ * Splits a flat course.exercises summary into one explanation per HW, so it
+ * can sit directly above that homework's GitHub links instead of as one
+ * undifferentiated paragraph. Handles the two summary styles in use:
+ * "HW1: ...  HW2: ..." and "HW1 (...), HW2 (...)". Returns {} if neither
+ * pattern matches, in which case the caller falls back to the raw text.
+ */
+function parseHomeworkExplanations(exercises: string): Record<string, string> {
+  const result: Record<string, string> = {}
+
+  const colonMatches = [...exercises.matchAll(/HW(\d+):\s*([^]*?)(?=\s*HW\d+:|\s*(?:All in|See files)|$)/g)]
+  if (colonMatches.length > 0) {
+    for (const m of colonMatches) result[`HW${m[1]}`] = (m[2] ?? "").trim()
+    return result
+  }
+
+  const parenMatches = [...exercises.matchAll(/HW(\d+)\s*\(([^)]*)\)/g)]
+  if (parenMatches.length > 0) {
+    for (const m of parenMatches) result[`HW${m[1]}`] = (m[2] ?? "").trim()
+    return result
+  }
+
+  return result
+}
+
 export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
   const exerciseLinks = course.links?.filter((l) => l.type === "exercise") ?? []
   const projectLinks = course.links?.filter((l) => l.type === "project" || l.type === "slides") ?? []
@@ -124,6 +149,10 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
   }))
 
   const homeworkGroups = groupFilesByHomework(course.files)
+  const hwExplanations = course.exercises ? parseHomeworkExplanations(course.exercises) : {}
+  // Only fall back to the raw summary when it couldn't be split per HW —
+  // otherwise each group already carries its own explanation below.
+  const showRawExercisesText = Boolean(course.exercises) && Object.keys(hwExplanations).length === 0
 
   return (
     <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-4 hover:border-cyan/20 transition-colors">
@@ -179,14 +208,17 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
       {/* Exercises - collapsible, one clearly separated block per homework */}
       {(course.exercises || exerciseLinks.length > 0 || homeworkGroups.length > 0) && (
         <CollapsibleSection title="Exercises">
-          {course.exercises && (
+          {showRawExercisesText && (
             <p className="text-sm leading-relaxed text-mist/80">{course.exercises}</p>
           )}
           {homeworkGroups.length > 0 && (
-            <ul className={`space-y-3 ${course.exercises ? "mt-3" : ""}`}>
+            <ul className={`space-y-4 ${showRawExercisesText ? "mt-3" : ""}`}>
               {homeworkGroups.map(({ label, files }) => (
                 <li key={label} className="border-l border-emerald/30 pl-3">
                   <p className="text-xs font-mono font-semibold uppercase tracking-wider text-emerald">{label}</p>
+                  {hwExplanations[label] && (
+                    <p className="mt-1 text-[13px] leading-relaxed text-mist/80">{hwExplanations[label]}</p>
+                  )}
                   <div className="mt-1.5 space-y-1.5">
                     {files.map((file) => (
                       <a
@@ -214,7 +246,7 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
             </ul>
           )}
           {exerciseLinks.length > 0 && (
-            <div className={`flex flex-wrap gap-2 ${course.exercises || homeworkGroups.length > 0 ? "mt-3" : ""}`}>
+            <div className={`flex flex-wrap gap-2 ${showRawExercisesText || homeworkGroups.length > 0 ? "mt-3" : ""}`}>
               {exerciseLinks.map((link) => (
                 <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-emerald/10 border border-emerald/20 text-emerald hover:bg-emerald/20 transition-colors">
                   <LinkIcon size={10} /> {link.name}
