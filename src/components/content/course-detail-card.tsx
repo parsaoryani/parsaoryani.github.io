@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { FileText, Link as LinkIcon, Presentation, Code2, ArrowUpRight, ChevronRight, UserRound } from "lucide-react"
+import { Link as LinkIcon, Presentation, Code2, ArrowUpRight, ChevronRight, UserRound } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 interface CourseFileShape {
@@ -82,32 +82,31 @@ function CollapsibleSection({ title, children, defaultOpen = false }: { title: s
   )
 }
 
-const COURSE_GITHUB_PATHS: Record<string, string> = {
-  "Applied Cryptography": "masters/applied-cryptography",
-  "Secure Software Systems": "masters/secure-software-systems",
-  "Formal Methods in Information Security": "masters/formal-methods-in-information-security",
-  "Foundations and Applications of Blockchain": "masters/foundations-and-applications-of-blockchain",
-  "Deep Learning": "masters/deep-learning",
-}
-
-function parseExercises(exercises: string, courseName: string): { hw: string; url: string }[] {
-  if (!exercises.includes("HW1") && !exercises.includes("HW2") && !exercises.includes("HW3")) return []
-
-  const githubPath = COURSE_GITHUB_PATHS[courseName]
-  if (!githubPath) return []
-
-  const hwMatches = exercises.match(/HW\d+/g)
-  if (!hwMatches) return []
-
-  const uniqueHws = [...new Set(hwMatches)].sort((a, b) => parseInt(a.replace("HW", "")) - parseInt(b.replace("HW", "")))
-
-  const hws: { hw: string; url: string }[] = []
-  for (const hw of uniqueHws) {
-    const url = `https://github.com/parsaoryani/courses/tree/main/${githubPath}/HW`
-    hws.push({ hw, url })
+/**
+ * Groups course.files by their "HW<n>" prefix, in file order within each
+ * group, and by HW number ascending. Files with no HW prefix (e.g. a
+ * standalone project writeup) each become their own single-item group keyed
+ * by their full name.
+ */
+function groupFilesByHomework(files: CourseFileShape[]): { label: string; files: CourseFileShape[] }[] {
+  const groups = new Map<string, CourseFileShape[]>()
+  for (const file of files) {
+    const match = file.name.match(/^(HW\d+)/)
+    const key = match?.[1] ?? file.name
+    const group = groups.get(key) ?? []
+    group.push(file)
+    groups.set(key, group)
   }
-
-  return hws
+  return [...groups.entries()]
+    .sort(([a], [b]) => {
+      const na = a.match(/^HW(\d+)/)
+      const nb = b.match(/^HW(\d+)/)
+      if (na && nb) return Number(na[1]) - Number(nb[1])
+      if (na) return -1
+      if (nb) return 1
+      return a.localeCompare(b)
+    })
+    .map(([label, files]) => ({ label, files }))
 }
 
 export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
@@ -124,10 +123,7 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
     links: [...project.links].sort((a, b) => resolveArtifact(a).rank - resolveArtifact(b).rank),
   }))
 
-  const isDeepLearning = course.name.toLowerCase().includes("deep learning")
-  const dlExercises = (isDeepLearning || course.name.includes("Secure Software") || course.name.includes("Blockchain") || course.name.includes("Formal Methods")) && course.exercises 
-    ? parseExercises(course.exercises, course.name) 
-    : []
+  const homeworkGroups = groupFilesByHomework(course.files)
 
   return (
     <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-4 hover:border-cyan/20 transition-colors">
@@ -180,40 +176,51 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
         </details>
       )}
       
-      {/* Exercises - collapsible */}
-      {(course.exercises || exerciseLinks.length > 0 || dlExercises.length > 0) && (
+      {/* Exercises - collapsible, one clearly separated block per homework */}
+      {(course.exercises || exerciseLinks.length > 0 || homeworkGroups.length > 0) && (
         <CollapsibleSection title="Exercises">
-          {isDeepLearning && dlExercises.length > 0 ? (
-            <div className="space-y-2">
-              {dlExercises.map(({ hw, url }) => (
-                <a
-                  key={hw}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 rounded-md border border-emerald/30 bg-emerald/5 text-emerald hover:border-emerald/50 hover:bg-emerald/10 transition-colors group"
-                >
-                  <Code2 size={13} className="shrink-0" />
-                  <span className="text-sm font-medium group-hover:underline">{hw}</span>
-                  <ArrowUpRight size={11} className="shrink-0 ml-auto opacity-60 group-hover:opacity-100" />
+          {course.exercises && (
+            <p className="text-sm leading-relaxed text-mist/80">{course.exercises}</p>
+          )}
+          {homeworkGroups.length > 0 && (
+            <ul className={`space-y-3 ${course.exercises ? "mt-3" : ""}`}>
+              {homeworkGroups.map(({ label, files }) => (
+                <li key={label} className="border-l border-emerald/30 pl-3">
+                  <p className="text-xs font-mono font-semibold uppercase tracking-wider text-emerald">{label}</p>
+                  <div className="mt-1.5 space-y-1.5">
+                    {files.map((file) => (
+                      <a
+                        key={file.id}
+                        href={file.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/file flex items-start gap-2 rounded-md border border-slate-700/50 bg-slate-800/40 px-2.5 py-1.5 transition-colors hover:border-emerald/40 hover:bg-emerald/5"
+                      >
+                        <Code2 size={12} className="mt-0.5 shrink-0 text-emerald/80" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[13px] font-medium text-fog group-hover/file:underline">
+                            {file.name.replace(/^HW\d+:?\s*/, "") || file.name}
+                          </span>
+                          {file.description && (
+                            <span className="mt-0.5 block text-xs leading-relaxed text-mist/70">{file.description}</span>
+                          )}
+                        </span>
+                        <ArrowUpRight size={11} className="mt-0.5 shrink-0 text-mist/50 opacity-0 transition-opacity group-hover/file:opacity-100" />
+                      </a>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+          {exerciseLinks.length > 0 && (
+            <div className={`flex flex-wrap gap-2 ${course.exercises || homeworkGroups.length > 0 ? "mt-3" : ""}`}>
+              {exerciseLinks.map((link) => (
+                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-emerald/10 border border-emerald/20 text-emerald hover:bg-emerald/20 transition-colors">
+                  <LinkIcon size={10} /> {link.name}
                 </a>
               ))}
             </div>
-          ) : (
-            <>
-              {course.exercises && (
-                <p className="text-sm leading-relaxed text-mist/80">{course.exercises}</p>
-              )}
-              {exerciseLinks.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {exerciseLinks.map((link) => (
-                    <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded bg-emerald/10 border border-emerald/20 text-emerald hover:bg-emerald/20 transition-colors">
-                      <LinkIcon size={10} /> {link.name}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </>
           )}
         </CollapsibleSection>
       )}
@@ -239,25 +246,6 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
       {course.discussions && (
         <CollapsibleSection title="Discussions">
           <p className="text-sm leading-relaxed text-mist/80">{course.discussions}</p>
-        </CollapsibleSection>
-      )}
-      
-      {course.files.length > 0 && (
-        <CollapsibleSection title={`Files (${course.files.length})`}>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {course.files.map((file) => (
-              <a key={file.id} href={file.url} target="_blank" rel="noopener noreferrer" className="group/file rounded-lg border border-slate-700/50 bg-slate-800/40 px-3 py-2 transition-colors hover:border-cyan/30 hover:bg-cyan/10">
-                <span className="inline-flex items-center gap-1 text-xs font-mono text-[var(--accent)] transition-colors group-hover/file:text-cyan">
-                  <FileText size={10} /> {file.name}
-                </span>
-                {file.description && (
-                  <span className="mt-1 block text-xs leading-relaxed text-mist/70">
-                    {file.description}
-                  </span>
-                )}
-              </a>
-            ))}
-          </div>
         </CollapsibleSection>
       )}
     </div>

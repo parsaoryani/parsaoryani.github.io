@@ -99,12 +99,12 @@ model Publication {
 }
 
 model Project {
-  id            String         @id @default(cuid())
-  slug          String         @unique
+  id            String        @id @default(cuid())
+  slug          String        @unique
   title         String
   summary       String
   role          String?
-  status        ProjectStatus  @default(draft)
+  status        ProjectStatus @default(draft)
   year          Int
   problem       String?
   approach      String?
@@ -115,12 +115,12 @@ model Project {
   techStack     Json?
   repoUrl       String?
   demoUrl       String?
-  featured      Boolean        @default(false)
-  sortOrder     Int            @default(0)
+  featured      Boolean       @default(false)
+  sortOrder     Int           @default(0)
   ogImageUrl    String?
-  version       Int            @default(1)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  version       Int           @default(1)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   deletedAt     DateTime?
   tags          ProjectTag[]
 
@@ -128,15 +128,15 @@ model Project {
 }
 
 model Tag {
-  id          String          @id @default(cuid())
-  slug        String          @unique
-  label       String
-  description String?
-  color       String?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id           String           @id @default(cuid())
+  slug         String           @unique
+  label        String
+  description  String?
+  color        String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
   publications PublicationTag[]
-  projects    ProjectTag[]
+  projects     ProjectTag[]
 }
 
 model PublicationTag {
@@ -144,6 +144,7 @@ model PublicationTag {
   tagId         String
   publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
   tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
   @@id([publicationId, tagId])
   @@index([tagId])
 }
@@ -153,12 +154,13 @@ model ProjectTag {
   tagId     String
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
   @@id([projectId, tagId])
   @@index([tagId])
 }
 
 model TimelineEvent {
-  id           String              @id @default(cuid())
+  id           String            @id @default(cuid())
   type         TimelineEventType
   title        String
   organization String
@@ -168,10 +170,10 @@ model TimelineEvent {
   description  String?
   highlights   Json?
   url          String?
-  sortOrder    Int                 @default(0)
-  visible      Boolean             @default(true)
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  sortOrder    Int               @default(0)
+  visible      Boolean           @default(true)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   courses      Course[]
 
   @@index([visible, startDate, sortOrder])
@@ -179,39 +181,40 @@ model TimelineEvent {
 }
 
 model Course {
-  id             String   @id @default(cuid())
+  id              String        @id @default(cuid())
   timelineEventId String
-  timelineEvent  TimelineEvent @relation(fields: [timelineEventId], references: [id], onDelete: Cascade)
-  name           String
-  grade          String?
-  highlight      String?
-  instructor     String?
-  focus          String?
-  topics         String?
-  syllabus       String?  @db.Text
-  exercises      String?  @db.Text
-  projects       String?  @db.Text
-  discussions    String?  @db.Text
-  sortOrder      Int      @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  files          CourseFile[]
-  links          CourseLink[]
+  timelineEvent   TimelineEvent @relation(fields: [timelineEventId], references: [id], onDelete: Cascade)
+  name            String
+  grade           String?
+  highlight       String?
+  instructor      String?
+  focus           String?
+  topics          String?
+  syllabus        String?       @db.Text
+  exercises       String?       @db.Text
+  projects        String?       @db.Text
+  discussions     String?       @db.Text
+  sortOrder       Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  files           CourseFile[]
+  links           CourseLink[]
 
   @@index([timelineEventId])
 }
 
 model CourseFile {
-  id        String   @id @default(cuid())
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  name      String
-  url       String
-  kind      String   @default("file") // file, pdf, image, code, etc.
-  size      Int?
-  mimeType  String?
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name        String
+  url         String
+  description String?
+  kind        String   @default("file") // file, pdf, image, code, etc.
+  size        Int?
+  mimeType    String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
 
   @@index([courseId])
 }
@@ -220,8 +223,8 @@ model CourseLink {
   id        String   @id @default(cuid())
   courseId  String
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  type      String   // "exercise" | "project"
-  name      String   // custom display name
+  type      String // "exercise" | "project"
+  name      String // custom display name
   url       String
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
@@ -230,19 +233,19 @@ model CourseLink {
 }
 
 model SkillCategory {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   name      String
-  sortOrder Int    @default(0)
+  sortOrder Int     @default(0)
   skills    Skill[]
 }
 
 model Skill {
-  id         String         @id @default(cuid())
-  categoryId String
-  category   SkillCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  name       String
+  id          String        @id @default(cuid())
+  categoryId  String
+  category    SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name        String
   proficiency String?       @default("advanced")
-  sortOrder  Int            @default(0)
+  sortOrder   Int           @default(0)
 
   @@index([categoryId])
 }
@@ -262,33 +265,33 @@ model Media {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String
-  role          UserRole  @default(owner)
-  totpSecret    String?
-  totpEnabled   Boolean   @default(false)
-  backupCodes   Json?
-  failedAttempts Int      @default(0)
-  lockedUntil   DateTime?
-  lastLoginAt   DateTime?
-  lastLoginIp   String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  auditLogs     AuditLog[]
+  id                         String                      @id @default(cuid())
+  email                      String                      @unique
+  passwordHash               String
+  role                       UserRole                    @default(owner)
+  totpSecret                 String?
+  totpEnabled                Boolean                     @default(false)
+  backupCodes                Json?
+  failedAttempts             Int                         @default(0)
+  lockedUntil                DateTime?
+  lastLoginAt                DateTime?
+  lastLoginIp                String?
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @updatedAt
+  sessions                   Session[]
+  auditLogs                  AuditLog[]
   pendingTwoFactorChallenges PendingTwoFactorChallenge[]
 }
 
 model Session {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash  String   @unique
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  userAgent  String?
-  ip         String?
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userAgent String?
+  ip        String?
 }
 
 model AuditLog {
@@ -305,20 +308,20 @@ model AuditLog {
 }
 
 model PendingTwoFactorChallenge {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  challengeHash String @unique
-  attempts  Int      @default(0)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeHash String   @unique
+  attempts      Int      @default(0)
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
 
   @@index([userId])
 }
 
 model Revision {
   id         String   @id @default(cuid())
-  entityType String   // "publication" | "project" | "teaching" | "researching"
+  entityType String // "publication" | "project" | "teaching" | "researching"
   entityId   String
   data       Json
   version    Int
@@ -330,14 +333,14 @@ model Revision {
 }
 
 model ContactMessage {
-  id        String                @id @default(cuid())
+  id        String               @id @default(cuid())
   name      String
   email     String
   subject   String?
   body      String
-  status    ContactMessageStatus  @default(new)
+  status    ContactMessageStatus @default(new)
   ip        String?
-  createdAt DateTime              @default(now())
+  createdAt DateTime             @default(now())
 }
 
 model SiteSetting {
@@ -347,28 +350,28 @@ model SiteSetting {
 }
 
 model TeachingAssistant {
-  id          String       @id @default(cuid())
-  slug        String       @unique
-  course      String
-  level       String       @default("graduate")
-  university  String
-  professor   String
-  startDate   DateTime
-  endDate     DateTime?
-  description String?
-  highlights  Json?
+  id           String      @id @default(cuid())
+  slug         String      @unique
+  course       String
+  level        String      @default("graduate")
+  university   String
+  professor    String
+  startDate    DateTime
+  endDate      DateTime?
+  description  String?
+  highlights   Json?
   technologies String?
-  status      EntryStatus  @default(draft)
-  sortOrder   Int          @default(0)
-  version     Int          @default(1)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  deletedAt   DateTime?
+  status       EntryStatus @default(draft)
+  sortOrder    Int         @default(0)
+  version      Int         @default(1)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
 }
 
 model ResearchingAssistant {
-  id            String       @id @default(cuid())
-  slug          String       @unique
+  id            String      @id @default(cuid())
+  slug          String      @unique
   lab           String?
   university    String
   supervisor    String?
@@ -381,10 +384,10 @@ model ResearchingAssistant {
   outcomes      Json?
   technologies  String?
   repoUrl       String?
-  status        EntryStatus  @default(draft)
-  sortOrder     Int          @default(0)
-  version       Int          @default(1)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  status        EntryStatus @default(draft)
+  sortOrder     Int         @default(0)
+  version       Int         @default(1)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   deletedAt     DateTime?
 }
