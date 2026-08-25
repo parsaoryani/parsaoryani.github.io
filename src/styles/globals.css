@@ -1,60 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-void: var(--surface-base);
-  --color-slate-900: var(--surface-raised);
-  --color-slate-800: var(--surface-raised-2);
-  --color-slate-700: var(--border-default);
-  --color-fog: var(--text-primary);
-  --color-mist: var(--text-secondary-c);
-  --color-ash: var(--text-tertiary-c);
-  --color-cyan: var(--accent-primary);
-  --color-cyan-deep: var(--accent-primary-deep);
-  --color-indigo: var(--accent-secondary);
-  --color-emerald: var(--semantic-success);
-  --color-amber: var(--semantic-warning);
-  --color-coral: var(--semantic-danger);
+  --color-void: #0A0E14;
+  --color-slate-900: #111722;
+  --color-slate-800: #1A2130;
+  --color-slate-700: #2A3446;
+  --color-fog: #E6EDF3;
+  --color-mist: #9BA7B4;
+  --color-ash: #7B8794;
+  --color-cyan: #38E1C4;
+  --color-cyan-deep: #25B8A0;
+  --color-indigo: #9B8AFF;
+  --color-emerald: #3FB950;
+  --color-amber: #D29922;
+  --color-coral: #F85149;
 }
 
-/* Light theme (default) - academic paper: cream and white surfaces, navy and blue accents */
 :root {
-  --surface-base: #FAF8F3;
-  --surface-raised: #FFFFFF;
-  --surface-raised-2: #F1EEE4;
-  --border-default: #E1DDD0;
-  --text-primary: #1B2733;
-  --text-secondary-c: #48566A;
-  --text-tertiary-c: #6C7A8D;
-  --accent-primary: #1F3F66;
-  --accent-primary-deep: #16304F;
-  --accent-secondary: #3E7CB1;
-  --semantic-success: #2F7D4F;
-  --semantic-warning: #A6742F;
-  --semantic-danger: #B23A34;
-
-  --border: var(--border-default);
-  --bg-elevated: var(--surface-raised);
-  --text-secondary: var(--text-secondary-c);
-  --text-tertiary: var(--text-tertiary-c);
-  --accent: var(--accent-primary);
-  --danger: var(--semantic-danger);
-}
-
-/* Dark theme - original palette */
-.dark {
-  --surface-base: #0A0E14;
-  --surface-raised: #111722;
-  --surface-raised-2: #1A2130;
-  --border-default: #2A3446;
-  --text-primary: #E6EDF3;
-  --text-secondary-c: #9BA7B4;
-  --text-tertiary-c: #7B8794;
-  --accent-primary: #38E1C4;
-  --accent-primary-deep: #25B8A0;
-  --accent-secondary: #9B8AFF;
-  --semantic-success: #3FB950;
-  --semantic-warning: #D29922;
-  --semantic-danger: #F85149;
+  --border: #3A4856;
+  --bg-elevated: #111722;
+  --text-secondary: #9BA7B4;
+  --text-tertiary: #7B8794;
+  --accent: #38E1C4;
+  --danger: #F85149;
 }
 
 @layer base {
@@ -69,11 +37,11 @@
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
   ::selection {
-    background-color: color-mix(in srgb, var(--accent-primary) 25%, transparent);
-    color: var(--text-primary);
+    background-color: rgba(56, 225, 196, 0.25);
+    color: #E6EDF3;
   }
   :focus-visible {
-    outline: 2px solid var(--accent-primary);
+    outline: 2px solid #38E1C4;
     outline-offset: 2px;
   }
 }
@@ -84,68 +52,68 @@
   }
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: var(--border-default) transparent;
+    scrollbar-color: #2A3446 transparent;
   }
   .bg-grid {
-    background-image:
-      linear-gradient(color-mix(in srgb, var(--accent-primary) 3%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--accent-primary) 3%, transparent) 1px, transparent 1px);
+    background-image: 
+      linear-gradient(rgba(56, 225, 196, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56, 225, 196, 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
   }
   .bg-grid-fine {
-    background-image:
-      linear-gradient(color-mix(in srgb, var(--accent-primary) 2%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--accent-primary) 2%, transparent) 1px, transparent 1px);
+    background-image: 
+      linear-gradient(rgba(56, 225, 196, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56, 225, 196, 0.02) 1px, transparent 1px);
     background-size: 30px 30px;
   }
   .bg-glow {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent-primary) 12%, transparent), transparent);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 225, 196, 0.12), transparent);
   }
   .bg-glow-indigo {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent-secondary) 12%, transparent), transparent);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124, 108, 255, 0.12), transparent);
   }
   .bg-glow-emerald {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--semantic-success) 10%, transparent), transparent);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(63, 185, 80, 0.1), transparent);
   }
   .bg-glow-card {
     background: radial-gradient(
       600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      color-mix(in srgb, var(--accent-primary) 6%, transparent),
+      rgba(56, 225, 196, 0.06),
       transparent 40%
     );
   }
   .glass {
-    background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
+    background: rgba(17, 23, 34, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
   .glass-sm {
-    background: color-mix(in srgb, var(--surface-raised) 50%, transparent);
+    background: rgba(17, 23, 34, 0.5);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
   .card-gradient {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--surface-raised) 90%, transparent) 0%,
-      color-mix(in srgb, var(--surface-raised-2) 80%, transparent) 50%,
-      color-mix(in srgb, var(--surface-raised) 90%, transparent) 100%
+      rgba(17, 23, 34, 0.9) 0%,
+      rgba(26, 33, 48, 0.8) 50%,
+      rgba(17, 23, 34, 0.9) 100%
     );
   }
   .text-gradient {
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary-c) 100%);
+    background: linear-gradient(135deg, #E6EDF3 0%, #9BA7B4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .text-gradient-accent {
-    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    background: linear-gradient(135deg, #38E1C4 0%, #7C6CFF 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .text-gradient-emerald {
-    background: linear-gradient(135deg, var(--semantic-success) 0%, var(--accent-primary) 100%);
+    background: linear-gradient(135deg, #3FB950 0%, #38E1C4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -159,7 +127,7 @@
     inset: -1px;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-primary) 30%, transparent), transparent 50%, color-mix(in srgb, var(--accent-secondary) 30%, transparent));
+    background: linear-gradient(135deg, rgba(56, 225, 196, 0.3), transparent 50%, rgba(124, 108, 255, 0.3));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;

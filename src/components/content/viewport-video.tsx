@@ -62,7 +62,7 @@ export function ViewportVideo({ src, poster, className, ariaLabel }: ViewportVid
       type="button"
       onClick={toggle}
       className={`relative block w-full overflow-hidden group cursor-pointer ${className ?? ""}`}
-      aria-label={`${ariaLabel}, click to play or pause`}
+      aria-label={`${ariaLabel} — click to play or pause`}
     >
       <video
         ref={videoRef}

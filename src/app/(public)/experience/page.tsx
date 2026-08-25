@@ -35,8 +35,8 @@ export const metadata: Metadata = {
 function formatDate(date: Date, endDate?: Date | null) {
   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" }
   const start = date.toLocaleDateString("en-US", options)
-  if (!endDate) return `${start} to Present`
-  return `${start} to ${endDate.toLocaleDateString("en-US", options)}`
+  if (!endDate) return `${start} — Present`
+  return `${start} — ${endDate.toLocaleDateString("en-US", options)}`
 }
 
 type SectionConfig = { icon: typeof GraduationCap; label: string; color: string; dotColor: string; anchor: string }
@@ -69,7 +69,7 @@ function TimelineEventItem({ event, config, isLast }: { event: PublicTimelineEve
       <h3 className="text-base font-semibold text-fog group-hover:text-cyan transition-colors duration-300">{event.title}</h3>
       <p className="text-sm text-mist">
         {event.organization}
-        {event.location && <span className="text-ash">, {event.location}</span>}
+        {event.location && <span className="text-ash"> — {event.location}</span>}
       </p>
       {event.description && (
         <p className="text-sm text-mist/70 mt-1">{event.description}</p>
@@ -128,7 +128,7 @@ export default async function ExperiencePage() {
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-4"><span className="text-gradient">Experience</span></h1>
             <p className="text-lg text-mist max-w-2xl">
-              Education, research and teaching assistantships, work experience, and recognition. Jump to any section below.
+              Education, research and teaching assistantships, work experience, and recognition — jump to any section below.
             </p>
           </div>
         </ScrollReveal>
@@ -180,7 +180,7 @@ export default async function ExperiencePage() {
                   <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-indigo/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
                     <h3 className="text-lg font-semibold mb-1">{item.topic}</h3>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-mist mb-1">
-                      <span className="flex items-center gap-1"><Building2 size={13} /> {item.lab ? `${item.lab}, ` : ""}{item.university}</span>
+                      <span className="flex items-center gap-1"><Building2 size={13} /> {item.lab ? `${item.lab} — ` : ""}{item.university}</span>
                       {item.supervisor && (
                         <span className="flex items-center gap-1">
                           <User size={13} />

@@ -3,31 +3,9 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
-import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils/cn"
 import { Button } from "@/components/ui/button"
-import { Menu, X, ArrowUpRight, Sun, Moon } from "lucide-react"
-
-function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  if (!mounted) return <span className="h-9 w-9" aria-hidden />
-
-  const isDark = resolvedTheme === "dark"
-
-  return (
-    <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="flex h-9 w-9 items-center justify-center rounded-full text-mist transition-colors hover:bg-slate-800/50 hover:text-fog"
-      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-    >
-      {isDark ? <Sun size={17} /> : <Moon size={17} />}
-    </button>
-  )
-}
+import { Menu, X, ArrowUpRight } from "lucide-react"
 
 const baseNavLinks = [
   { href: "/experience", label: "Experience" },
@@ -40,10 +18,8 @@ const researchLink = { href: "/research", label: "Research" }
 
 export function Nav({ showResearch }: { showResearch: boolean }) {
   const pathname = usePathname()
-  const isHome = pathname === "/"
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [pastHero, setPastHero] = useState(!isHome)
 
   const navLinks = showResearch ? [researchLink, ...baseNavLinks] : baseNavLinks
 
@@ -61,17 +37,6 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  useEffect(() => {
-    if (!isHome) {
-      setPastHero(true)
-      return
-    }
-    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.55)
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [isHome])
-
   return (
     <header
       className={cn(
@@ -84,10 +49,7 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
       <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
-          className={cn(
-            "group relative font-mono text-lg font-semibold tracking-tight transition-opacity duration-300",
-            pastHero ? "opacity-100" : "opacity-0 pointer-events-none"
-          )}
+          className="group relative font-mono text-lg font-semibold tracking-tight"
         >
           <span className="bg-gradient-to-r from-cyan to-indigo bg-clip-text text-transparent">
             Parsa Oryani
@@ -115,8 +77,7 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
             </Link>
           ))}
 
-          <div className="ml-3 pl-3 border-l border-slate-700 flex items-center gap-2">
-            <ThemeToggle />
+          <div className="ml-3 pl-3 border-l border-slate-700">
             <Link href="/cv" aria-label="View CV">
               <Button
                 variant="default"
@@ -129,18 +90,15 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
           </div>
         </nav>
 
-        <div className="md:hidden flex items-center gap-1">
-          <ThemeToggle />
-          <button
-            className="text-fog p-2 hover:bg-slate-800 rounded-lg transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
+        <button
+          className="md:hidden text-fog p-2 hover:bg-slate-800 rounded-lg transition-colors"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-menu"
+        >
+          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
       </div>
 
       {mobileOpen && (

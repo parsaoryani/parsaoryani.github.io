@@ -17,8 +17,8 @@ export const metadata: Metadata = {
 function formatDate(date: Date, endDate?: Date | null) {
   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" }
   const start = date.toLocaleDateString("en-US", options)
-  if (!endDate) return `${start} to Present`
-  return `${start} to ${endDate.toLocaleDateString("en-US", options)}`
+  if (!endDate) return `${start} — Present`
+  return `${start} — ${endDate.toLocaleDateString("en-US", options)}`
 }
 
 export default async function CVPage() {
@@ -241,7 +241,7 @@ export default async function CVPage() {
                   <div key={exp.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-amber" />
                     <h3 className="font-semibold">{exp.course}</h3>
-                    <p className="text-sm text-mist">{exp.university}, {exp.professor}</p>
+                    <p className="text-sm text-mist">{exp.university} — {exp.professor}</p>
                     <p className="font-mono text-xs text-ash">{formatDate(exp.startDate, exp.endDate)}</p>
                     {exp.highlights && <p className="text-sm text-mist/70 mt-1">{String(exp.highlights)}</p>}
                     {exp.technologies && <p className="text-xs text-ash mt-1">Technologies: {exp.technologies}</p>}
@@ -260,7 +260,7 @@ export default async function CVPage() {
                   <div key={event.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-slate-600" />
                     <h3 className="font-semibold text-sm">{event.title}</h3>
-                    <p className="text-sm text-mist">{event.organization}{event.location && `, ${event.location}`}</p>
+                    <p className="text-sm text-mist">{event.organization}{event.location && ` — ${event.location}`}</p>
                     <span className="font-mono text-xs text-ash">{formatDate(event.startDate, event.endDate)}</span>
                     {event.description && <p className="text-sm text-mist/70 mt-1">{event.description}</p>}
                   </div>

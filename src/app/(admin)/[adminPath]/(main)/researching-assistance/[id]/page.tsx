@@ -133,7 +133,7 @@ export default function EditResearchingPage() {
           <Input name="supervisorUrl" type="url" defaultValue={item.supervisorUrl || ""} placeholder="https://scholar.google.com/..." />
         </FieldGroup>
       </div>
-      <FieldGroup label="Research Collaboration" hint="Distinct from the supervisor, e.g. a peer researcher you work closely with">
+      <FieldGroup label="Research Collaboration" hint="Distinct from the supervisor — e.g. a peer researcher you work closely with">
         <Input name="collaborator" defaultValue={item.collaborator || ""} placeholder="Working closely with Ph.D. researcher ..." />
       </FieldGroup>
       <div className="grid grid-cols-2 gap-4">

@@ -20,7 +20,7 @@ export default async function DevMailPage() {
         <div className="p-8 text-center rounded-xl border border-dashed border-[var(--border)]">
           <p className="text-sm text-[var(--text-tertiary)] font-mono">No captured emails yet.</p>
           <p className="text-xs text-[var(--text-tertiary)] mt-2">
-            Submit the contact form on the public site, emails will appear here.
+            Submit the contact form on the public site — emails will appear here.
           </p>
         </div>
       ) : (

@@ -12,10 +12,10 @@
 
 ## Research Interests
 
-- **Secure and Scalable Cross-Chain and Layer-2 Interoperability**: Security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.
-- **Ethereum Mempool Security and Asymmetric DoS**: Denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.
-- **Applied Cryptography and Zero-Knowledge Protocols**: Privacy-preserving protocols, commitment/nullifier systems, Merkle trees, and zk-SNARK-based applications.
-- **Formal and Security Analysis**: Security models, trust assumptions, protocol properties, and formal reasoning for secure systems.
+- **Secure and Scalable Cross-Chain and Layer-2 Interoperability** — Security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.
+- **Ethereum Mempool Security and Asymmetric DoS** — Denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.
+- **Applied Cryptography and Zero-Knowledge Protocols** — Privacy-preserving protocols, commitment/nullifier systems, Merkle trees, and zk-SNARK-based applications.
+- **Formal and Security Analysis** — Security models, trust assumptions, protocol properties, and formal reasoning for secure systems.
 
 ---
 
@@ -67,7 +67,7 @@ Selected coursework:
 
 ## Research Experience
 
-### Research Assistant: Blockchain Security
+### Research Assistant — Blockchain Security
 
 **Sharif University of Technology**
 **Sep 2025 - Present**
@@ -189,11 +189,11 @@ Technologies: Python, FastAPI, React, TypeScript, Vite, PostgreSQL, Prometheus, 
 
 ## Graduate Coursework Projects and Assignments
 
-### Applied Cryptography: ZK-Mixer
+### Applied Cryptography — ZK-Mixer
 
 Zero-knowledge mixer implementation demonstrating advanced cryptographic protocol design.
 
-### Secure Software Systems: Agentic Vulnerability Detection
+### Secure Software Systems — Agentic Vulnerability Detection
 
 Project report: https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/ce815-041-project.pdf
 
@@ -205,7 +205,7 @@ Assignments:
 - HW2: Fuzzing with Atheris and static analysis using AST and Z3.
 - HW3: LLM-based vulnerability detection, context strategies, a three-stage pipeline, patch generation, and model comparison.
 
-### Formal Methods in Information Security: Formal Verification of ZK-Rollup Security Mechanisms
+### Formal Methods in Information Security — Formal Verification of ZK-Rollup Security Mechanisms
 
 Applied formal methods to verify security properties of ZK-Rollup protocols.
 
@@ -215,7 +215,7 @@ Assignments:
 - HW2: Logic-based reasoning and information-flow control.
 - HW3: Formal protocol verification.
 
-### Deep Learning: Multi-Part Practical Assignments
+### Deep Learning — Multi-Part Practical Assignments
 
 Five homework sets with three parts each:
 
@@ -229,8 +229,8 @@ Five homework sets with three parts each:
 
 Projects:
 
-- opML: Optimistic Machine Learning on Blockchain, optimistic execution of ML inference on-chain with fraud proofs.
-- ZKsync Protocol: analysis and implementation of a ZK-Rollup scaling solution with zero-knowledge proofs.
+- opML: Optimistic Machine Learning on Blockchain — optimistic execution of ML inference on-chain with fraud proofs.
+- ZKsync Protocol — analysis and implementation of a ZK-Rollup scaling solution with zero-knowledge proofs.
 
 Assignments:
 
@@ -247,43 +247,43 @@ https://github.com/parsaoryani/courses/tree/main/masters/
 
 ### Decentralized Systems
 
-- Blockchain: advanced
-- Ethereum: advanced
-- Solana: advanced
-- Layer 2: advanced
-- Cross-Chain Protocols: advanced
-- DeFi: advanced
+- Blockchain — advanced
+- Ethereum — advanced
+- Solana — advanced
+- Layer 2 — advanced
+- Cross-Chain Protocols — advanced
+- DeFi — advanced
 
 ### Security and Cryptography
 
-- Applied Cryptography: advanced
-- Zero-Knowledge Proofs: advanced
-- Protocol Security: advanced
-- Smart Contract Security: advanced
-- Formal Methods: advanced
+- Applied Cryptography — advanced
+- Zero-Knowledge Proofs — advanced
+- Protocol Security — advanced
+- Smart Contract Security — advanced
+- Formal Methods — advanced
 
 ### Distributed Systems
 
-- Consensus: advanced
-- Blockchain Scalability: advanced
-- Interoperability: advanced
-- Transaction Processing: advanced
-- System Evaluation: advanced
+- Consensus — advanced
+- Blockchain Scalability — advanced
+- Interoperability — advanced
+- Transaction Processing — advanced
+- System Evaluation — advanced
 
 ### Programming and Tools
 
-- Python: advanced
-- Rust: advanced
-- Solidity: advanced
-- TypeScript: advanced
-- Docker: advanced
-- Git: advanced
+- Python — advanced
+- Rust — advanced
+- Solidity — advanced
+- TypeScript — advanced
+- Docker — advanced
+- Git — advanced
 
 ### Additional Interests
 
-- Machine Learning: proficient
-- Adversarial ML: proficient
-- Reinforcement Learning: proficient
+- Machine Learning — proficient
+- Adversarial ML — proficient
+- Reinforcement Learning — proficient
 
 ---
 

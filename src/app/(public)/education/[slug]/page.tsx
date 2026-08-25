@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const event = await getEducationEventBySlug(slug).catch(() => null)
   if (!event) return {}
   return {
-    title: `${event.title}: Coursework`,
+    title: `${event.title} — Coursework`,
     description: `Relevant coursework and syllabi from ${event.organization}.`,
   }
 }
@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function formatDate(date: Date, endDate?: Date | null) {
   const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" }
   const start = date.toLocaleDateString("en-US", options)
-  if (!endDate) return `${start} to Present`
-  return `${start} to ${endDate.toLocaleDateString("en-US", options)}`
+  if (!endDate) return `${start} — Present`
+  return `${start} — ${endDate.toLocaleDateString("en-US", options)}`
 }
 
 export default async function EducationDetailPage({ params }: Props) {

@@ -14,7 +14,7 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: "About",
-  description: "A little about me: academic journey, background, and skills.",
+  description: "A little about me — academic journey, background, and skills.",
 }
 
 const aboutStorySections = [
@@ -28,7 +28,7 @@ const aboutStorySections = [
     title: "Financial Markets",
     body: [
       "Through my family background, I was introduced to financial markets relatively early. I started with the stock market and later explored cryptocurrencies and foreign exchange, including a period of active trading.",
-      "That experience made me curious not only about markets themselves, but also about the systems behind them: how value is transferred, how trust is established, and how digital financial infrastructure can operate securely.",
+      "That experience made me curious not only about markets themselves, but also about the systems behind them — how value is transferred, how trust is established, and how digital financial infrastructure can operate securely.",
     ],
   },
   {
@@ -78,7 +78,7 @@ export default async function AboutPage() {
   return (
     <Section className="pt-32">
       <Container>
-        {/* Part 1, Background / Research path */}
+        {/* Part 1 — Background / Research path */}
         <ScrollReveal>
           <Badge variant="default" size="lg" className="mb-5">
             <Sparkles size={12} className="mr-1.5" /> About
@@ -152,7 +152,7 @@ export default async function AboutPage() {
           )}
         </div>
 
-        {/* Part 2, Journey / Visual Story */}
+        {/* Part 2 — Journey / Visual Story */}
         <div className="mb-24">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-widest text-cyan mb-8">Along the way</p>
@@ -207,7 +207,7 @@ export default async function AboutPage() {
               <div className="space-y-3 text-mist leading-relaxed">
                 <p>
                   After completing my B.Sc. at Amirkabir University of Technology, I decided to pursue deeper
-                  research. My goal was to work on blockchain security and decentralized systems, areas where
+                  research. My goal was to work on blockchain security and decentralized systems — areas where
                   cryptographic rigor meets real-world protocol design.
                 </p>
                 <p>
@@ -245,7 +245,7 @@ export default async function AboutPage() {
                   </li>
                 </ul>
                 <p>
-                  I emphasize both theoretical research and practical system implementation, believing that the
+                  I emphasize both theoretical research and practical system implementation — believing that the
                   most impactful work emerges when security guarantees, protocol design, and real system behavior
                   meet.
                 </p>

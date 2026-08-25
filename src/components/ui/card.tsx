@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils/cn"
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { glow?: boolean; glowColor?: "cyan" | "indigo" | "emerald" }>(
   ({ className, glow, glowColor = "cyan", ...props }, ref) => {
     const glowShadows = {
-      cyan: "hover:border-cyan/20 hover:shadow-[0_0_30px_-10px_color-mix(in_srgb,var(--accent-primary)_15%,transparent)]",
-      indigo: "hover:border-indigo/20 hover:shadow-[0_0_30px_-10px_color-mix(in_srgb,var(--accent-secondary)_15%,transparent)]",
-      emerald: "hover:border-emerald/20 hover:shadow-[0_0_30px_-10px_color-mix(in_srgb,var(--semantic-success)_15%,transparent)]",
+      cyan: "hover:border-cyan/20 hover:shadow-[0_0_30px_-10px_rgba(56,225,196,0.15)]",
+      indigo: "hover:border-indigo/20 hover:shadow-[0_0_30px_-10px_rgba(155,138,255,0.15)]",
+      emerald: "hover:border-emerald/20 hover:shadow-[0_0_30px_-10px_rgba(63,185,80,0.15)]",
     }
     const glowGradients = {
       cyan: "from-cyan/[0.03] to-transparent",

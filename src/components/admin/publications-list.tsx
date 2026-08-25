@@ -35,7 +35,7 @@ const columns: ListColumn<Publication>[] = [
     label: "Authors",
     render: (pub) => (
       <p className="text-xs text-[var(--text-secondary)] truncate max-w-[200px]">
-        {Array.isArray(pub.authors) ? pub.authors.map((a: { name?: string }) => a.name).filter(Boolean).join(", ") : "N/A"}
+        {Array.isArray(pub.authors) ? pub.authors.map((a: { name?: string }) => a.name).filter(Boolean).join(", ") : "—"}
       </p>
     ),
     className: "hidden md:table-cell",

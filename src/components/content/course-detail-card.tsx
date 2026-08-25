@@ -52,7 +52,7 @@ const CHIP_CLASS =
 function ProjectLinkChip({ link, projectName }: { link: CourseLinkShape; projectName: string }) {
   const { label, Icon } = resolveArtifact(link)
   const icon = <Icon size={11} className="shrink-0 text-cyan/70 transition-colors group-hover/chip:text-cyan" />
-  const ariaLabel = `${label}, ${projectName}`
+  const ariaLabel = `${label} — ${projectName}`
 
   if (link.url.startsWith("/")) {
     return (
@@ -150,7 +150,7 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
 
   const homeworkGroups = groupFilesByHomework(course.files)
   const hwExplanations = course.exercises ? parseHomeworkExplanations(course.exercises) : {}
-  // Only fall back to the raw summary when it couldn't be split per HW.
+  // Only fall back to the raw summary when it couldn't be split per HW —
   // otherwise each group already carries its own explanation below.
   const showRawExercisesText = Boolean(course.exercises) && Object.keys(hwExplanations).length === 0
 
