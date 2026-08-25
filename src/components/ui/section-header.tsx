@@ -12,7 +12,7 @@ interface SectionHeaderProps {
 
 const accentColors = {
   cyan: "from-cyan to-cyan-deep",
-  indigo: "from-indigo to-[#7C6CFF]",
+  indigo: "from-indigo to-indigo",
   emerald: "from-emerald to-cyan",
 }
 
@@ -22,7 +22,7 @@ export function SectionHeader({ badge, title, accent = "cyan", description, clas
       {badge && <div className="mb-4">{badge}</div>}
       <div className="flex items-end justify-between">
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 className="font-serif text-3xl md:text-4xl font-semibold">
             <span className="text-gradient">{title}</span>
           </h2>
           {description && (

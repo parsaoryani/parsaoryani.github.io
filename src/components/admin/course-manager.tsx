@@ -342,7 +342,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
             </div>
             <div className="space-y-2">
               <Label htmlFor="new-instructor">Instructor</Label>
-              <Input id="new-instructor" placeholder="e.g. Prof. Jane Doe — Group 1" value={newCourse.instructor} onChange={e => setNewCourse({ ...newCourse, instructor: e.target.value })} />
+              <Input id="new-instructor" placeholder="e.g. Prof. Jane Doe, Group 1" value={newCourse.instructor} onChange={e => setNewCourse({ ...newCourse, instructor: e.target.value })} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="new-focus">Focus</Label>
@@ -413,7 +413,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor={`edit-instructor-${course.id}`}>Instructor</Label>
-                    <Input id={`edit-instructor-${course.id}`} placeholder="e.g. Prof. Jane Doe — Group 1" defaultValue={editForm.instructor || course.instructor || ""} onChange={e => setEditForm({ ...editForm, instructor: e.target.value })} />
+                    <Input id={`edit-instructor-${course.id}`} placeholder="e.g. Prof. Jane Doe, Group 1" defaultValue={editForm.instructor || course.instructor || ""} onChange={e => setEditForm({ ...editForm, instructor: e.target.value })} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor={`edit-focus-${course.id}`}>Focus</Label>

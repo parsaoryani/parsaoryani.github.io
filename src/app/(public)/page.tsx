@@ -3,15 +3,12 @@ import { Section } from "@/components/layout/container"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeader } from "@/components/ui/section-header"
-import { FloatingParticles } from "@/components/ui/floating-particles"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
 import { TechnicalFoundations } from "@/components/content/technical-foundations"
-import { parseHomeDescription, parseHomeTitle } from "@/lib/home/hero"
 import { getSiteSettings } from "@/lib/public-data"
 import Link from "next/link"
-import { Fragment } from "react"
-import { ArrowUpRight, ArrowDown, FileText, Code2, Mail, ChevronRight, Sparkles, Target, Compass, Network, UserCheck } from "lucide-react"
+import { ArrowUpRight, FileText, Code2, Mail, ChevronRight, Target, Compass, Network, UserCheck } from "lucide-react"
 
 export const revalidate = 3600
 
@@ -36,54 +33,33 @@ const researchInterests = [
   },
 ]
 
-const heroJumpLinks = [
-  { label: "Research Interests", href: "#research-interests" },
-  { label: "Current Research", href: "#current-research" },
-  { label: "Projects", href: "/projects" },
-  { label: "About", href: "#about-preview" },
-  { label: "Contact", href: "#contact-cta" },
-]
-
 export default async function HomePage() {
   const settings = await getSiteSettings()
-  const titleLines = parseHomeTitle(settings.home_title)
-  const description = parseHomeDescription(settings.home_description)
   const researchDirections = settings.research_directions
 
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden pb-44 md:pb-36">
-        <div className="absolute inset-0 bg-grid opacity-40" />
+      <section className="relative min-h-[64vh] flex items-center overflow-hidden pb-6 md:pb-4">
+        <div className="absolute inset-0 bg-grid opacity-20" />
         <div className="absolute inset-0 bg-glow" />
-        <FloatingParticles count={18} className="opacity-60" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan/5 rounded-full blur-[120px] animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-indigo/5 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
 
-        <Container className="relative z-10 pt-24">
-          <div className="max-w-4xl">
-            <div className="animate-in">
-              <Badge variant="outline" size="lg" className="mb-6 border-cyan/20 text-cyan bg-cyan/5">
-                <Sparkles size={12} className="mr-1.5" />
-                M.Sc. Computer Engineering — Sharif University of Technology
-              </Badge>
-            </div>
+        <Container className="relative z-10 pt-16">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs md:text-sm text-mist mb-4">
+              M.Sc. Computer Engineering · Sharif University of Technology
+            </p>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
-              {titleLines.map((line, i) => (
-                <Fragment key={i}>
-                  {i > 0 && <br />}
-                  <span className={i % 2 === 0 ? "text-gradient" : "text-gradient-accent"}>{line}</span>
-                </Fragment>
-              ))}
+            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-semibold leading-[1.05] tracking-tight mb-5">
+              <span className="text-gradient-accent">Parsa Oryani</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-mist leading-relaxed max-w-2xl mb-10 min-h-[2em]">
+            <p className="text-lg md:text-xl text-mist leading-snug mb-10 min-h-[2.6em]">
               <TypewriterText
-                speed={24}
-                startDelay={1000}
+                speed={28}
+                startDelay={600}
                 segments={[
-                  { text: description },
+                  { text: "I'm interested in cryptography and distributed systems, with my current focus on blockchain security, cross-chain interoperability, and Layer-2 systems." },
                 ]}
               />
             </p>
@@ -95,26 +71,20 @@ export default async function HomePage() {
                   View CV
                 </Button>
               </Link>
-              <Link href="mailto:parsa.oryani82@sharif.edu">
-                <Button variant="secondary" size="lg" className="font-mono text-xs gap-2">
-                  <Mail size={14} />
-                  Email me
-                </Button>
+            </div>
+
+            <div className="animate-in animate-in-delay-3 mt-5 flex flex-wrap items-center gap-5 text-xs font-mono text-ash">
+              <Link href="mailto:parsa.oryani82@sharif.edu" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
+                <Mail size={13} />
+                Email
               </Link>
-              <div className="w-px h-6 bg-slate-700 mx-1 hidden sm:block" />
-              <Link href="https://github.com/parsaoryani" target="_blank">
-                <Button variant="outline" size="default" className="font-mono text-xs gap-2">
-                  <Code2 size={14} />
-                  GitHub
-                  <ArrowUpRight size={12} />
-                </Button>
+              <Link href="https://github.com/parsaoryani" target="_blank" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
+                <Code2 size={13} />
+                GitHub
               </Link>
-              <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank">
-                <Button variant="outline" size="default" className="font-mono text-xs gap-2">
-                  <UserCheck size={14} />
-                  LinkedIn
-                  <ArrowUpRight size={12} />
-                </Button>
+              <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
+                <UserCheck size={13} />
+                LinkedIn
               </Link>
             </div>
 
@@ -126,28 +96,6 @@ export default async function HomePage() {
             </div>
           </div>
         </Container>
-
-        {/* Hero bottom guide — anchored to the section's own bottom edge */}
-        <div className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-3">
-          <a
-            href="#research-interests"
-            className="flex flex-col items-center gap-1.5 py-2 text-ash hover:text-cyan transition-colors group"
-            aria-label="Scroll to explore"
-          >
-            <span className="text-[11px] font-mono uppercase tracking-widest">Scroll to explore</span>
-            <ArrowDown size={14} className="animate-scroll-nudge group-hover:text-cyan" />
-          </a>
-          <nav aria-label="Jump to section" className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 text-[10px] font-mono text-ash/60">
-            {heroJumpLinks.map((link, i) => (
-              <Fragment key={link.href}>
-                {i > 0 && <span className="text-slate-700">·</span>}
-                <Link href={link.href} className="py-1 px-1 hover:text-cyan transition-colors">
-                  {link.label}
-                </Link>
-              </Fragment>
-            ))}
-          </nav>
-        </div>
       </section>
 
       {/* Research Interests */}
@@ -240,8 +188,8 @@ export default async function HomePage() {
           <ScrollReveal>
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-8 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900/80 to-slate-800/30 backdrop-blur-sm hover:border-cyan/20 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-500">
               <div className="flex-1">
-                <Badge variant="outline" size="lg" className="mb-3 border-cyan/20 text-cyan bg-cyan/5">About</Badge>
-                <h2 className="text-2xl font-bold mb-2">
+                <Badge variant="outline" size="lg" className="mb-3 border-cyan/20 text-cyan bg-cyan/5">Snapshot</Badge>
+                <h2 className="font-serif text-2xl font-semibold mb-2">
                   <span className="text-gradient">Parsa Oryani</span>
                 </h2>
                 <p className="text-sm text-mist leading-relaxed max-w-xl">
@@ -266,7 +214,7 @@ export default async function HomePage() {
         <Container>
           <ScrollReveal>
             <div className="text-center py-8">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              <h2 className="font-serif text-2xl md:text-3xl font-semibold mb-4">
                 <span className="text-gradient">Get in Touch</span>
               </h2>
               <p className="text-mist text-sm mb-6 max-w-lg mx-auto">

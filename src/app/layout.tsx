@@ -29,8 +29,8 @@ const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Parsa Oryani — Secure and Scalable Decentralized Systems",
-    template: "%s — Parsa Oryani",
+    default: "Parsa Oryani | Secure and Scalable Decentralized Systems",
+    template: "%s | Parsa Oryani",
   },
   description:
     "M.Sc. student researching the security and scalability of decentralized systems, blockchain, and Layer-2 protocols. M.Sc. Computer Engineering at Sharif University of Technology.",
