@@ -71,7 +71,7 @@ export default async function AdminTimelinePage() {
                     <div>
                       <h3 className="text-sm font-medium">{event.title}</h3>
                       <p className="text-xs text-[var(--text-secondary)] font-mono">
-                        {event.organization}{event.location && ` — ${event.location}`}
+                        {event.organization}{event.location && `, ${event.location}`}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-4">

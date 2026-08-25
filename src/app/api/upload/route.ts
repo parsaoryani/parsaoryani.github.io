@@ -6,7 +6,7 @@ import crypto from "crypto"
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "./uploads"
 const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
 
-// Course materials only — excludes html/svg/js/etc. that could serve stored XSS if opened directly.
+// Course materials only, excludes html/svg/js/etc. that could serve stored XSS if opened directly.
 const ALLOWED_EXTENSIONS = new Set([
   "pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "csv", "txt", "md",
   "zip", "png", "jpg", "jpeg", "gif", "webp", "mp4", "mov",

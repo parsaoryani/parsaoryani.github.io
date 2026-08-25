@@ -20,10 +20,10 @@ export function MouseGlow({
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 })
 
   const glowColors = {
-    cyan: `rgba(56, 225, 196, ${intensity})`,
-    indigo: `rgba(124, 108, 255, ${intensity})`,
-    emerald: `rgba(63, 185, 80, ${intensity})`,
-    amber: `rgba(210, 153, 34, ${intensity})`,
+    cyan: `color-mix(in srgb, var(--accent-primary) ${intensity * 100}%, transparent)`,
+    indigo: `color-mix(in srgb, var(--accent-secondary) ${intensity * 100}%, transparent)`,
+    emerald: `color-mix(in srgb, var(--semantic-success) ${intensity * 100}%, transparent)`,
+    amber: `color-mix(in srgb, var(--semantic-warning) ${intensity * 100}%, transparent)`,
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {

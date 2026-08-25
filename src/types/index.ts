@@ -9,7 +9,7 @@ export type ApiResponse<T = unknown> =
   | { ok: false; error: string; status?: number }
 
 // ---------------------------------------------------------------------------
-// Prisma Includes — reusable include objects for consistent queries
+// Prisma Includes: reusable include objects for consistent queries
 // ---------------------------------------------------------------------------
 
 export const publicationWithTags = {
@@ -32,7 +32,7 @@ export const skillCategoryWithSkills = {
 } satisfies Prisma.SkillCategoryInclude
 
 // ---------------------------------------------------------------------------
-// Prisma Result Types — inferred types from common queries
+// Prisma Result Types: inferred types from common queries
 // ---------------------------------------------------------------------------
 
 export type PublicationWithTags = Prisma.PublicationGetPayload<{
