@@ -3,10 +3,9 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { Mail, Code2, UserCheck, ExternalLink, Sparkles, GraduationCap, MapPin } from "lucide-react"
 import { getSiteSettings } from "@/lib/public-data"
+import { canonicalPath } from "@/lib/site/metadata"
 import Link from "next/link"
 import type { Metadata } from "next"
-import { PRIMARY_EMAIL } from "@/content/research-profile"
-import { canonicalPath } from "@/lib/site/metadata"
 
 export const revalidate = 3600
 
@@ -21,8 +20,11 @@ const iconMap: Record<string, typeof Mail> = { Mail, Code2, UserCheck, Graduatio
 export default async function ContactPage() {
   const settings = await getSiteSettings()
 
-  const description = settings.contact_description?.text || "Reach out for thesis-related research discussions, collaboration on agent or systems security, internships, or future PhD opportunities."
-  const emails = [{ label: "Primary email", address: PRIMARY_EMAIL }]
+  const description = settings.contact_description?.text || "I am always open to research discussions, collaboration opportunities, and PhD position inquiries. Feel free to reach out."
+  const emails = settings.contact_emails.length > 0 ? settings.contact_emails : [
+    { label: "Email", address: "parsa.oryani82@sharif.edu" },
+    { label: "Email (Personal)", address: "parsa.oryani@gmail.com" },
+  ]
   const links = settings.contact_links.length > 0 ? settings.contact_links : [
     { label: "GitHub", url: "https://github.com/parsaoryani", desc: "@parsaoryani", icon: "Code2" },
     { label: "LinkedIn", url: "https://www.linkedin.com/in/parsa-oryani/", desc: "in/parsa-oryani", icon: "UserCheck" },
@@ -56,7 +58,7 @@ export default async function ContactPage() {
                 key={method.label}
                 href={method.href}
                 target={method.href.startsWith("http") ? "_blank" : undefined}
-                rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                rel={method.href.startsWith("http") ? "noreferrer" : undefined}
                 className="group flex min-h-32 flex-col justify-between rounded-2xl border border-slate-700/50 bg-slate-900/50 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan/25 hover:bg-slate-800/50"
               >
                 <div className="flex items-center justify-between gap-4">

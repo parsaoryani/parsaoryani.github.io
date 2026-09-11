@@ -17,7 +17,7 @@ export function ContactSurface({ primaryEmail, telegramUrl = "https://t.me/parsa
             <h2 className="text-lg font-semibold text-gradient">Start a conversation</h2>
           </div>
           <p className="text-sm leading-6 text-mist mb-6">
-            Reach out for thesis-related research discussions, Agent Security collaboration, internships, or future PhD opportunities.
+            Reach out for research discussions, collaboration ideas, or academic opportunities.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <a href={`mailto:${primaryEmail}`} className="sm:w-auto">
@@ -25,7 +25,7 @@ export function ContactSurface({ primaryEmail, telegramUrl = "https://t.me/parsa
                 <Mail size={14} /> Email
               </Button>
             </a>
-            <a href={telegramUrl} target="_blank" rel="noopener noreferrer" className="sm:w-auto">
+            <a href={telegramUrl} target="_blank" rel="noreferrer" className="sm:w-auto">
               <Button variant="outline" size="lg" className="w-full font-mono text-xs gap-2">
                 <Send size={14} /> Telegram
               </Button>

@@ -101,14 +101,14 @@ export default async function ProjectPage({ params }: Props) {
 
           <div className="flex flex-wrap items-center gap-3 mb-12">
             {project.repoUrl && (
-              <Link href={project.repoUrl} target="_blank">
+              <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer">
                 <Button variant="secondary" size="sm" className="font-mono text-xs gap-1.5">
                   <Code2 size={14} /> Repository
                 </Button>
               </Link>
             )}
             {project.demoUrl && (
-              <Link href={project.demoUrl} target="_blank">
+              <Link href={project.demoUrl} target="_blank" rel="noopener noreferrer">
                 <Button variant="default" size="sm" className="font-mono text-xs gap-1.5">
                   <ExternalLink size={14} /> Live Demo
                 </Button>

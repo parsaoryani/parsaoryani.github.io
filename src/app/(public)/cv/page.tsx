@@ -57,11 +57,11 @@ export default async function CVPage() {
                 <span>Sharif University of Technology</span>
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-ash font-mono">
-                <Link href="https://github.com/parsaoryani" target="_blank" className="hover:text-cyan transition-colors flex items-center gap-1">
+                <Link href="https://github.com/parsaoryani" target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors flex items-center gap-1">
                   <Code2 size={12} /> GitHub
                 </Link>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
-                <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" className="hover:text-cyan transition-colors flex items-center gap-1">
+                <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors flex items-center gap-1">
                   <UserCheck size={12} /> LinkedIn
                 </Link>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
@@ -70,7 +70,7 @@ export default async function CVPage() {
                 </Link>
               </div>
             </div>
-            <Link href="/cv.pdf" target="_blank">
+            <Link href="/cv.pdf" target="_blank" rel="noopener noreferrer">
               <Button variant="default" size="lg" className="font-mono text-xs gap-2 shadow-lg shadow-cyan/20">
                 <Download size={16} /> Download PDF <ArrowUpRight size={12} />
               </Button>
@@ -200,13 +200,13 @@ export default async function CVPage() {
                     {pub.tldr && <p className="text-sm text-mist/70 mt-1 line-clamp-2">{pub.tldr}</p>}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pub.pdfUrl && (
-                        <Link href={pub.pdfUrl} target="_blank" className="text-xs font-mono text-cyan hover:underline">PDF</Link>
+                        <Link href={pub.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-cyan hover:underline">PDF</Link>
                       )}
                       {pub.codeUrl && (
-                        <Link href={pub.codeUrl} target="_blank" className="text-xs font-mono text-cyan hover:underline">Code</Link>
+                        <Link href={pub.codeUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-cyan hover:underline">Code</Link>
                       )}
                       {pub.arxivId && (
-                        <Link href={`https://arxiv.org/abs/${pub.arxivId}`} target="_blank" className="text-xs font-mono text-cyan hover:underline">arXiv</Link>
+                        <Link href={`https://arxiv.org/abs/${pub.arxivId}`} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-cyan hover:underline">arXiv</Link>
                       )}
                     </div>
                   </div>
