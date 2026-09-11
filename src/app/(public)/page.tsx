@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeader } from "@/components/ui/section-header"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { TypewriterText } from "@/components/ui/typewriter"
 import { TechnicalFoundations } from "@/components/content/technical-foundations"
-import { AcademicCollaborators } from "@/components/content/academic-collaborators"
 import { getSiteSettings } from "@/lib/public-data"
+import { PRIMARY_EMAIL, PRIMARY_RESEARCH_STATEMENT, SHORT_TRANSITION } from "@/content/research-profile"
 import Link from "next/link"
 import { ArrowUpRight, FileText, Code2, Mail, ChevronRight, Target, Compass, Network, UserCheck } from "lucide-react"
 
@@ -36,7 +35,9 @@ const researchInterests = [
 
 export default async function HomePage() {
   const settings = await getSiteSettings()
-  const researchDirections = settings.research_directions
+  const researchDirections = settings.research_directions.filter(
+    (direction) => !direction.tags.includes("Blockchain Security")
+  )
 
   return (
     <>
@@ -55,19 +56,18 @@ export default async function HomePage() {
               <span className="text-gradient-accent">Parsa Oryani</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-mist leading-snug mb-10 min-h-[2.6em]">
-              <TypewriterText
-                speed={28}
-                startDelay={600}
-                segments={[
-                  { text: "I study the security of LLM agents and multi-agent systems — information-flow control, authorization, provenance, and runtime enforcement." },
-                ]}
-              />
+            <p className="mb-10 max-w-2xl text-lg leading-relaxed text-mist md:text-xl">
+              {PRIMARY_RESEARCH_STATEMENT}
             </p>
 
             <div className="animate-in animate-in-delay-3 flex flex-wrap items-center gap-3">
-              <Link href="/cv">
+              <Link href="/research">
                 <Button variant="default" size="lg" className="font-mono text-xs gap-2">
+                  View current research <ArrowUpRight size={14} />
+                </Button>
+              </Link>
+              <Link href="/cv">
+                <Button variant="secondary" size="lg" className="font-mono text-xs gap-2">
                   <FileText size={14} />
                   View CV
                 </Button>
@@ -75,7 +75,7 @@ export default async function HomePage() {
             </div>
 
             <div className="animate-in animate-in-delay-3 mt-5 flex flex-wrap items-center gap-5 text-xs font-mono text-ash">
-              <Link href="mailto:parsa.oryani82@sharif.edu" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
+              <Link href={`mailto:${PRIMARY_EMAIL}`} className="flex items-center gap-1.5 hover:text-cyan transition-colors">
                 <Mail size={13} />
                 Email
               </Link>
@@ -165,9 +165,6 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* Academic Collaborations & Mentorship */}
-      <AcademicCollaborators />
-
       {/* Technical Foundations */}
       <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20">
         <Container>
@@ -197,9 +194,7 @@ export default async function HomePage() {
                   <span className="text-gradient">Parsa Oryani</span>
                 </h2>
                 <p className="text-sm text-mist leading-relaxed max-w-xl">
-                  M.Sc. Computer Engineering student at Sharif University of Technology, in Secure Computing. Researching
-                  the security of LLM agents and multi-agent systems, with a continuing interest in blockchain security
-                  and decentralized systems.
+                  {SHORT_TRANSITION}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -227,7 +222,7 @@ export default async function HomePage() {
                 security, and applied cryptography.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <Link href="mailto:parsa.oryani82@sharif.edu">
+              <Link href={`mailto:${PRIMARY_EMAIL}`}>
                   <Button variant="default" size="lg" className="font-mono text-xs gap-2">
                     <Mail size={14} /> Email me
                   </Button>
