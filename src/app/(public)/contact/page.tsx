@@ -6,12 +6,14 @@ import { getSiteSettings } from "@/lib/public-data"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { PRIMARY_EMAIL } from "@/content/research-profile"
+import { canonicalPath } from "@/lib/site/metadata"
 
 export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with Parsa Oryani.",
+  alternates: canonicalPath("/contact"),
 }
 
 const iconMap: Record<string, typeof Mail> = { Mail, Code2, UserCheck, GraduationCap }

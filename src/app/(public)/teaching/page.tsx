@@ -1,13 +1,14 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { withBasePath } from "@/lib/site/base-path"
+import { canonicalPath } from "@/lib/site/metadata"
 
 const target = "/experience/#teaching-assistance"
 
 export const metadata: Metadata = {
   title: "Teaching",
   robots: { index: false, follow: true },
-  alternates: { canonical: "/experience/#teaching-assistance" },
+  alternates: canonicalPath(target),
 }
 
 export default function TeachingCompatibilityPage() {

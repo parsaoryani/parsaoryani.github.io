@@ -6,12 +6,14 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllProjects, getAllTags } from "@/lib/public-data"
 import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { getAvailableProjectTags } from "@/lib/projects/available-project-tags"
+import { canonicalPath } from "@/lib/site/metadata"
 import type { Metadata } from "next"
 import { Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Selected earlier systems-security projects in blockchain, cryptography, and decentralized infrastructure.",
+  alternates: canonicalPath("/projects"),
 }
 
 export default async function ProjectsPage() {

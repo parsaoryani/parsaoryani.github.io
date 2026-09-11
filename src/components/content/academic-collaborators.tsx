@@ -79,7 +79,7 @@ function ReferenceCard({ collaborator }: { collaborator: AcademicCollaborator })
         <a
           href={collaborator.scholarUrl}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label={`${collaborator.name} on Google Scholar`}
           className="inline-flex items-center gap-1.5 font-mono text-[11px] text-mist transition-colors hover:text-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/60"
         >

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getPublicationBySlug, getAllPublications } from "@/lib/public-data"
 import { safeQuery } from "@/lib/public-data/query-result"
+import { canonicalPath } from "@/lib/site/metadata"
 import Link from "next/link"
 import { ArrowLeft, FileText, Code2, ExternalLink, BookOpen } from "lucide-react"
 import { BibTeXCopy } from "@/components/content/bibtex-copy"
@@ -33,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: pub.title,
     description: pub.tldr || pub.abstract || "",
+    alternates: canonicalPath(`/research/${slug}`),
   }
 }
 
@@ -105,35 +107,35 @@ export default async function PublicationPage({ params }: Props) {
 
             <div className="flex flex-wrap items-center gap-3 mb-10">
               {pub.pdfUrl && (
-                <Link href={pub.pdfUrl} target="_blank">
+                <Link href={pub.pdfUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="default" size="sm" className="font-mono text-xs gap-1.5">
                     <FileText size={14} /> PDF
                   </Button>
                 </Link>
               )}
               {pub.arxivId && (
-                <Link href={`https://arxiv.org/abs/${pub.arxivId}`} target="_blank">
+                <Link href={`https://arxiv.org/abs/${pub.arxivId}`} target="_blank" rel="noopener noreferrer">
                   <Button variant="secondary" size="sm" className="font-mono text-xs gap-1.5">
                     <ExternalLink size={14} /> arXiv
                   </Button>
                 </Link>
               )}
               {pub.codeUrl && (
-                <Link href={pub.codeUrl} target="_blank">
+                <Link href={pub.codeUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="secondary" size="sm" className="font-mono text-xs gap-1.5">
                     <Code2 size={14} /> Code
                   </Button>
                 </Link>
               )}
               {pub.projectUrl && (
-                <Link href={pub.projectUrl} target="_blank">
+                <Link href={pub.projectUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="secondary" size="sm" className="font-mono text-xs gap-1.5">
                     <ExternalLink size={14} /> Project
                   </Button>
                 </Link>
               )}
               {pub.doi && (
-                <Link href={`https://doi.org/${pub.doi}`} target="_blank">
+                <Link href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer">
                   <Button variant="secondary" size="sm" className="font-mono text-xs gap-1.5">
                     <ExternalLink size={14} /> DOI
                   </Button>

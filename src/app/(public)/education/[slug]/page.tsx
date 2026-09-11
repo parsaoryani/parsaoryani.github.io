@@ -5,6 +5,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getEducationEventBySlug, getEducationEvents } from "@/lib/public-data"
 import { CourseDetailCard } from "@/components/content/course-detail-card"
 import { slugify } from "@/lib/utils/slugify"
+import { canonicalPath } from "@/lib/site/metadata"
 import { GraduationCap, ArrowLeft, Calendar } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${event.title}: Coursework`,
     description: `Relevant coursework and syllabi from ${event.organization}.`,
+    alternates: canonicalPath(`/education/${slug}`),
   }
 }
 

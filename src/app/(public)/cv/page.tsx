@@ -8,11 +8,13 @@ import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, HeartHandshake
 import Link from "next/link"
 import type { Metadata } from "next"
 import { CV_PROFILE, CV_SELECTED_PROJECTS } from "@/content/cv-profile"
+import { canonicalPath } from "@/lib/site/metadata"
 import type { PublicTimelineEvent, PublicSkillCategory, PublicPublication, PublicResearchAssistant, PublicTeachingAssistant } from "@/lib/public-data"
 
 export const metadata: Metadata = {
   title: "CV",
   description: "Curriculum Vitae of Parsa Oryani.",
+  alternates: canonicalPath("/cv"),
 }
 
 function formatDate(date: Date, endDate?: Date | null) {

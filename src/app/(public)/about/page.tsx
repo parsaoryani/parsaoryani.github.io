@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { ABOUT_STORY_SECTIONS, SHORT_TRANSITION } from "@/content/research-profile"
 import { getSiteSetting } from "@/lib/public-data"
+import { canonicalPath } from "@/lib/site/metadata"
 import { ArrowUpRight, Sparkles } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -13,6 +14,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: "About",
   description: "My path from cryptography and blockchain systems to the security of tool-using AI agents.",
+  alternates: canonicalPath("/about"),
 }
 
 export default async function AboutPage() {

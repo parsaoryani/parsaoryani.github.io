@@ -7,10 +7,16 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TechnicalFoundations } from "@/components/content/technical-foundations"
 import { getSiteSettings } from "@/lib/public-data"
 import { PRIMARY_EMAIL, PRIMARY_RESEARCH_STATEMENT, SHORT_TRANSITION } from "@/content/research-profile"
+import { canonicalPath } from "@/lib/site/metadata"
 import Link from "next/link"
 import { ArrowUpRight, FileText, Code2, Mail, ChevronRight, Target, Compass, Network, UserCheck } from "lucide-react"
+import type { Metadata } from "next"
 
 export const revalidate = 3600
+
+export const metadata: Metadata = {
+  alternates: canonicalPath("/"),
+}
 
 const researchInterests = [
   {
@@ -79,11 +85,11 @@ export default async function HomePage() {
                 <Mail size={13} />
                 Email
               </Link>
-              <Link href="https://github.com/parsaoryani" target="_blank" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
+              <Link href="https://github.com/parsaoryani" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
                 <Code2 size={13} />
                 GitHub
               </Link>
-              <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
+              <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-cyan transition-colors">
                 <UserCheck size={13} />
                 LinkedIn
               </Link>
@@ -222,17 +228,17 @@ export default async function HomePage() {
                 security, and applied cryptography.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href={`mailto:${PRIMARY_EMAIL}`}>
+                <Link href={`mailto:${PRIMARY_EMAIL}`}>
                   <Button variant="default" size="lg" className="font-mono text-xs gap-2">
                     <Mail size={14} /> Email me
                   </Button>
                 </Link>
-                <Link href="https://github.com/parsaoryani" target="_blank">
+                <Link href="https://github.com/parsaoryani" target="_blank" rel="noopener noreferrer">
                   <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
                     <Code2 size={14} /> GitHub
                   </Button>
                 </Link>
-                <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank">
+                <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" rel="noopener noreferrer">
                   <Button variant="secondary" size="default" className="font-mono text-xs gap-2">
                     <UserCheck size={14} /> LinkedIn
                   </Button>

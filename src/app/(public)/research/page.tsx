@@ -5,6 +5,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { CURRENT_RESEARCH, PRIMARY_EMAIL, PRIMARY_RESEARCH_STATEMENT } from "@/content/research-profile"
 import { getAllPublications } from "@/lib/public-data"
 import { QueryErrorFallback, safeQuery } from "@/lib/public-data/query-result"
+import { canonicalPath } from "@/lib/site/metadata"
 import { ArrowUpRight, CheckCircle2, GitBranch, ShieldCheck, Sparkles } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -12,6 +13,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Research",
   description: "Current work on lifecycle security, provenance, authorization, and runtime controls for tool-using AI agents.",
+  alternates: canonicalPath("/research"),
 }
 
 export default async function ResearchPage() {

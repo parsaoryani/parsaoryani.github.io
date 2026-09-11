@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getProjectBySlug, getAllProjects } from "@/lib/public-data"
+import { canonicalPath } from "@/lib/site/metadata"
 import Link from "next/link"
 import { ArrowLeft, ExternalLink, Code2, FolderGit2 } from "lucide-react"
 import type { Metadata } from "next"
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: project.title,
     description: project.summary,
+    alternates: canonicalPath(`/projects/${slug}`),
   }
 }
 

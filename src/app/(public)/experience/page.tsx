@@ -4,6 +4,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getAllResearchExperience, getAllTeachingExperience, getTimelineEvents } from "@/lib/public-data"
 import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { slugify } from "@/lib/utils/slugify"
+import { canonicalPath } from "@/lib/site/metadata"
 import {
   Sparkles,
   GraduationCap,
@@ -30,6 +31,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: "Experience",
   description: "Education, research assistantships, teaching assistantships, work experience, awards, talks, and service.",
+  alternates: canonicalPath("/experience"),
 }
 
 function formatDate(date: Date, endDate?: Date | null) {
