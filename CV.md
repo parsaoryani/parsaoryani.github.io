@@ -12,7 +12,7 @@
 
 ## Research Profile
 
-M.Sc. student in Secure Computing at Sharif University of Technology. Current research focuses on the security of LLM agents and multi-agent systems, particularly information-flow control, authorization, provenance, secure memory/tool interactions, and runtime enforcement. Background in deep learning, cryptography, distributed systems, blockchain security, and formal security analysis.
+M.Sc. student in Secure Computing at Sharif University of Technology. Current research focuses on the security of LLM agents and multi-agent systems, particularly information-flow control, authorization, provenance, secure memory/tool interactions, and runtime enforcement. Background in cryptography, formal methods, distributed systems, blockchain security, and practical system building.
 
 ---
 
@@ -63,6 +63,9 @@ National University Entrance Examination Rank: **343**
 ### Teaching Assistant, Artificial Intelligence and Lab
 **Amirkabir University of Technology; Dr. Ghatee** — Feb – Jun 2025
 
+### Teaching Assistant, Design and Analysis of Algorithms
+**Amirkabir University of Technology; Dr. Maryam Saneifard** — Oct 2023 – Jan 2024
+
 ### Teaching Assistant, Foundations of Matrices and Linear Algebra
 **Amirkabir University of Technology; Dr. Najafi** — Sep 2023 – Jan 2024
 
@@ -71,11 +74,27 @@ National University Entrance Examination Rank: **343**
 
 ---
 
+## Selected Projects
+
+### ZK-Mixer: Regulated Anonymous Payments — 2026
+
+Research prototype exploring privacy with tiered disclosure for authorized audit scenarios. [Case study](https://parsaoryani.github.io/projects/zk-mixer) · [Repository](https://github.com/parsaoryani/ZK-Mixer)
+
+### Ethereum CLI (Sepolia Testnet) — 2025
+
+Prototype CLI with encrypted local key storage, scoped network access, and failure-aware RPC handling. [Case study](https://parsaoryani.github.io/projects/ethereum-cli) · [Repository](https://github.com/parsaoryani/ethereum-cli)
+
+### BRCC: Besu Research Control Center — 2025
+
+Research control plane for safety-gated, reproducible experiments on a local Besu QBFT network. [Case study](https://parsaoryani.github.io/projects/brcc-lab) · [Repository](https://github.com/parsaoryani/brcc-lab)
+
+---
+
 ## Technical Research Toolkit
 
 ### Agentic AI & LLM Systems
 
-LLM agents, multi-agent systems, tool/MCP/skill integration, RAG, fine-tuning, prompting and inference, agent memory/state, and agent evaluation.
+LLM agents, multi-agent systems, tool/MCP/skill integration, RAG, prompting and inference, agent memory/state, and agent evaluation.
 
 ### Security & Formal Methods
 

@@ -7,6 +7,7 @@ import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, HeartHandshake, Sparkles, Code2, UserCheck, Mail } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
+import { CV_PROFILE, CV_SELECTED_PROJECTS } from "@/content/cv-profile"
 import type { PublicTimelineEvent, PublicSkillCategory, PublicPublication, PublicResearchAssistant, PublicTeachingAssistant } from "@/lib/public-data"
 
 export const metadata: Metadata = {
@@ -34,6 +35,9 @@ export default async function CVPage() {
   const publications = publicationsResult.data ?? []
   const researchExperience = researchResult.data ?? []
   const teachingExperience = teachingResult.data ?? []
+  const educationEvents = events.filter((event: PublicTimelineEvent) => event.type === "education")
+  const professionalEvents = events.filter((event: PublicTimelineEvent) => event.type === "experience")
+  const awardEvents = events.filter((event: PublicTimelineEvent) => event.type === "award")
 
   const hasLoadError = eventsResult.error || skillCategoriesResult.error || publicationsResult.error || researchResult.error || teachingResult.error
 
@@ -47,28 +51,29 @@ export default async function CVPage() {
               <Badge variant="default" size="lg" className="mb-4">
                 <Sparkles size={12} className="mr-1.5" /> Curriculum Vitae
               </Badge>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gradient">Parsa Oryani</h1>
-              <p className="text-mist">M.Sc. Computer Engineering &middot; Secure Computing &mdash; Security of LLM Agents &amp; Multi-Agent Systems</p>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gradient">{CV_PROFILE.name}</h1>
+              <p className="text-mist">{CV_PROFILE.headline}</p>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist/80">{CV_PROFILE.researchStatement}</p>
               <div className="flex items-center gap-4 mt-3 text-xs text-ash font-mono">
-                <span>parsa.oryani82@sharif.edu</span>
+                <span>{CV_PROFILE.email}</span>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
-                <span>Sharif University of Technology</span>
+                <span>{CV_PROFILE.institution}</span>
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-ash font-mono">
-                <Link href="https://github.com/parsaoryani" target="_blank" className="hover:text-cyan transition-colors flex items-center gap-1">
+                <Link href={CV_PROFILE.github} target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors flex items-center gap-1">
                   <Code2 size={12} /> GitHub
                 </Link>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
-                <Link href="https://www.linkedin.com/in/parsa-oryani/" target="_blank" className="hover:text-cyan transition-colors flex items-center gap-1">
+                <Link href={CV_PROFILE.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-cyan transition-colors flex items-center gap-1">
                   <UserCheck size={12} /> LinkedIn
                 </Link>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
-                <Link href="mailto:parsa.oryani82@sharif.edu" className="hover:text-cyan transition-colors flex items-center gap-1">
+                <Link href={`mailto:${CV_PROFILE.email}`} className="hover:text-cyan transition-colors flex items-center gap-1">
                   <Mail size={12} /> Email
                 </Link>
               </div>
             </div>
-            <Link href="/cv.pdf" target="_blank">
+            <Link href="/cv.pdf" target="_blank" rel="noopener noreferrer">
               <Button variant="default" size="lg" className="font-mono text-xs gap-2 shadow-lg shadow-cyan/20">
                 <Download size={16} /> Download PDF <ArrowUpRight size={12} />
               </Button>
@@ -85,7 +90,7 @@ export default async function CVPage() {
               <h2 className="text-lg font-semibold font-mono text-cyan uppercase tracking-wider mb-6 flex items-center gap-3">
                 <GraduationCap size={16} /> Education
               </h2>
-              {events.filter((e: PublicTimelineEvent) => e.type === "education").map((event: PublicTimelineEvent) => (
+              {educationEvents.map((event: PublicTimelineEvent) => (
                 <div key={event.id} className="relative pl-6 pb-6 last:pb-0 border-l border-slate-700/50">
                   <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-cyan" />
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
@@ -113,11 +118,11 @@ export default async function CVPage() {
             </section>
 
             {/* Experience */}
-            <section>
+            {professionalEvents.length > 0 && <section>
               <h2 className="text-lg font-semibold font-mono text-indigo uppercase tracking-wider mb-6 flex items-center gap-3">
                 <Briefcase size={16} /> Experience
               </h2>
-              {events.filter((e: PublicTimelineEvent) => e.type === "experience").map((event: PublicTimelineEvent) => (
+              {professionalEvents.map((event: PublicTimelineEvent) => (
                 <div key={event.id} className="relative pl-6 pb-6 last:pb-0 border-l border-slate-700/50">
                   <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-indigo" />
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
@@ -142,10 +147,10 @@ export default async function CVPage() {
                   )}
                 </div>
               ))}
-            </section>
+            </section>}
 
             {/* Skills */}
-            <section>
+            {skillCategories.length > 0 && <section>
               <h2 className="text-lg font-semibold font-mono text-emerald uppercase tracking-wider mb-6 flex items-center gap-3">
                 <Award size={16} /> Skills
               </h2>
@@ -159,14 +164,36 @@ export default async function CVPage() {
                   </div>
                 ))}
               </div>
+            </section>}
+
+            {/* Selected Projects */}
+            <section>
+              <h2 className="text-lg font-semibold font-mono text-cyan uppercase tracking-wider mb-6 flex items-center gap-3">
+                <Code2 size={16} /> Selected Projects
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {CV_SELECTED_PROJECTS.map((project) => (
+                  <Link
+                    key={project.href}
+                    href={project.href}
+                    className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 transition-colors hover:border-cyan/25"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-semibold">{project.title}</h3>
+                      <span className="shrink-0 font-mono text-xs text-ash">{project.year}</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-mist/70">{project.summary}</p>
+                  </Link>
+                ))}
+              </div>
             </section>
 
             {/* Awards */}
-            <section>
+            {awardEvents.length > 0 && <section>
               <h2 className="text-lg font-semibold font-mono text-amber uppercase tracking-wider mb-6 flex items-center gap-3">
                 <Award size={16} /> Awards &amp; Honors
               </h2>
-              {events.filter((e: PublicTimelineEvent) => e.type === "award").map((event: PublicTimelineEvent) => (
+              {awardEvents.map((event: PublicTimelineEvent) => (
                 <div key={event.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                   <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-amber" />
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
@@ -181,7 +208,7 @@ export default async function CVPage() {
                   {event.description && <p className="text-sm text-mist/70 mt-1">{event.description}</p>}
                 </div>
               ))}
-            </section>
+            </section>}
 
           {/* Publications */}
             {publications.length > 0 && (
@@ -198,13 +225,13 @@ export default async function CVPage() {
                     {pub.tldr && <p className="text-sm text-mist/70 mt-1 line-clamp-2">{pub.tldr}</p>}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pub.pdfUrl && (
-                        <Link href={pub.pdfUrl} target="_blank" className="text-xs font-mono text-cyan hover:underline">PDF</Link>
+                        <Link href={pub.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-cyan hover:underline">PDF</Link>
                       )}
                       {pub.codeUrl && (
-                        <Link href={pub.codeUrl} target="_blank" className="text-xs font-mono text-cyan hover:underline">Code</Link>
+                        <Link href={pub.codeUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-cyan hover:underline">Code</Link>
                       )}
                       {pub.arxivId && (
-                        <Link href={`https://arxiv.org/abs/${pub.arxivId}`} target="_blank" className="text-xs font-mono text-cyan hover:underline">arXiv</Link>
+                        <Link href={`https://arxiv.org/abs/${pub.arxivId}`} target="_blank" rel="noopener noreferrer" className="text-xs font-mono text-cyan hover:underline">arXiv</Link>
                       )}
                     </div>
                   </div>
@@ -222,9 +249,13 @@ export default async function CVPage() {
                   <div key={exp.id} className="relative pl-6 pb-4 last:pb-0 border-l border-slate-700/50">
                     <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-emerald" />
                     <h3 className="font-semibold">{exp.topic}</h3>
-                    <p className="text-sm text-mist">{exp.lab}, {exp.university}</p>
+                    <p className="text-sm text-mist">{[exp.lab, exp.university].filter(Boolean).join(", ")}</p>
                     <p className="font-mono text-xs text-ash">{formatDate(exp.startDate, exp.endDate)}</p>
-                    {exp.outcomes && <p className="text-sm text-mist/70 mt-1">{String(exp.outcomes)}</p>}
+                    {exp.outcomes && (
+                      <ul className="mt-2 space-y-1">
+                        {exp.outcomes.map((outcome) => <li key={outcome} className="text-sm text-mist/70">— {outcome}</li>)}
+                      </ul>
+                    )}
                     {exp.technologies && <p className="text-xs text-ash mt-1">Technologies: {exp.technologies}</p>}
                   </div>
                 ))}
@@ -243,7 +274,11 @@ export default async function CVPage() {
                     <h3 className="font-semibold">{exp.course}</h3>
                     <p className="text-sm text-mist">{exp.university}, {exp.professor}</p>
                     <p className="font-mono text-xs text-ash">{formatDate(exp.startDate, exp.endDate)}</p>
-                    {exp.highlights && <p className="text-sm text-mist/70 mt-1">{String(exp.highlights)}</p>}
+                    {exp.highlights && (
+                      <ul className="mt-2 space-y-1">
+                        {exp.highlights.map((highlight) => <li key={highlight} className="text-sm text-mist/70">— {highlight}</li>)}
+                      </ul>
+                    )}
                     {exp.technologies && <p className="text-xs text-ash mt-1">Technologies: {exp.technologies}</p>}
                   </div>
                 ))}
