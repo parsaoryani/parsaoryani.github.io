@@ -12,7 +12,7 @@ import { Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Selected earlier systems-security projects in blockchain, cryptography, and decentralized infrastructure.",
+  description: "Systems and security projects in blockchain, cryptography, and decentralized applications — the systems-security foundation behind my work on agent security.",
   alternates: canonicalPath("/projects"),
 }
 
@@ -31,16 +31,13 @@ export default async function ProjectsPage() {
         <ScrollReveal>
           <div className="max-w-3xl mb-8">
             <Badge variant="secondary" size="lg" className="mb-4">
-              <Sparkles size={12} className="mr-1.5" /> Previous systems work
+              <Sparkles size={12} className="mr-1.5" /> Case Studies
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-3">
               <span className="text-gradient">Projects</span>
             </h1>
             <p className="text-lg text-mist leading-relaxed">
-              These case studies document earlier work in blockchain, cryptography, and decentralized infrastructure. My current research focus is Agent Security; the projects below show the systems-building and adversarial reasoning that form part of that foundation.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-ash">
-              Claims are scoped to the linked prototype repositories. Known limitations and planned work are stated in each case study.
+              Systems and security projects related to blockchain, cryptography, and decentralized applications — the implementation experience behind my current work on agent security.
             </p>
           </div>
         </ScrollReveal>

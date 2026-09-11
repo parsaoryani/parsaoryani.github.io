@@ -42,12 +42,6 @@ const roleColors: Record<string, "default" | "secondary" | "outline" | "success"
   "Research Lead": "secondary",
 }
 
-const agentSecurityTransfer: Record<string, string> = {
-  "zk-mixer": "Transfer to Agent Security: this prototype sharpened how I reason about provenance, selective disclosure, and explicit authority boundaries in systems with competing trust requirements.",
-  "ethereum-cli": "Transfer to Agent Security: the CLI work reinforced narrow tool interfaces, explicit network scope, secret handling, and failure-aware interaction with external services.",
-  "brcc-lab": "Transfer to Agent Security: the control plane uses safety gates, impact classification, observability, and reproducible experiments—the same kinds of controls needed around consequential agent actions.",
-}
-
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params
   const project = await getProjectBySlug(slug).catch(() => null)
@@ -80,7 +74,6 @@ export default async function ProjectPage({ params }: Props) {
               <FolderGit2 size={18} className="text-cyan" />
             </div>
             <span className="font-mono text-xs text-ash">{project.year}</span>
-            <Badge variant="outline" className="text-[11px]">Previous work</Badge>
             {project.role && (
               <Badge variant={roleColors[project.role] || "outline"} className="text-[11px]">
                 {project.role}
@@ -96,12 +89,6 @@ export default async function ProjectPage({ params }: Props) {
             {project.summary}
           </p>
 
-          {agentSecurityTransfer[project.slug] && (
-            <p className="mb-7 rounded-xl border border-cyan/15 bg-cyan/[0.04] p-4 text-sm leading-relaxed text-mist">
-              {agentSecurityTransfer[project.slug]}
-            </p>
-          )}
-
           {techStack && techStack.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-8">
               {techStack.map((tech) => (
@@ -114,14 +101,14 @@ export default async function ProjectPage({ params }: Props) {
 
           <div className="flex flex-wrap items-center gap-3 mb-12">
             {project.repoUrl && (
-              <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+              <Link href={project.repoUrl} target="_blank">
                 <Button variant="secondary" size="sm" className="font-mono text-xs gap-1.5">
                   <Code2 size={14} /> Repository
                 </Button>
               </Link>
             )}
             {project.demoUrl && (
-              <Link href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+              <Link href={project.demoUrl} target="_blank">
                 <Button variant="default" size="sm" className="font-mono text-xs gap-1.5">
                   <ExternalLink size={14} /> Live Demo
                 </Button>
