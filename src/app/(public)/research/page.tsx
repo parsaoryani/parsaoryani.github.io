@@ -75,8 +75,8 @@ export default async function ResearchPage() {
               </section>
             </div>
 
-            <div className="border-t border-slate-700/50 bg-slate-950/30 p-6 md:px-8">
-              <h3 className="mb-3 font-mono text-xs uppercase tracking-wider text-ash">Scope and limitations</h3>
+            <div className="border-t border-slate-700/50 bg-slate-800/40 p-6 md:px-8">
+              <h3 className="mb-3 font-mono text-xs uppercase tracking-wider text-mist">Scope and limitations</h3>
               <ul className="space-y-2 text-sm text-mist">
                 {CURRENT_RESEARCH.limitations.map((limitation) => <li key={limitation}>— {limitation}</li>)}
               </ul>

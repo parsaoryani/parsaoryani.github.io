@@ -45,6 +45,7 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const mobileTriggerRef = useRef<HTMLButtonElement>(null)
   const firstMobileLinkRef = useRef<HTMLAnchorElement>(null)
+  const previousPathnameRef = useRef(pathname)
   const [scrolled, setScrolled] = useState(false)
   const [scrolledPastHero, setScrolledPastHero] = useState(false)
   const pastHero = !isHome || scrolledPastHero
@@ -65,7 +66,10 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
   }
 
   useEffect(() => {
-    setMobileOpen(false)
+    if (previousPathnameRef.current === pathname) return
+    previousPathnameRef.current = pathname
+    const frame = window.requestAnimationFrame(() => setMobileOpen(false))
+    return () => window.cancelAnimationFrame(frame)
   }, [pathname])
 
   useEffect(() => {

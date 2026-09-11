@@ -30,27 +30,27 @@
 - Consumes: `Nav({ showResearch }: { showResearch: boolean })`
 - Produces: accessible mobile dialog navigation with deterministic open/close and focus behavior
 
-- [ ] **Step 1: Write failing behavior tests**
+- [x] **Step 1: Write failing behavior tests**
 
 Cover opening, opaque viewport surface, Escape close, body scroll lock, trigger focus return, link close, and active-page semantics using Testing Library.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run: `npm test -- src/components/layout/nav.test.tsx`
 
 Expected: failures for dialog semantics, scroll locking, Escape handling, and focus restoration.
 
-- [ ] **Step 3: Implement the minimal navigation behavior**
+- [x] **Step 3: Implement the minimal navigation behavior**
 
 Add a trigger ref and menu ref, close on Escape and pathname change, lock `document.body.style.overflow`, focus the first menu link, restore the trigger focus, and render the menu as an opaque fixed surface below the header.
 
-- [ ] **Step 4: Run the focused test and verify GREEN**
+- [x] **Step 4: Run the focused test and verify GREEN**
 
 Run: `npm test -- src/components/layout/nav.test.tsx`
 
 Expected: all navigation tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 Commit message: `fix: make mobile navigation accessible`
 
@@ -68,27 +68,27 @@ Commit message: `fix: make mobile navigation accessible`
 **Interfaces:**
 - Produces: shared `PRIMARY_RESEARCH_STATEMENT`, `SHORT_TRANSITION`, `ABOUT_STORY_SECTIONS`, and `CURRENT_RESEARCH` content contracts
 
-- [ ] **Step 1: Write failing content-contract tests**
+- [x] **Step 1: Write failing content-contract tests**
 
 Assert that the current identity names Agent Security, the transition names both intellectual continuity and the local mentorship/collaboration constraint, no content claims AI is inherently easier, no unsupported “highest grade in both” wording exists, and current work is labeled in progress.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run: `npm test -- src/content/research-profile.test.ts`
 
 Expected: module-not-found or missing-export failure.
 
-- [ ] **Step 3: Add the content module and update pages**
+- [x] **Step 3: Add the content module and update pages**
 
 Render the hero statement immediately without `TypewriterText`; add Research as the primary CTA. Condense About into one story. Replace the Research empty state with a thesis/current-work card containing questions, threat model, method, status, advisor, limitations, and collaboration CTA. Use one email and remove duplicated positioning from contact/footer.
 
-- [ ] **Step 4: Run focused and related tests**
+- [x] **Step 4: Run focused and related tests**
 
 Run: `npm test -- src/content/research-profile.test.ts src/lib/home/hero.test.ts`
 
 Expected: all selected tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 Commit message: `feat: clarify current research narrative`
 
@@ -105,27 +105,27 @@ Commit message: `feat: clarify current research narrative`
 - Consumes: current `PublicProject` fields
 - Produces: previous-work framing and bounded prototype claims in both server-seeded and static content
 
-- [ ] **Step 1: Write a failing claim-safety test**
+- [x] **Step 1: Write a failing claim-safety test**
 
 Load the generated site data and reject categorical/high-risk phrases such as `Bulletproof-style zk-SNARK`, `complete POUR protocol`, `all 18 threat vectors`, `proved the privacy-compliance trade-off`, `keeps private keys safe`, `full experiment reproducibility metadata`, and unqualified complete-page claims.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run: `npm test -- src/content/project-claims.test.ts`
 
 Expected: failures naming the current unsafe phrases.
 
-- [ ] **Step 3: Bound the wording and separate past/current work**
+- [x] **Step 3: Bound the wording and separate past/current work**
 
 Describe ZK-Mixer as an educational/research prototype using its implemented construction without conflating proof-system families. Retain raw metrics only when scoped as repository-reported and direct readers to the repository for methodology. State concrete Ethereum CLI controls instead of absolute safety. Separate implemented BRCC baseline support from planned workloads. Add a concise transfer-to-Agent-Security note on listing/detail pages.
 
-- [ ] **Step 4: Run focused project tests**
+- [x] **Step 4: Run focused project tests**
 
 Run: `npm test -- src/content/project-claims.test.ts src/components/content/project-card.test.tsx`
 
 Expected: all selected tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 Commit message: `fix: bound project security claims`
 
@@ -142,31 +142,31 @@ Commit message: `fix: bound project security claims`
 **Interfaces:**
 - Produces: canonical critical CV facts, selected-project list, readable PDF, and cross-surface validation
 
-- [ ] **Step 1: Write failing CV contract tests**
+- [x] **Step 1: Write failing CV contract tests**
 
 Assert one primary email, Sep 2025-present M.Sc. dates, Feb 2025 B.Sc. completion, Agent Security focus, exact cryptography-grade distinction, and all three selected project titles. Check the web CV source and Markdown source for those facts.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run: `npm test -- src/content/cv-profile.test.ts`
 
 Expected: failure because selected projects/canonical facts are incomplete.
 
-- [ ] **Step 3: Align web and Markdown CV**
+- [x] **Step 3: Align web and Markdown CV**
 
 Use the canonical content constants for the web header/profile, render semantic outcome/highlight lists, suppress empty sections, and add Selected Projects. Update `CV.md` to match the same critical facts and avoid unsupported comparative or categorical claims.
 
-- [ ] **Step 4: Generate and validate the PDF**
+- [x] **Step 4: Generate and validate the PDF**
 
 Generate a readable two-page `public/cv.pdf` with title/author metadata, logical headings, working links, and the same critical facts. Extract PDF text and compare required facts/titles.
 
-- [ ] **Step 5: Run focused tests and PDF checks**
+- [x] **Step 5: Run focused tests and PDF checks**
 
 Run: `npm test -- src/content/cv-profile.test.ts && python3 scripts/cv/build-pdf.py --check`
 
 Expected: tests pass and the PDF check reports matching critical facts.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 Commit message: `feat: synchronize cv surfaces`
 
@@ -182,31 +182,31 @@ Commit message: `feat: synchronize cv surfaces`
 **Interfaces:**
 - Produces: `canonicalPath(pathname: string)` metadata helper and safe external links
 
-- [ ] **Step 1: Write failing metadata tests**
+- [x] **Step 1: Write failing metadata tests**
 
 Assert `/` canonical resolution, normalized nested paths, and compatibility with the configured metadata base.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run: `npm test -- src/lib/site/metadata.test.ts`
 
 Expected: module-not-found or missing-export failure.
 
-- [ ] **Step 3: Implement canonical metadata and link safety**
+- [x] **Step 3: Implement canonical metadata and link safety**
 
 Add canonical alternates to every indexable public page and dynamic detail page. Keep compatibility pages noindex. Add `rel="noopener noreferrer"` to external new-tab links.
 
-- [ ] **Step 4: Run all automated verification**
+- [x] **Step 4: Run all automated verification**
 
 Run: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`, and `npm run static:verify`.
 
 Expected: every command exits 0 with no test failures, type errors, lint errors, build failures, or static validation failures.
 
-- [ ] **Step 5: Run browser verification**
+- [x] **Step 5: Run browser verification**
 
 Use Playwright against the local site. Check all primary routes, the mobile menu at 320/375/390/430 pixels, Escape/focus behavior, overflow, desktop layouts, both color themes, hero immediate content, Research status, project framing, CV download, canonicals, and console errors.
 
-- [ ] **Step 6: Review the final diff and commit**
+- [x] **Step 6: Review the final diff and commit**
 
 Run: `git diff --check` and review `git diff --stat` plus all changed files.
 
