@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState, useEffect, useSyncExternalStore } from "react"
+import { useState, useEffect, useRef, useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils/cn"
 import { Button } from "@/components/ui/button"
@@ -43,6 +43,8 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
   const pathname = usePathname()
   const isHome = pathname === "/"
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null)
+  const firstMobileLinkRef = useRef<HTMLAnchorElement>(null)
   const [scrolled, setScrolled] = useState(false)
   const [scrolledPastHero, setScrolledPastHero] = useState(false)
   const pastHero = !isHome || scrolledPastHero
@@ -56,6 +58,33 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
   const handleMobileLinkClick = () => {
     setMobileOpen(false)
   }
+
+  const closeMobileMenu = () => {
+    setMobileOpen(false)
+    window.requestAnimationFrame(() => mobileTriggerRef.current?.focus())
+  }
+
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.requestAnimationFrame(() => firstMobileLinkRef.current?.focus())
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeMobileMenu()
+    }
+
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", onKeyDown)
+    }
+  }, [mobileOpen])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -131,8 +160,9 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
         <div className="md:hidden flex items-center gap-1">
           <ThemeToggle />
           <button
-            className="text-fog p-2 hover:bg-slate-800 rounded-lg transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
+            ref={mobileTriggerRef}
+            className="rounded-lg p-2 text-fog transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan"
+            onClick={() => (mobileOpen ? closeMobileMenu() : setMobileOpen(true))}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
@@ -145,21 +175,23 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
       {mobileOpen && (
         <div
           id="mobile-menu"
-          className="md:hidden glass border-t border-slate-700/50 animate-in slide-in-from-top-2"
-          role="navigation"
-          aria-label="Mobile menu"
+          className="fixed inset-x-0 bottom-0 top-18 overflow-y-auto border-t border-slate-700/70 bg-void px-2 pb-8 pt-3 shadow-2xl animate-in slide-in-from-top-2 md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
         >
-          <nav className="flex flex-col p-4 gap-1">
-            {navLinks.map((link) => (
+          <nav className="mx-auto flex max-w-md flex-col gap-2 p-4" aria-label="Mobile navigation">
+            {navLinks.map((link, index) => (
               <Link
                 key={link.href}
+                ref={index === 0 ? firstMobileLinkRef : undefined}
                 href={link.href}
                 onClick={handleMobileLinkClick}
                 className={cn(
-                  "px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                  "rounded-xl border px-4 py-3 text-base font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan",
                   isActive(link.href)
-                    ? "text-cyan bg-cyan/5 border border-cyan/20"
-                    : "text-mist hover:text-fog hover:bg-slate-800/50"
+                    ? "border-cyan/25 bg-cyan/10 text-cyan"
+                    : "border-transparent text-mist hover:bg-slate-800/70 hover:text-fog"
                 )}
                 aria-current={isActive(link.href) ? "page" : undefined}
               >
