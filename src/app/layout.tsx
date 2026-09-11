@@ -29,11 +29,11 @@ const ADMIN_PATH = process.env.ADMIN_PATH || "x7k2-console"
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Parsa Oryani | Secure and Scalable Decentralized Systems",
+    default: "Parsa Oryani | Security of LLM Agents & Multi-Agent Systems",
     template: "%s | Parsa Oryani",
   },
   description:
-    "M.Sc. student researching the security and scalability of decentralized systems, blockchain, and Layer-2 protocols. M.Sc. Computer Engineering at Sharif University of Technology.",
+    "M.Sc. student in Secure Computing at Sharif University of Technology, researching the security of LLM agents and multi-agent systems: information-flow control, authorization, provenance, and runtime enforcement. Background in cryptography, formal methods, distributed systems, and blockchain security.",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -78,7 +78,7 @@ export default async function RootLayout({
               givenName: "Parsa",
               familyName: "Oryani",
               alumniOf: "Sharif University of Technology",
-              jobTitle: "M.Sc. Computer Engineering",
+              jobTitle: "M.Sc. Computer Engineering — Secure Computing",
               url: siteUrl,
               sameAs: [
                 "https://github.com/parsaoryani",

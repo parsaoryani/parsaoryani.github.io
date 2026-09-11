@@ -11,7 +11,7 @@ import { Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Systems and security projects in blockchain, cryptography, and decentralized applications.",
+  description: "Systems and security projects in blockchain, cryptography, and decentralized applications — the systems-security foundation behind my work on agent security.",
 }
 
 export default async function ProjectsPage() {
@@ -35,7 +35,7 @@ export default async function ProjectsPage() {
               <span className="text-gradient">Projects</span>
             </h1>
             <p className="text-lg text-mist leading-relaxed">
-              Systems and security projects related to blockchain, cryptography, and decentralized applications.
+              Systems and security projects related to blockchain, cryptography, and decentralized applications — the implementation experience behind my current work on agent security.
             </p>
           </div>
         </ScrollReveal>

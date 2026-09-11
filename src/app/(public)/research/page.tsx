@@ -10,7 +10,7 @@ import { BookOpen, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Research",
-  description: "Research agenda and publications in blockchain security, cross-chain interoperability, and applied cryptography.",
+  description: "Research agenda and publications on the security of LLM agents and multi-agent systems, with prior work in blockchain security and applied cryptography.",
 }
 
 export default async function ResearchPage() {
@@ -37,14 +37,15 @@ export default async function ResearchPage() {
               <span className="text-gradient">Research</span>
             </h1>
             <p className="text-lg text-mist leading-relaxed">
-              My research interests lie at the intersection of systems security, applied cryptography, and
-              distributed systems. I am particularly interested in the security and scalability of blockchain
-              and Layer-2 protocols, including cross-chain interoperability, cross-rollup communication, state
-              verification, and protocol-level security.
+              My research focuses on the security of LLM-based agentic and multi-agent systems: how tool-using
+              AI agents can be built, updated, and operated securely. I work on information-flow control,
+              authorization and least privilege, provenance, secure memory and tool interactions, and runtime
+              enforcement — the mechanisms that decide what an agent may read, write, call, and change.
             </p>
             <p className="text-lg text-mist leading-relaxed mt-4">
-              More broadly, I am interested in cryptographic and formal techniques for building secure
-              decentralized systems, including zero-knowledge proofs and formal verification.
+              My M.Sc. thesis studies the lifecycle security of tool-using AI agents through provenance, trust,
+              and authority. This builds on a background in applied cryptography, formal methods, distributed
+              systems, and blockchain security, where I continue to work.
             </p>
           </div>
         </ScrollReveal>

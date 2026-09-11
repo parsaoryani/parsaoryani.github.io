@@ -1,9 +1,19 @@
 {
   "schemaVersion": 1,
   "settings": {
-    "home_title": "Security and Scalability for\nDecentralized Systems",
-    "home_description": "I study how decentralized systems can be made more secure, scalable, and trustworthy through rigorous systems research, cryptographic design, and practical evaluation.",
+    "home_title": "Security for\nLLM Agents & Multi-Agent Systems",
+    "home_description": "I study how LLM-based agents and multi-agent systems can be made secure, trustworthy, and accountable through information-flow control, authorization, provenance, and runtime enforcement, building on foundations in cryptography, formal methods, distributed systems, and blockchain security.",
     "research_directions": [
+      {
+        "title": "Lifecycle Security of Tool-Using AI Agents",
+        "description": "M.Sc. thesis: a model-independent mechanism for controlling source, tool, and skill changes; memory entry, transformation, and retrieval; and authority delegation — grounded in provenance, trust, and authority.",
+        "tags": [
+          "Provenance",
+          "Trust",
+          "Authority",
+          "Tool Security"
+        ]
+      },
       {
         "title": "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
         "description": "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
@@ -13,23 +23,10 @@
           "Layer 2",
           "Distributed Systems"
         ]
-      },
-      {
-        "title": "Ethereum Mempool Security and Asymmetric DoS",
-        "description": "Investigating denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.",
-        "tags": [
-          "Ethereum",
-          "Security",
-          "Mempool",
-          "DoS",
-          "Systems"
-        ],
-        "href": "/projects/brcc-lab",
-        "linkLabel": "View BRCC lab"
       }
     ],
     "hidden_timeline_sections": [],
-    "nav_research_visible": false,
+    "nav_research_visible": true,
     "profile_photo": {
       "url": "/about/now.jpg",
       "alt": "Parsa Oryani"
@@ -45,13 +42,13 @@
       "id": "cmt0cxi9i000dz55c7o8onlze",
       "slug": "zk-mixer",
       "title": "ZK-Mixer: Regulated Anonymous Payments",
-      "summary": "Zerocash POUR-protocol implementation with regulatory-compliant disclosure: unlinkable deposits and withdrawals with tiered auditor access.",
+      "summary": "Zerocash POUR-protocol implementation with regulatory-compliant disclosure — unlinkable deposits and withdrawals with tiered auditor access.",
       "role": "Solo",
       "year": 2026,
       "problem": "Anonymous payment systems (Zerocash) deliver transaction unlinkability but clash with AML/KYC regulation, while compliant systems trade away privacy. This project implements both: a full Zerocash-style mixer with a conditional-disclosure layer for authorized auditors.",
-      "approach": "Implemented the complete POUR protocol, including a 32-level Merkle tree, commitment/nullifier scheme, and Bulletproof-style zk-SNARK proofs, and extended it with Morales et al. reversible unlinkability: three privacy tiers (HIGH/MEDIUM/LOW) letting users selectively enable regulatory oversight without giving up privacy by default.",
+      "approach": "Implemented the complete POUR protocol — 32-level Merkle tree, commitment/nullifier scheme, and Bulletproof-style zk-SNARK proofs — and extended it with Morales et al. reversible unlinkability: three privacy tiers (HIGH/MEDIUM/LOW) letting users selectively enable regulatory oversight without giving up privacy by default.",
       "architecture": "Modular Python monolith under src/zkm: core (mixer, zk-proof, Merkle tree, commitments), crypto (coins, nullifiers, zk-SNARK engine, reversible unlinkability), API (FastAPI routes with JWT auth and 10+ REST endpoints), storage (SQLAlchemy with SQLite, indexed for audit trails), and security (Schnorr signatures, bcrypt password hashing). A JavaScript web frontend (frontend/) exposes the mixer as an application.",
-      "challenges": "zk-SNARK proof generation is the bottleneck at ~328 proofs/sec (~3ms each), inherent to cryptographic proofs, mitigated by caching and batch verification. Balancing three privacy tiers against audit requirements surfaced 18 threat vectors, all documented with mitigations in the threat model.",
+      "challenges": "zk-SNARK proof generation is the bottleneck at ~328 proofs/sec (~3ms each) — inherent to cryptographic proofs, mitigated by caching and batch verification. Balancing three privacy tiers against audit requirements surfaced 18 threat vectors, all documented with mitigations in the threat model.",
       "results": "253 tests passing (147 unit, 25 integration, 24 API, 14 property-based, 8 performance suites) at 70% coverage with 0 mypy errors. Deposits and withdrawals complete under 500ms; Merkle operations average ~5ms; database throughput exceeds targets by 10-18x.",
       "retrospective": "The tiered privacy model proved the privacy-compliance trade-off is reconcilable, but production deployment needs PostgreSQL (SQLite is fine at current scale) and the schnorr.py (58%) and auth_routes.py (54%) modules deserve coverage parity with the rest of the codebase.",
       "techStack": [
@@ -106,15 +103,15 @@
       "id": "cmt0c67r0000cz5m5c37gl2on",
       "slug": "ethereum-cli",
       "title": "Ethereum CLI (Sepolia Testnet)",
-      "summary": "A modular command-line interface for the Ethereum Sepolia testnet, with encrypted wallet management, balance queries, ETH transfers, and transaction history export.",
+      "summary": "A modular command-line interface for the Ethereum Sepolia testnet — encrypted wallet management, balance queries, ETH transfers, and transaction history export.",
       "role": "Solo",
       "year": 2025,
-      "problem": "Interacting with Ethereum from the terminal usually means pulling in web3.py and fighting its API surface. This tool needed to cover the essential Sepolia workflows, wallet management, balances, transfers, and history, in a lightweight, modular CLI that keeps private keys safe.",
+      "problem": "Interacting with Ethereum from the terminal usually means pulling in web3.py and fighting its API surface. This tool needed to cover the essential Sepolia workflows — wallet management, balances, transfers, and history — in a lightweight, modular CLI that keeps private keys safe.",
       "approach": "Built on direct JSON-RPC calls to any standard endpoint (Infura, Alchemy, GetBlock) instead of web3.py, paired with the Etherscan API for efficient transaction-history retrieval. Wallets are stored encrypted on disk, and every sensitive operation is gated behind a user password.",
-      "architecture": "Four modules plus a thin entry point: wallet.py (generate, import, list, use, show, with encrypted storage via the cryptography library), rpc_client.py (JSON-RPC client with retry logic for rate limits and timeouts, checksum-validated addresses), transaction.py (build/sign/send ETH transfers, status lookups, history and JSON export via Etherscan), and main.py (argparse command parsing behind the executable cli script). Network settings live in config/settings.json; secrets are loaded from .env.",
+      "architecture": "Four modules plus a thin entry point: wallet.py (generate, import, list, use, show — encrypted storage via the cryptography library), rpc_client.py (JSON-RPC client with retry logic for rate limits and timeouts, checksum-validated addresses), transaction.py (build/sign/send ETH transfers, status lookups, history and JSON export via Etherscan), and main.py (argparse command parsing behind the executable cli script). Network settings live in config/settings.json; secrets are loaded from .env.",
       "challenges": "Staying safe without a heavyweight library: private keys are never stored in plaintext and require a password for export, addresses are validated against Ethereum checksum format, transient RPC failures (HTTP 429, timeouts) are retried, and the tool is restricted to Sepolia to prevent accidental use of test keys against mainnet funds.",
       "results": "Full wallet lifecycle, balances in both ETH and Wei, signed ETH transfers, transaction status and history, and JSON export. 74% overall test coverage across the three modules (transaction.py at 86%, its tests at 99%).",
-      "retrospective": "Direct JSON-RPC kept dependencies minimal and made provider switching trivial, but wallet.py (38%) and rpc_client.py (59%) still lag on coverage; the next pass should add wallet error-path and network failure tests to push past 80%. ERC-20 transfers and smart-contract interactions are the natural next features.",
+      "retrospective": "Direct JSON-RPC kept dependencies minimal and made provider switching trivial, but wallet.py (38%) and rpc_client.py (59%) still lag on coverage — the next pass should add wallet error-path and network failure tests to push past 80%. ERC-20 transfers and smart-contract interactions are the natural next features.",
       "techStack": [
         "Python",
         "JSON-RPC",
@@ -156,15 +153,15 @@
       "id": "cmt0hvefy000cz515ere15u75",
       "slug": "brcc-lab",
       "title": "BRCC: Besu Research Control Center",
-      "summary": "A local control plane for running reproducible mempool/DoS experiments on a 4-validator Hyperledger Besu QBFT network, with safety-gated network lifecycle, configuration impact analysis, and full experiment reproducibility metadata.",
+      "summary": "A local control plane for running reproducible mempool/DoS experiments on a 4-validator Hyperledger Besu QBFT network — safety-gated network lifecycle, configuration impact analysis, and full experiment reproducibility metadata.",
       "role": "Solo",
       "year": 2025,
-      "problem": "Studying mempool/DoS behavior on Ethereum-family clients needs a private multi-validator network whose configuration changes have a known blast radius, plus enough execution metadata that a result can be explained or repeated later; that tooling didn't exist off the shelf.",
-      "approach": "The system enforces one rule end to end: Build, Verify, Observe, Baseline, Stress, Compare, Reproduce. Nothing destructive or high-load runs until the network is confirmed healthy and monitoring is live. Configuration changes go through a draft/diff/impact/apply workflow that classifies every edit from NO_RESTART up to destructive CHAIN_RESET or NETWORK_REGENERATE, requiring explicit confirmation before anything destructive runs.",
-      "architecture": "A FastAPI backend (Python, shared ecosystem with the Web3.py experiment tooling) drives Docker Compose to manage 4 Besu QBFT validator containers, with Prometheus for time-series metrics and PostgreSQL for run/config metadata. A React + TypeScript + Vite frontend talks only to the control API over REST/WebSocket; the browser never controls Docker or calls Besu directly, which keeps the privilege boundary, audit trail, and CORS story simple. Validator keys are kept separate from chain data so identity survives a reset.",
-      "challenges": "Privilege separation between browser, API, and Docker; making destructive operations (chain reset, validator regeneration) require an explicit confirmed impact class instead of a same-click action; and a real metrics gap: cAdvisor can't resolve container names on Docker Desktop/macOS without the docker socket mounted, so CPU/memory default to Besu's own process_*/jvm_* metrics instead, which work everywhere the JVM runs.",
+      "problem": "Studying mempool/DoS behavior on Ethereum-family clients needs a private multi-validator network whose configuration changes have a known blast radius, plus enough execution metadata that a result can be explained or repeated later — that tooling didn't exist off the shelf.",
+      "approach": "The system enforces one rule end to end: Build → Verify → Observe → Baseline → Stress → Compare → Reproduce — nothing destructive or high-load runs until the network is confirmed healthy and monitoring is live. Configuration changes go through a draft/diff/impact/apply workflow that classifies every edit from NO_RESTART up to destructive CHAIN_RESET or NETWORK_REGENERATE, requiring explicit confirmation before anything destructive runs.",
+      "architecture": "A FastAPI backend (Python, shared ecosystem with the Web3.py experiment tooling) drives Docker Compose to manage 4 Besu QBFT validator containers, with Prometheus for time-series metrics and PostgreSQL for run/config metadata. A React + TypeScript + Vite frontend talks only to the control API over REST/WebSocket — the browser never controls Docker or calls Besu directly, which keeps the privilege boundary, audit trail, and CORS story simple. Validator keys are kept separate from chain data so identity survives a reset.",
+      "challenges": "Privilege separation between browser, API, and Docker; making destructive operations (chain reset, validator regeneration) require an explicit confirmed impact class instead of a same-click action; and a real metrics gap — cAdvisor can't resolve container names on Docker Desktop/macOS without the docker socket mounted, so CPU/memory default to Besu's own process_*/jvm_* metrics instead, which work everywhere the JVM runs.",
       "results": "Overview, Topology, Nodes, Mempool, Consensus, Experiments, Compare, Config, and Logs pages are complete and reflect live backend state (an unavailable metric renders \"Unavailable\", never a fake zero). One experiment workload (steady-rate baseline) is implemented, with reproducibility metadata (Besu image, chain ID, genesis hash, git commit, network generation, txpool type) recorded on every run.",
-      "retrospective": "The impact-classified apply flow made destructive network changes safe to iterate on quickly. Several workloads are scoped but not yet built: burst, many-senders, future-nonce, replacement-churn, txpool comparison, ingress topology, and recovery-time, recorded so the design intent isn't lost even though they aren't scheduled yet.",
+      "retrospective": "The impact-classified apply flow made destructive network changes safe to iterate on quickly. Several workloads are scoped but not yet built — burst, many-senders, future-nonce, replacement-churn, txpool comparison, ingress topology, and recovery-time — recorded so the design intent isn't lost even though they aren't scheduled yet.",
       "techStack": [
         "Python",
         "FastAPI",
@@ -248,8 +245,8 @@
       "endDate": null,
       "description": "National Master's Entrance Examination Rank: 56",
       "highlights": [
-        "Research focus on blockchain security and AI safety",
-        "Graduate coursework in advanced cryptography, ML theory, and formal methods"
+        "Research focus on the security of LLM agents and multi-agent systems",
+        "Graduate coursework in applied cryptography, deep learning, formal methods, and secure software systems"
       ],
       "url": null,
       "sortOrder": 0,
@@ -431,14 +428,14 @@
         {
           "id": "cmt0d38jr000iz520ymur9obt",
           "name": "Deep Learning",
-          "grade": null,
+          "grade": "18.35 / 20",
           "highlight": null,
           "instructor": "Dr. Soleymani",
           "focus": "Foundational theory and applied practical work in model development, evaluation, and analysis across deep learning paradigms from classical MLPs to modern transformers, generative models, and foundation-model style training",
           "topics": "MLPs and backpropagation, Optimization and generalization, CNNs, RNNs and LSTMs, Attention and Transformers, Large language models, State-space models, VAEs and GANs, Diffusion models, Self-supervised learning, CLIP and foundation models, Graph neural networks",
           "syllabus": "Neural network foundations; Modern deep learning architectures; Optimization and training workflow; Representation learning and transfer; Generative and multimodal models",
           "exercises": "5 HWs × 3 parts each: HW1 (PyTorch basics, NumPy NN from scratch, optimization), HW2 (CNNs, vision, RNNs/LSTMs), HW3 (Transformers, LLMs, state-space), HW4 (VAEs, GANs, diffusion), HW5 (Self-supervised, CLIP, DALL-E, GNNs, interpretability). See files for details.",
-          "projects": "All assignments are structured as multi-part practical exercises (P1-P3 each) combining implementation, experiments, and conceptual analysis; no separate final project, as the 5 homeworks collectively cover the full deep learning pipeline from classical networks to frontier generative models.",
+          "projects": "All assignments are structured as multi-part practical exercises (P1–P3 each) combining implementation, experiments, and conceptual analysis; no separate final project — the 5 homeworks collectively cover the full deep learning pipeline from classical networks to frontier generative models.",
           "discussions": null,
           "sortOrder": 3,
           "files": [
@@ -605,7 +602,7 @@
           "topics": "Cryptographic primitives, Merkle trees, Nakamoto consensus, P2P networks, Bitcoin Script, Safety and liveness, Sharding, Proof of stake, EVM and Solidity, Payment channels, Rollups, ZK data privacy",
           "syllabus": "Blockchain foundations; Decentralized protocols and consensus; Smart contracts and execution environments; Scalability and privacy techniques; Applications and analysis of blockchain systems",
           "exercises": "HW1: Blockchain foundations (mempool, Merkle trees, P2P, mining, Bitcoin Script). HW2: Consensus & selfish mining (protocol divergence, difficulty, mempool, safety/liveness, simulator). HW3: Network efficiency & smart contracts (propagation, reentrancy, NFT sale). See files for details.",
-          "projects": "opML: Optimistic Machine Learning on Blockchain. Optimistic execution of ML inference on-chain with fraud proofs. ZKsync Protocol: Analysis and implementation of ZK-Rollup scaling solution with zero-knowledge proofs.",
+          "projects": "opML: Optimistic Machine Learning on Blockchain — Optimistic execution of ML inference on-chain with fraud proofs. ZKsync Protocol: Analysis and implementation of ZK-Rollup scaling solution with zero-knowledge proofs.",
           "discussions": null,
           "sortOrder": 4,
           "files": [
@@ -797,7 +794,7 @@
           "name": "Design and Analysis of Algorithms",
           "grade": "18/20",
           "highlight": null,
-          "instructor": "Dr. Shirali-Shahreza",
+          "instructor": "Dr. Ardeshir Dolati",
           "focus": null,
           "topics": null,
           "syllabus": null,
@@ -877,187 +874,223 @@
   ],
   "skillCategories": [
     {
-      "id": "cmt0fu4u0000iz59juok1txxu",
-      "name": "Decentralized Systems",
+      "id": "cmtw2lbun0004z5057aceut70",
+      "name": "Agentic AI & LLM Systems",
       "sortOrder": 0,
       "skills": [
         {
-          "id": "cmt0fu4u2000kz59jeabu5xuz",
-          "name": "Blockchain",
+          "id": "cmtw2lbun0005z505fug4qk2v",
+          "name": "LLM Agents",
           "proficiency": "advanced",
           "sortOrder": 0
         },
         {
-          "id": "cmt0fu4u3000mz59j3jygm4ie",
-          "name": "Ethereum",
+          "id": "cmtw2lbun0006z5059q1mb8vz",
+          "name": "Multi-Agent Systems",
           "proficiency": "advanced",
           "sortOrder": 1
         },
         {
-          "id": "cmt0fu4u4000oz59j9c1utesj",
-          "name": "Solana",
+          "id": "cmtw2lbun0007z505mrohok06",
+          "name": "Tool & MCP Integration",
           "proficiency": "advanced",
           "sortOrder": 2
         },
         {
-          "id": "cmt0fu4u5000qz59jxnqg73m3",
-          "name": "Layer 2",
+          "id": "cmtw2lbun0008z505zhvh3txe",
+          "name": "RAG & Prompting",
           "proficiency": "advanced",
           "sortOrder": 3
         },
         {
-          "id": "cmt0fu4u5000sz59jz6iyk78y",
-          "name": "Cross-Chain Protocols",
+          "id": "cmtw2lbun0009z505bzknha1n",
+          "name": "Agent Memory & State",
           "proficiency": "advanced",
           "sortOrder": 4
         },
         {
-          "id": "cmt0fu4u5000uz59juclnyxwr",
-          "name": "DeFi",
+          "id": "cmtw2lbun000az5056n9d74ho",
+          "name": "Agent Evaluation",
           "proficiency": "advanced",
           "sortOrder": 5
         }
       ]
     },
     {
-      "id": "cmt0fu4u6000vz59jjw4g12bs",
-      "name": "Security & Cryptography",
+      "id": "cmtw2lbus000bz5056o3zz3nn",
+      "name": "Security & Formal Methods",
       "sortOrder": 1,
       "skills": [
         {
-          "id": "cmt0fu4u6000xz59jyp0bued6",
+          "id": "cmtw2lbus000cz505h24vjqic",
+          "name": "Threat Modeling",
+          "proficiency": "advanced",
+          "sortOrder": 0
+        },
+        {
+          "id": "cmtw2lbus000dz505dl841z5a",
+          "name": "Information-Flow Control",
+          "proficiency": "advanced",
+          "sortOrder": 1
+        },
+        {
+          "id": "cmtw2lbus000ez505nyjv3vn7",
+          "name": "Authorization & Least Privilege",
+          "proficiency": "advanced",
+          "sortOrder": 2
+        },
+        {
+          "id": "cmtw2lbus000fz5059tlnd62n",
+          "name": "Provenance & Auditing",
+          "proficiency": "advanced",
+          "sortOrder": 3
+        },
+        {
+          "id": "cmtw2lbus000gz505205kc11n",
+          "name": "Taint / Data-Flow Analysis",
+          "proficiency": "advanced",
+          "sortOrder": 4
+        },
+        {
+          "id": "cmtw2lbus000hz505147ucj7c",
+          "name": "Runtime Enforcement",
+          "proficiency": "advanced",
+          "sortOrder": 5
+        },
+        {
+          "id": "cmtw2lbus000iz5050fchud5r",
+          "name": "Formal Verification",
+          "proficiency": "advanced",
+          "sortOrder": 6
+        }
+      ]
+    },
+    {
+      "id": "cmtw2lbuu000jz505aujdmkhu",
+      "name": "Cryptography & Distributed Systems",
+      "sortOrder": 2,
+      "skills": [
+        {
+          "id": "cmtw2lbuu000kz505qwz7iqog",
           "name": "Applied Cryptography",
           "proficiency": "advanced",
           "sortOrder": 0
         },
         {
-          "id": "cmt0fu4u7000zz59jtbyu598u",
+          "id": "cmtw2lbuu000lz505llnmm4az",
           "name": "Zero-Knowledge Proofs",
           "proficiency": "advanced",
           "sortOrder": 1
         },
         {
-          "id": "cmt0fu4u70011z59jhqao3qj8",
-          "name": "Protocol Security",
+          "id": "cmtw2lbuu000mz505hhzn5moa",
+          "name": "Consensus",
           "proficiency": "advanced",
           "sortOrder": 2
         },
         {
-          "id": "cmt0fu4u70013z59j07tz6lzy",
-          "name": "Smart Contract Security",
+          "id": "cmtw2lbuu000nz5052ka37q8m",
+          "name": "Blockchain Protocols",
           "proficiency": "advanced",
           "sortOrder": 3
         },
         {
-          "id": "cmt0fu4u70015z59jcpnpcggt",
-          "name": "Formal Methods",
+          "id": "cmtw2lbuu000oz5050lznnww6",
+          "name": "Layer-2 & Cross-Chain",
           "proficiency": "advanced",
           "sortOrder": 4
         }
       ]
     },
     {
-      "id": "cmt0fu4u80016z59jg26iffd9",
-      "name": "Distributed Systems",
-      "sortOrder": 2,
+      "id": "cmtw2lbuw000pz505kzq1c4z9",
+      "name": "Deep Learning",
+      "sortOrder": 3,
       "skills": [
         {
-          "id": "cmt0fu4u90018z59jyllm7mnh",
-          "name": "Consensus",
+          "id": "cmtw2lbuw000qz5051wv8po0h",
+          "name": "PyTorch",
           "proficiency": "advanced",
           "sortOrder": 0
         },
         {
-          "id": "cmt0fu4u9001az59js6c9to58",
-          "name": "Blockchain Scalability",
+          "id": "cmtw2lbuw000rz505yhli7oxu",
+          "name": "Transformers & LLMs",
           "proficiency": "advanced",
           "sortOrder": 1
         },
         {
-          "id": "cmt0fu4ua001cz59jn53ytr9h",
-          "name": "Interoperability",
+          "id": "cmtw2lbuw000sz505h7wswtsf",
+          "name": "Generative Models",
           "proficiency": "advanced",
           "sortOrder": 2
         },
         {
-          "id": "cmt0fu4ua001ez59jo4msj29e",
-          "name": "Transaction Processing",
+          "id": "cmtw2lbuw000tz505c90x7g3y",
+          "name": "Self-Supervised & Multimodal Learning",
           "proficiency": "advanced",
           "sortOrder": 3
         },
         {
-          "id": "cmt0fu4ua001gz59j2peflhv6",
-          "name": "System Evaluation",
+          "id": "cmtw2lbuw000uz505vjl5mzjd",
+          "name": "Model Evaluation",
           "proficiency": "advanced",
           "sortOrder": 4
         }
       ]
     },
     {
-      "id": "cmt0fu4ud001hz59j6njod0zk",
-      "name": "Programming & Tools",
-      "sortOrder": 3,
+      "id": "cmtw2lbuy000vz505rxyw7edn",
+      "name": "Engineering",
+      "sortOrder": 4,
       "skills": [
         {
-          "id": "cmt0fu4ue001jz59jq2yhvvph",
+          "id": "cmtw2lbuy000wz505rjx24lvh",
           "name": "Python",
           "proficiency": "advanced",
           "sortOrder": 0
         },
         {
-          "id": "cmt0fu4ue001lz59jauxa1x31",
+          "id": "cmtw2lbuy000xz50517eg9l6v",
           "name": "Rust",
           "proficiency": "advanced",
           "sortOrder": 1
         },
         {
-          "id": "cmt0fu4uf001nz59j6k1uyr8i",
-          "name": "Solidity",
+          "id": "cmtw2lbuy000yz505o2wytn1b",
+          "name": "TypeScript",
           "proficiency": "advanced",
           "sortOrder": 2
         },
         {
-          "id": "cmt0fu4uf001pz59j3iprs6ok",
-          "name": "TypeScript",
+          "id": "cmtw2lbuy000zz505ux36dq2t",
+          "name": "Solidity",
           "proficiency": "advanced",
           "sortOrder": 3
         },
         {
-          "id": "cmt0fu4uf001rz59jor8fbnwh",
-          "name": "Docker",
+          "id": "cmtw2lbuy0010z505wi3f9uro",
+          "name": "PostgreSQL",
           "proficiency": "advanced",
           "sortOrder": 4
         },
         {
-          "id": "cmt0fu4ug001tz59jjh95jgrb",
-          "name": "Git",
+          "id": "cmtw2lbuy0011z505dxh2xrjk",
+          "name": "Docker",
           "proficiency": "advanced",
           "sortOrder": 5
-        }
-      ]
-    },
-    {
-      "id": "cmt0fu4uh001uz59jm46372mk",
-      "name": "Additional Interests",
-      "sortOrder": 4,
-      "skills": [
-        {
-          "id": "cmt0fu4uh001wz59jy2aiod2c",
-          "name": "Machine Learning",
-          "proficiency": "proficient",
-          "sortOrder": 0
         },
         {
-          "id": "cmt0fu4uh001yz59jtc2u1mf8",
-          "name": "Adversarial ML",
-          "proficiency": "proficient",
-          "sortOrder": 1
+          "id": "cmtw2lbuy0012z505fs8urfde",
+          "name": "Linux",
+          "proficiency": "advanced",
+          "sortOrder": 6
         },
         {
-          "id": "cmt0fu4ui0020z59jexotpvnx",
-          "name": "Reinforcement Learning",
-          "proficiency": "proficient",
-          "sortOrder": 2
+          "id": "cmtw2lbuy0013z505zrwjd6c0",
+          "name": "Git",
+          "proficiency": "advanced",
+          "sortOrder": 7
         }
       ]
     }
@@ -1117,6 +1150,24 @@
       "sortOrder": 2
     },
     {
+      "id": "cmtwn7tls0000z5oawu6v1brz",
+      "slug": "design-and-analysis-of-algorithms-ta-aut",
+      "course": "Design and Analysis of Algorithms",
+      "level": "undergraduate",
+      "university": "Amirkabir University of Technology",
+      "professor": "Dr. Ardeshir Dolati",
+      "startDate": "2023-10-20T00:00:00.000Z",
+      "endDate": "2024-01-20T00:00:00.000Z",
+      "description": "Designed and graded theoretical and practical assignments for the undergraduate Design and Analysis of Algorithms course.",
+      "highlights": [
+        "Designed theoretical assignments",
+        "Designed practical assignments",
+        "Graded theoretical and practical assignments"
+      ],
+      "technologies": null,
+      "sortOrder": 3
+    },
+    {
       "id": "cmt03ok5z002oz5kajaeo7q1g",
       "slug": "linear-algebra-ta-aut",
       "course": "Foundations of Matrices and Linear Algebra",
@@ -1135,7 +1186,7 @@
         "Answered students' questions during exercise/review sessions"
       ],
       "technologies": null,
-      "sortOrder": 3
+      "sortOrder": 4
     },
     {
       "id": "cmt03ok60002pz5kaomv77zk6",
@@ -1155,31 +1206,30 @@
         "Conducted problem-solving and review sessions"
       ],
       "technologies": null,
-      "sortOrder": 4
+      "sortOrder": 5
     }
   ],
   "researchingAssistants": [
     {
       "id": "cmt0fu4uw002cz59jg7tv4lud",
-      "slug": "blockchain-security-research",
+      "slug": "agentic-ai-security-research",
       "lab": null,
       "university": "Sharif University of Technology",
       "supervisor": "Dr. Morteza Amini",
       "supervisorUrl": "https://scholar.google.com/citations?user=Rsmx5DYAAAAJ&hl=en",
-      "collaborator": "Working closely with Ph.D. researcher Amirmohammad Aghapour",
-      "topic": "Research Assistant, Blockchain Security",
+      "collaborator": null,
+      "topic": "Research Assistant — Agentic AI Security",
       "startDate": "2025-09-01T00:00:00.000Z",
       "endDate": null,
-      "description": "Conducting research on the security and scalability of blockchain and decentralized systems, with a particular focus on protocol-level security, interoperability, and emerging challenges in blockchain infrastructure.",
+      "description": "Investigating the security of LLM-based agentic and multi-agent systems: information-flow control, authorization, provenance, memory and state, tool/skill security, and runtime enforcement.",
       "outcomes": [
-        "Studying security and scalability challenges in blockchain and decentralized protocols",
-        "Investigating cross-chain and Layer-2 systems, including interoperability, state verification, and cross-rollup communication",
-        "Analyzing protocol-level security assumptions, trust models, and potential attack surfaces",
-        "Conducting technical literature reviews and evaluating recent research in blockchain security and scalability",
-        "Supporting experimental and implementation-oriented research on blockchain infrastructure and security",
-        "Collaborating closely with Ph.D. researcher Amirmohammad Aghapour on ongoing research activities within the group"
+        "Investigating security of LLM-based agentic and multi-agent systems, including information-flow control, authorization, provenance, memory/state, tool/skill security, and runtime enforcement",
+        "Studying trust boundaries, least privilege, secure composition, update safety, and recovery from unsafe effects",
+        "Applying systems security, program analysis, formal methods, and security invariants to agent architectures",
+        "Conducting technical literature reviews on agent security, runtime enforcement, and malicious tool/skill detection",
+        "Previous research covered blockchain security, cross-chain interoperability, Layer-2 systems, state verification, and protocol safety/liveness"
       ],
-      "technologies": "",
+      "technologies": "LLM Agents, Multi-Agent Systems, Information-Flow Control, Authorization, Provenance, Runtime Enforcement, Formal Methods, Python, Rust",
       "repoUrl": null,
       "sortOrder": 0
     }

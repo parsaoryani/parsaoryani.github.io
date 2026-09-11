@@ -48,7 +48,7 @@ export default async function CVPage() {
                 <Sparkles size={12} className="mr-1.5" /> Curriculum Vitae
               </Badge>
               <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gradient">Parsa Oryani</h1>
-              <p className="text-mist">M.Sc. Computer Engineering &middot; Security &amp; Scalability of Decentralized Systems</p>
+              <p className="text-mist">M.Sc. Computer Engineering &middot; Secure Computing &mdash; Security of LLM Agents &amp; Multi-Agent Systems</p>
               <div className="flex items-center gap-4 mt-3 text-xs text-ash font-mono">
                 <span>parsa.oryani82@sharif.edu</span>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />

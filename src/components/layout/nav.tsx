@@ -2,17 +2,18 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils/cn"
 import { Button } from "@/components/ui/button"
 import { Menu, X, ArrowUpRight, Sun, Moon } from "lucide-react"
 
+const emptySubscribe = () => () => {}
+
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
+  // Client-only mount detection without a setState-in-effect (false during SSR and hydration).
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
   if (!mounted) return <span className="h-9 w-9" aria-hidden />
 
@@ -43,7 +44,8 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
   const isHome = pathname === "/"
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [pastHero, setPastHero] = useState(!isHome)
+  const [scrolledPastHero, setScrolledPastHero] = useState(false)
+  const pastHero = !isHome || scrolledPastHero
 
   const navLinks = showResearch ? [researchLink, ...baseNavLinks] : baseNavLinks
 
@@ -62,11 +64,8 @@ export function Nav({ showResearch }: { showResearch: boolean }) {
   }, [])
 
   useEffect(() => {
-    if (!isHome) {
-      setPastHero(true)
-      return
-    }
-    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.55)
+    if (!isHome) return
+    const onScroll = () => setScrolledPastHero(window.scrollY > window.innerHeight * 0.55)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)

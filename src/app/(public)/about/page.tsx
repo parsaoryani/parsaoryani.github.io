@@ -57,16 +57,24 @@ const aboutStorySections = [
     ],
   },
   {
+    title: "From Blockchain to Agent Security",
+    body: [
+      "In 2025 I began an M.Sc. in Secure Computing at Sharif University of Technology. Blockchain remained — and remains — an active interest: my earlier research covered protocol security, cross-chain interoperability, Layer-2 systems, and mempool denial-of-service.",
+      "My focus then moved to a newer frontier. As LLM-based agents gain access to tools, memory, and real systems, their security becomes a systems problem: what data an agent may read, which tools it may call, what it may remember, and who is allowed to change any of it. I now study those questions through provenance, trust, and authority.",
+    ],
+  },
+  {
     title: "Current Research",
     body: [
       "I am currently pursuing an M.Sc. in Computer Engineering, specializing in Secure Computing, at Sharif University of Technology.",
-      "My current research interests center on the security and scalability of decentralized systems, particularly blockchain protocol security, cross-chain and Layer-2 systems, interoperability, and cryptographic mechanisms for secure distributed protocols.",
+      "My research focuses on the security of LLM-based agentic and multi-agent systems: information-flow control, authorization and least privilege, provenance, secure memory and tool interactions, and runtime enforcement.",
+      "My M.Sc. thesis addresses the lifecycle security of tool-using AI agents based on provenance, trust, and authority — building model-independent mechanisms for source, tool, and skill changes, for memory entry, transformation, and retrieval, and for authority delegation over impactful actions.",
     ],
   },
   {
     title: "Research & Engineering",
     body: [
-      "Alongside research, I enjoy building and experimenting with real systems. My experience in blockchain and software engineering allows me to approach research questions from both theoretical and implementation perspectives.",
+      "Alongside research, I enjoy building and experimenting with real systems. My background in blockchain security and software engineering lets me approach research questions from both theoretical and implementation perspectives.",
       "I am especially interested in problems where security guarantees, protocol design, and real system behavior meet.",
     ],
   },
@@ -212,7 +220,7 @@ export default async function AboutPage() {
                 </p>
                 <p>
                   I prepared for the national M.Sc. Computer Engineering entrance exam for around three months.
-                  With approximately 18,000 participants, I achieved rank 16. This led me to pursue an M.Sc. in
+                  With approximately 18,000 participants, I achieved rank 56. This led me to pursue an M.Sc. in
                   Secure Computing at Sharif University of Technology.
                 </p>
               </div>
@@ -229,19 +237,16 @@ export default async function AboutPage() {
                 </p>
                 <ul className="grid gap-2 sm:grid-cols-2">
                   <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Security of LLM agents
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Multi-agent systems
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
+                    Tool &amp; skill security
+                  </li>
+                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
                     Blockchain security
-                  </li>
-                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
-                    Cryptography
-                  </li>
-                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
-                    Distributed systems
-                  </li>
-                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
-                    Cross-chain interoperability
-                  </li>
-                  <li className="rounded-lg border border-cyan/15 bg-cyan/[0.04] px-3 py-2 text-sm font-mono text-fog">
-                    Layer-2 scalability
                   </li>
                 </ul>
                 <p>
@@ -261,7 +266,7 @@ export default async function AboutPage() {
                 <p>
                   My current priority is research collaboration with researchers in related fields. I am actively
                   seeking academic collaborations, research projects, and opportunities to contribute to impactful
-                  work in blockchain security, cryptography, and decentralized systems.
+                  work in agent security, systems security, and applied cryptography.
                 </p>
               </div>
             </div>

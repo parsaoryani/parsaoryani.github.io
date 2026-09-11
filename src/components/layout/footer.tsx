@@ -37,7 +37,7 @@ export function Footer({ showResearch }: { showResearch: boolean }) {
               Parsa Oryani
             </Link>
             <p className="mt-3 text-sm text-mist leading-relaxed max-w-xs">
-              M.Sc. student researching security and scalability in decentralized systems, with interests in blockchain, cryptography, and distributed systems.
+              M.Sc. student researching the security of LLM agents and multi-agent systems, with a background in blockchain security, cryptography, and distributed systems.
             </p>
           </div>
           <div>
@@ -91,7 +91,7 @@ export function Footer({ showResearch }: { showResearch: boolean }) {
             &copy; {new Date().getFullYear()} Parsa Oryani. Built with Next.js
           </p>
           <p className="text-xs text-ash font-mono">
-            Security · Cryptography · Blockchain · Distributed Systems
+            Security · LLM Agents · Cryptography · Blockchain
           </p>
         </div>
       </div>

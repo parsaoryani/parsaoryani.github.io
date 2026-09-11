@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/ui/section-header"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { TypewriterText } from "@/components/ui/typewriter"
 import { TechnicalFoundations } from "@/components/content/technical-foundations"
+import { AcademicCollaborators } from "@/components/content/academic-collaborators"
 import { getSiteSettings } from "@/lib/public-data"
 import Link from "next/link"
 import { ArrowUpRight, FileText, Code2, Mail, ChevronRight, Target, Compass, Network, UserCheck } from "lucide-react"
@@ -15,19 +16,19 @@ export const revalidate = 3600
 const researchInterests = [
   {
     label: "Primary Focus",
-    description: "Security and scalability of decentralized systems",
+    description: "Security of LLM agents and multi-agent systems",
     icon: Target,
     color: "text-cyan",
   },
   {
     label: "Current Focus",
-    description: "Blockchain security, cross-chain interoperability, Layer-2 systems, cross-rollup communication/execution",
+    description: "Information-flow control, authorization, provenance, and runtime enforcement for tool-using AI agents",
     icon: Compass,
     color: "text-indigo",
   },
   {
     label: "Related Areas",
-    description: "Applied cryptography, zero-knowledge proofs, formal methods, distributed systems",
+    description: "Applied cryptography, formal methods, distributed systems, and blockchain security",
     icon: Network,
     color: "text-emerald",
   },
@@ -47,7 +48,7 @@ export default async function HomePage() {
         <Container className="relative z-10 pt-16">
           <div className="max-w-2xl">
             <p className="font-mono text-xs md:text-sm text-mist mb-4">
-              M.Sc. Computer Engineering · Sharif University of Technology
+              M.Sc. Computer Engineering · Secure Computing · Sharif University of Technology
             </p>
 
             <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-semibold leading-[1.05] tracking-tight mb-5">
@@ -59,7 +60,7 @@ export default async function HomePage() {
                 speed={28}
                 startDelay={600}
                 segments={[
-                  { text: "I'm interested in cryptography and distributed systems, with my current focus on blockchain security, cross-chain interoperability, and Layer-2 systems." },
+                  { text: "I study the security of LLM agents and multi-agent systems — information-flow control, authorization, provenance, and runtime enforcement." },
                 ]}
               />
             </p>
@@ -164,6 +165,9 @@ export default async function HomePage() {
         </Section>
       )}
 
+      {/* Academic Collaborations & Mentorship */}
+      <AcademicCollaborators />
+
       {/* Technical Foundations */}
       <Section className="relative pt-14 pb-14 md:pt-20 md:pb-20">
         <Container>
@@ -193,8 +197,9 @@ export default async function HomePage() {
                   <span className="text-gradient">Parsa Oryani</span>
                 </h2>
                 <p className="text-sm text-mist leading-relaxed max-w-xl">
-                  M.Sc. Computer Engineering student at Sharif University of Technology, studying secure and scalable
-                  decentralized systems, with a focus on blockchain security, interoperability, and Layer-2 protocols.
+                  M.Sc. Computer Engineering student at Sharif University of Technology, in Secure Computing. Researching
+                  the security of LLM agents and multi-agent systems, with a continuing interest in blockchain security
+                  and decentralized systems.
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -218,8 +223,8 @@ export default async function HomePage() {
                 <span className="text-gradient">Get in Touch</span>
               </h2>
               <p className="text-mist text-sm mb-6 max-w-lg mx-auto">
-                Open to research collaborations, internships, and PhD opportunities in systems security, applied
-                cryptography, blockchain, and distributed systems.
+                Open to research collaborations, internships, and PhD opportunities in AI agent security, systems
+                security, and applied cryptography.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <Link href="mailto:parsa.oryani82@sharif.edu">

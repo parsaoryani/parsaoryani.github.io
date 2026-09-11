@@ -2,62 +2,62 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal"
 
 const coreResearchFoundations = [
   {
-    category: "Blockchain Systems & Scalability",
+    category: "Agent Security & Runtime Enforcement",
     areas: [
-      { name: "Layer 1", examples: "Sharding · Consensus · Fault Tolerance" },
-      { name: "Layer 2", examples: "Rollups · Payment Channels · State Channels" },
-      { name: "Scalability", examples: "Parallel Execution · Transaction Processing" },
+      { name: "Information-Flow Control", examples: "Taint Tracking · Declassification · Isolation" },
+      { name: "Authorization & Least Privilege", examples: "Capabilities · Delegation · Consent" },
+      { name: "Runtime Enforcement", examples: "Policy Guards · Shielding · User Approval" },
     ],
   },
   {
-    category: "Protocol & Blockchain Security",
+    category: "Agent Architecture & Trust",
     areas: [
-      { name: "Mempool Security", examples: "Transaction-Pool DoS · Resource Exhaustion" },
-      { name: "Smart Contract Security", examples: "EVM Contracts · Protocol Logic" },
-      { name: "Bridge & Interoperability Security", examples: "Trust Models · Verification Failures" },
-    ],
-  },
-  {
-    category: "Cryptographic Mechanisms",
-    areas: [
-      { name: "Zero-Knowledge Proofs", examples: "zk-SNARKs · Private Transactions" },
-      { name: "Commitment & Authentication Structures", examples: "Merkle Trees · Hash Commitments" },
-      { name: "Privacy-Preserving Protocols", examples: "Mixers · Shielded Payments" },
+      { name: "Provenance", examples: "Data Lineage · Event Dependencies · Risk Accumulation" },
+      { name: "Trust & Authority", examples: "Source Verification · Version Pinning · Delegation Chains" },
+      { name: "Tool, Skill & Memory Interactions", examples: "Tool Isolation · Memory Scoping · Update Safety" },
     ],
   },
   {
     category: "Formal & Security Analysis",
     areas: [
-      { name: "Security Models", examples: "Adversary Models · Trust Models · Threat Models" },
-      { name: "Protocol Security Analysis", examples: "Safety · Liveness · Atomicity" },
-      { name: "Formal Reasoning", examples: "Protocol Properties · Security Guarantees" },
+      { name: "Security Models & Invariants", examples: "Threat Models · Adversary Models · Security Invariants" },
+      { name: "Static & Dynamic Analysis", examples: "Taint / Data-Flow · SMT · Model Checking · Fuzzing" },
+      { name: "Protocol & Systems Security", examples: "Safety · Liveness · Recovery from Unsafe Effects" },
+    ],
+  },
+  {
+    category: "Blockchain & Cryptographic Foundations",
+    areas: [
+      { name: "Consensus & Scalability", examples: "Safety / Liveness · Layer-1 & Layer-2" },
+      { name: "Applied Cryptography", examples: "Commitments · Merkle Structures · ZK Proof Concepts" },
+      { name: "Cross-Chain & Mempool Security", examples: "Interoperability · State Verification · Transaction-Pool DoS" },
     ],
   },
 ]
 
 const engineeringToolkit = [
   {
+    category: "Agent & ML Engineering",
+    areas: [
+      { name: "LLM Agent Systems", examples: "Multi-Agent Orchestration · Tool/MCP Integration" },
+      { name: "Knowledge & Memory", examples: "RAG · Prompting · Agent State" },
+      { name: "Applied ML", examples: "PyTorch · Transformers · Model Evaluation" },
+    ],
+  },
+  {
+    category: "Systems & Security Engineering",
+    areas: [
+      { name: "Languages & Runtimes", examples: "Python · Rust · TypeScript · C++" },
+      { name: "Analysis & Verification", examples: "Static Analysis · CodeQL · Z3" },
+      { name: "Infrastructure", examples: "PostgreSQL · Docker · Linux · Git" },
+    ],
+  },
+  {
     category: "Blockchain Engineering",
     areas: [
       { name: "Ethereum", examples: "EVM · Solidity · JSON-RPC" },
-      { name: "Solana", examples: "Rust · Anchor · SPL Tokens" },
-      { name: "Private Blockchain Infrastructure", examples: "Hyperledger Besu · QBFT" },
-    ],
-  },
-  {
-    category: "Programming & Infrastructure",
-    areas: [
-      { name: "Programming Languages", examples: "Python · TypeScript · Rust" },
-      { name: "Web & Tooling", examples: "React · Next.js · Docker" },
-      { name: "Data & Infrastructure", examples: "PostgreSQL · AWS · Linux" },
-    ],
-  },
-  {
-    category: "AI & ML Systems",
-    areas: [
-      { name: "Deep Learning", examples: "Neural Networks · Training" },
-      { name: "LLM Systems", examples: "Agents · RAG" },
-      { name: "Machine Learning", examples: "Classical ML · Applied Models" },
+      { name: "Private Chain Infrastructure", examples: "Hyperledger Besu · QBFT" },
+      { name: "Experiment Tooling", examples: "FastAPI · Prometheus · Grafana" },
     ],
   },
 ]
