@@ -190,7 +190,6 @@ model Course {
   instructor      String?
   focus           String?
   topics          String?
-  syllabus        String?       @db.Text
   exercises       String?       @db.Text
   projects        String?       @db.Text
   discussions     String?       @db.Text

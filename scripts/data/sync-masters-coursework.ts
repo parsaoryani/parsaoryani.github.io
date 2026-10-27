@@ -1,7 +1,7 @@
 /**
  * Syncs exercises/focus/projects text and per-HW CourseFile rows for the
  * five Sharif M.Sc. courses to any environment. Complements
- * sharif-course-syllabi.ts (syllabus/topics/instructor) and
+ * sharif-course-syllabi.ts (topics/instructor) and
  * link-coursework-to-github.ts (repoints existing file URLs) — this script
  * is what actually creates the CourseFile rows in a fresh environment.
  *

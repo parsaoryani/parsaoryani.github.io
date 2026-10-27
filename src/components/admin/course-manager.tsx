@@ -15,7 +15,6 @@ type Course = {
   instructor: string | null
   focus: string | null
   topics: string | null
-  syllabus: string | null
   exercises: string | null
   projects: string | null
   discussions: string | null
@@ -49,7 +48,6 @@ type CourseFormData = {
   instructor: string
   focus: string
   topics: string
-  syllabus: string
   exercises: string
   projects: string
   discussions: string
@@ -62,7 +60,6 @@ const emptyCourseForm: CourseFormData = {
   instructor: "",
   focus: "",
   topics: "",
-  syllabus: "",
   exercises: "",
   projects: "",
   discussions: "",
@@ -353,10 +350,6 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
               <Input id="new-topics" placeholder="Comma-separated keywords" value={newCourse.topics} onChange={e => setNewCourse({ ...newCourse, topics: e.target.value })} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="new-syllabus">Full syllabus (shown behind &quot;View syllabus&quot;)</Label>
-              <Textarea id="new-syllabus" rows={4} value={newCourse.syllabus} onChange={e => setNewCourse({ ...newCourse, syllabus: e.target.value })} />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="new-exercises">Exercises / Assignments</Label>
               <Textarea id="new-exercises" rows={3} placeholder="Describe exercises, problem sets, labs..." value={newCourse.exercises} onChange={e => setNewCourse({ ...newCourse, exercises: e.target.value })} />
             </div>
@@ -424,10 +417,6 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                     <Input id={`edit-topics-${course.id}`} placeholder="Comma-separated keywords" defaultValue={editForm.topics || course.topics || ""} onChange={e => setEditForm({ ...editForm, topics: e.target.value })} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor={`edit-syllabus-${course.id}`}>Full syllabus (shown behind &quot;View syllabus&quot;)</Label>
-                    <Textarea id={`edit-syllabus-${course.id}`} rows={4} defaultValue={editForm.syllabus || course.syllabus || ""} onChange={e => setEditForm({ ...editForm, syllabus: e.target.value })} />
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor={`edit-exercises-${course.id}`}>Exercises / Assignments</Label>
                     <Textarea id={`edit-exercises-${course.id}`} rows={3} defaultValue={editForm.exercises || course.exercises || ""} onChange={e => setEditForm({ ...editForm, exercises: e.target.value })} />
                   </div>
@@ -456,7 +445,6 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                       {course.focus && <p className="text-sm mb-1"><strong>Focus:</strong> {course.focus}</p>}
                       {course.instructor && <p className="text-sm mb-1 text-[var(--text-secondary)]">{course.instructor}</p>}
                       {course.topics && <p className="text-sm mb-2 text-[var(--text-secondary)]"><strong>Topics:</strong> {course.topics}</p>}
-                      {course.syllabus && <p className="text-xs text-[var(--text-tertiary)] mb-2 line-clamp-2"><strong>Syllabus:</strong> {course.syllabus}</p>}
                       {(course.exercises || course.projects || course.discussions) && (
                         <div className="space-y-2 text-sm text-[var(--text-secondary)]">
                           {course.exercises && <p><strong>Exercises:</strong> {course.exercises}</p>}
@@ -466,7 +454,7 @@ export function CourseManager({ timelineEventId, isEducation }: { timelineEventI
                       )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingId(course.id); setEditForm({ name: course.name, grade: course.grade || "", highlight: course.highlight || "", instructor: course.instructor || "", focus: course.focus || "", topics: course.topics || "", syllabus: course.syllabus || "", exercises: course.exercises || "", projects: course.projects || "", discussions: course.discussions || "" }); }}><Save size={14} /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingId(course.id); setEditForm({ name: course.name, grade: course.grade || "", highlight: course.highlight || "", instructor: course.instructor || "", focus: course.focus || "", topics: course.topics || "", exercises: course.exercises || "", projects: course.projects || "", discussions: course.discussions || "" }); }}><Save size={14} /></Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-[var(--danger)]" onClick={() => handleDeleteCourse(course.id)}><Trash2 size={14} /></Button>
                     </div>
                   </div>

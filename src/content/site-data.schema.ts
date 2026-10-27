@@ -191,7 +191,6 @@ export const staticCourseSchema = z
     instructor: nullableStringSchema,
     focus: nullableStringSchema,
     topics: nullableStringSchema,
-    syllabus: nullableStringSchema,
     exercises: nullableStringSchema,
     projects: nullableStringSchema,
     discussions: nullableStringSchema,

@@ -143,7 +143,6 @@ function mapTimelineEvent(event: Awaited<ReturnType<typeof getTimelineEventsFrom
       instructor: course.instructor,
       focus: course.focus,
       topics: course.topics,
-      syllabus: course.syllabus,
       exercises: course.exercises,
       projects: course.projects,
       discussions: course.discussions,

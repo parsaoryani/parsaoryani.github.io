@@ -10,7 +10,6 @@ const course: CourseDetailShape = {
   instructor: null,
   focus: null,
   topics: null,
-  syllabus: null,
   exercises: null,
   projects: null,
   discussions: null,
@@ -26,6 +25,12 @@ const course: CourseDetailShape = {
 }
 
 describe("CourseDetailCard", () => {
+  it("does not render a syllabus section", () => {
+    render(<CourseDetailCard course={course} />)
+
+    expect(screen.queryByText("Syllabus")).not.toBeInTheDocument()
+  })
+
   it("groups a homework file under its HW label and links to GitHub", () => {
     render(<CourseDetailCard course={course} />)
 

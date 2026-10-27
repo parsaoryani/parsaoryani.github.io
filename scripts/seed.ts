@@ -210,7 +210,6 @@ async function main() {
     instructor?: string
     focus?: string
     topics?: string
-    syllabus?: string
   }
 
   async function ensureCourse(timelineEventId: string, course: CourseSeed, sortOrder: number) {
@@ -307,37 +306,26 @@ async function main() {
     }
   }
 
-  // Full syllabi are only included for courses the graduate provided detailed content for.
-  // The remaining Amirkabir courses (Design and Analysis of Algorithms, Foundations of
-  // Probability, Foundations of Logic and Set Theory) are seeded with grade only.
   const bscCourses: CourseSeed[] = [
     {
       name: "Artificial Intelligence and Lab",
       grade: "20/20",
       topics: "Intelligent agents, search & heuristics, adversarial search, CSPs, probabilistic inference, supervised/unsupervised learning, neural networks, CNNs & RNNs",
-      syllabus:
-        "Intelligent agents; uninformed and informed search; heuristic search; adversarial search and game theory; constraint satisfaction problems; probabilistic inference; supervised, unsupervised, and semi-supervised learning; optimization and neural networks; associative and Hopfield networks; evolutionary computation; swarm intelligence; uncertainty and fuzzy logic. Practical work included Python, Jupyter/Colab, NumPy, Pandas, Scikit-learn, data preprocessing, EDA, regression, classification, clustering, neural networks, CNNs, and RNNs.",
     },
     {
       name: "Probability I",
       grade: "19.46/20",
       topics: "Probability spaces, Bayes' theorem, random variables, distributions, expectation & variance, joint distributions, LLN & CLT",
-      syllabus:
-        "Probability spaces and axioms; combinatorial probability; conditional probability and Bayes' theorem; independence; discrete and continuous random variables; probability mass and density functions; cumulative distribution functions; expectation, variance, and moments; common probability distributions; joint distributions; covariance and correlation; conditional distributions and expectations; transformations of random variables; law of large numbers and central limit theorem.",
     },
     {
       name: "Cryptography I",
       grade: "18.75/20",
       topics: "Perfect secrecy, PRGs & stream ciphers, PRFs & block ciphers, MACs, hash functions, RSA, public-key crypto, digital signatures, post-quantum intro",
-      syllabus:
-        "Classical cryptography; perfect secrecy and fundamental security concepts; pseudorandom generators and stream ciphers; pseudorandom functions and block ciphers; message integrity and message authentication codes; cryptographic hash functions; public-key encryption; RSA; public-key cryptography based on discrete-logarithm problems; digital signatures; introduction to post-quantum cryptography.",
     },
     {
       name: "Foundations of Matrices and Linear Algebra",
       grade: "18.69/20",
       topics: "Vector spaces, linear independence & bases, linear transformations, eigenvalues & eigenvectors, diagonalization, inner-product spaces, ML applications",
-      syllabus:
-        "Groups, rings, and fields; matrix algebra and special matrices; systems of linear equations and Gaussian elimination; vector spaces and subspaces; span and generated spaces; linear independence, bases, and dimension; row and column spaces; matrix rank; change of basis; quotient spaces; linear transformations; kernel and image; matrix representation of linear maps; eigenvalues and eigenvectors; characteristic polynomials; Cayley-Hamilton theorem; diagonalization; inner-product spaces; orthogonality and orthogonal bases; and applications of linear algebra to machine learning.",
     },
     {
       name: "Special Topics in Cryptography",
@@ -345,8 +333,6 @@ async function main() {
       highlight: "Highest Grade in Class",
       focus: "Lattice-Based & Post-Quantum Cryptography",
       topics: "Lattices, SIS, LWE, Ring-LWE, NTRU, lattice trapdoors, signatures, FHE, attribute-based encryption",
-      syllabus:
-        "Mathematical lattices; discrete Gaussian and subgaussian distributions; early lattice-based cryptography including Ajtai-Dwork, NTRU, and GGH; Short Integer Solution (SIS); Learning With Errors (LWE); Ring-SIS and Ring-LWE; lattice-based collision-resistant hashing; public-key encryption; lattice trapdoors; digital signatures; identity-based encryption; pseudorandom functions; fully homomorphic encryption; attribute-based encryption; and open problems in lattice-based cryptography.",
     },
     { name: "Design and Analysis of Algorithms", grade: "18/20" },
     {
@@ -354,8 +340,6 @@ async function main() {
       grade: "18/20",
       highlight: "C++",
       topics: "Object-oriented programming, templates, operator overloading, dynamic memory, inheritance, polymorphism, exception handling, STL, data structures, file I/O",
-      syllabus:
-        "C++ fundamentals; functions, references, default arguments, function overloading, and templates; object-oriented programming; classes, constructors, and destructors; encapsulation; const and static members; friend functions and the this pointer; operator overloading; dynamic memory management; copy constructors and object copying; inheritance; polymorphism; virtual functions and abstract classes; exception handling; class templates; linked lists; STL containers and algorithms; sorting and binary search; text and binary file I/O; and basic software design patterns such as Singleton.",
     },
     { name: "Foundations of Probability", grade: "18/20" },
     {
@@ -363,8 +347,6 @@ async function main() {
       grade: "17.55/20",
       instructor: "Prof. Mehdi Dehghan — Group 1",
       topics: "Numerical stability, Gaussian elimination, LU/Cholesky/QR factorization, least squares, iterative methods, eigenvalues & SVD, condition numbers",
-      syllabus:
-        "Numerical errors, stability, and conditioning; numerical solution of linear systems; Gaussian elimination; matrix factorizations including LU, Cholesky, and QR; least-squares problems; iterative methods for linear systems; convergence analysis; numerical computation of eigenvalues and eigenvectors; power and QR-type methods; singular value decomposition; matrix norms; condition numbers; and stable numerical matrix computations.",
     },
     { name: "Foundations of Logic and Set Theory", grade: "17.50/20" },
   ]

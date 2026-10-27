@@ -90,7 +90,6 @@ export interface PublicCourse {
   instructor: string | null
   focus: string | null
   topics: string | null
-  syllabus: string | null
   exercises: string | null
   projects: string | null
   discussions: string | null

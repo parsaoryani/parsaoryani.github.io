@@ -24,7 +24,6 @@ export interface CourseDetailShape {
   instructor: string | null
   focus: string | null
   topics: string | null
-  syllabus: string | null
   exercises: string | null
   projects: string | null
   discussions: string | null
@@ -180,31 +179,6 @@ export function CourseDetailCard({ course }: { course: CourseDetailShape }) {
           ))}
         </div>
       )}
-      {course.syllabus && (
-        <details className="mt-3 group/syllabus">
-          <summary className="flex cursor-pointer list-none items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-ash transition-colors hover:text-cyan">
-            <ChevronRight size={12} className="shrink-0 transition-transform duration-200 group-open/syllabus:rotate-90" />
-            Syllabus
-          </summary>
-          {(() => {
-            const items = course.syllabus!
-              .split(";")
-              .map((s) => s.trim())
-              .filter(Boolean)
-            if (items.length < 2) {
-              return <p className="mt-2 border-l border-slate-700/60 pl-3 text-[13px] leading-relaxed text-mist/80">{course.syllabus}</p>
-            }
-            return (
-              <ul className="mt-2 space-y-1 border-l border-slate-700/60 pl-3">
-                {items.map((item) => (
-                  <li key={item} className="text-[13px] leading-relaxed text-mist/80 first-letter:uppercase">{item}</li>
-                ))}
-              </ul>
-            )
-          })()}
-        </details>
-      )}
-      
       {/* Exercises - collapsible, one clearly separated block per homework */}
       {(course.exercises || exerciseLinks.length > 0 || homeworkGroups.length > 0) && (
         <CollapsibleSection title="Exercises">

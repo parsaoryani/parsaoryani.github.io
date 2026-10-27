@@ -309,7 +309,7 @@ async function buildSiteData(repoRoot: string) {
       courses: {
         select: {
           id: true, name: true, grade: true, highlight: true, instructor: true, focus: true, topics: true,
-          syllabus: true, exercises: true, projects: true, discussions: true, sortOrder: true,
+          exercises: true, projects: true, discussions: true, sortOrder: true,
           files: {
             select: { id: true, name: true, url: true, description: true, kind: true, size: true, mimeType: true, sortOrder: true },
             orderBy: [{ sortOrder: "asc" }, { name: "asc" }, { id: "asc" }],
