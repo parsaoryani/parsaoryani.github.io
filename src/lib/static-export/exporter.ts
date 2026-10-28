@@ -239,6 +239,16 @@ async function collectAssets(repoRoot: string, siteData: StaticSiteData) {
     })
   }
 
+  await add("ResearchAgenda:primary:documentUrl", siteData.researchAgenda?.documentUrl, (next) => {
+    if (siteData.researchAgenda) siteData.researchAgenda.documentUrl = next
+  }, { externalAllowed: true })
+
+  for (const proposal of siteData.researchProposals) {
+    await add(`ResearchProposal:${proposal.id}:pdfUrl`, proposal.pdfUrl, (next) => {
+      proposal.pdfUrl = next
+    }, { externalAllowed: true })
+  }
+
   for (const project of siteData.projects) {
     await add(`Project:${project.id}:ogImageUrl`, project.ogImageUrl, (next) => {
       project.ogImageUrl = next
@@ -289,6 +299,26 @@ async function buildSiteData(repoRoot: string) {
       tags: { select: { tagId: true, tag: { select: tagSelect } } },
     },
     orderBy: [{ year: "desc" }, { sortOrder: "asc" }, { slug: "asc" }],
+  })
+
+  const researchAgenda = await prisma.researchAgenda.findFirst({
+    where: { status: "published" },
+    select: {
+      id: true, headline: true, summary: true, themes: true, description: true,
+      documentUrl: true, updatedAt: true,
+    },
+    orderBy: { updatedAt: "desc" },
+  })
+
+  const researchProposals = await prisma.researchProposal.findMany({
+    where: { status: "published", deletedAt: null },
+    select: {
+      id: true, slug: true, title: true, kind: true, stage: true, year: true,
+      versionLabel: true, summary: true, themes: true, motivation: true,
+      researchQuestion: true, approach: true, expectedContributions: true,
+      limitations: true, pdfUrl: true, featured: true, sortOrder: true, updatedAt: true,
+    },
+    orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { year: "desc" }],
   })
 
   const tagIds = new Set([
@@ -371,6 +401,14 @@ async function buildSiteData(repoRoot: string) {
       publishedAt: publication.publishedAt.toISOString(),
     })),
     projects: projects.map((project) => ({ ...project, techStack: stringArrayOrNull(project.techStack) })),
+    researchAgenda: researchAgenda
+      ? { ...researchAgenda, themes: stringArrayOrNull(researchAgenda.themes) ?? [], updatedAt: researchAgenda.updatedAt.toISOString() }
+      : null,
+    researchProposals: researchProposals.map((proposal) => ({
+      ...proposal,
+      themes: stringArrayOrNull(proposal.themes) ?? [],
+      updatedAt: proposal.updatedAt.toISOString(),
+    })),
     tags,
     timelineEvents: timelineEvents.map((event) => ({
       ...event,
@@ -466,6 +504,8 @@ export async function runStaticExport(options: ExportOptions = {}): Promise<Stat
     counts: {
       publications: siteData.publications.length,
       projects: siteData.projects.length,
+      researchAgenda: siteData.researchAgenda ? 1 : 0,
+      researchProposals: siteData.researchProposals.length,
       tags: siteData.tags.length,
       timelineEvents: siteData.timelineEvents.length,
       skillCategories: siteData.skillCategories.length,

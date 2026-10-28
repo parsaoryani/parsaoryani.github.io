@@ -13,6 +13,9 @@ import {
   getLatestTeachingExperience as getLatestTeachingExperienceFromDb,
   getProjectBySlug as getProjectBySlugFromDb,
   getPublicationBySlug as getPublicationBySlugFromDb,
+  getPublishedResearchAgenda as getPublishedResearchAgendaFromDb,
+  getAllResearchProposals as getAllResearchProposalsFromDb,
+  getResearchProposalBySlug as getResearchProposalBySlugFromDb,
   getSkillCategories as getSkillCategoriesFromDb,
   getTimelineEvents as getTimelineEventsFromDb,
 } from "@/lib/db/queries"
@@ -27,6 +30,8 @@ import {
   type PublicProject,
   type PublicPublication,
   type PublicResearchAssistant,
+  type PublicResearchAgenda,
+  type PublicResearchProposal,
   type PublicSettingKey,
   type PublicSettingMap,
   type PublicSkillCategory,
@@ -119,6 +124,41 @@ function mapProject(project: Awaited<ReturnType<typeof getAllProjectsFromDb>>[nu
     sortOrder: project.sortOrder,
     ogImageUrl: project.ogImageUrl,
     tags: project.tags.map((tag) => ({ tagId: tag.tagId, tag: mapTag(tag.tag) })),
+  }
+}
+
+function mapResearchAgenda(agenda: NonNullable<Awaited<ReturnType<typeof getPublishedResearchAgendaFromDb>>>): PublicResearchAgenda {
+  return {
+    id: agenda.id,
+    headline: agenda.headline,
+    summary: agenda.summary,
+    themes: stringArrayOrNull(agenda.themes) ?? [],
+    description: agenda.description,
+    documentUrl: agenda.documentUrl,
+    updatedAt: agenda.updatedAt,
+  }
+}
+
+function mapResearchProposal(proposal: Awaited<ReturnType<typeof getAllResearchProposalsFromDb>>[number]): PublicResearchProposal {
+  return {
+    id: proposal.id,
+    slug: proposal.slug,
+    title: proposal.title,
+    kind: proposal.kind,
+    stage: proposal.stage,
+    year: proposal.year,
+    versionLabel: proposal.versionLabel,
+    summary: proposal.summary,
+    themes: stringArrayOrNull(proposal.themes) ?? [],
+    motivation: proposal.motivation,
+    researchQuestion: proposal.researchQuestion,
+    approach: proposal.approach,
+    expectedContributions: proposal.expectedContributions,
+    limitations: proposal.limitations,
+    pdfUrl: proposal.pdfUrl,
+    featured: proposal.featured,
+    sortOrder: proposal.sortOrder,
+    updatedAt: proposal.updatedAt,
   }
 }
 
@@ -338,6 +378,17 @@ export const publicDataProvider: PublicDataProvider = {
     const project = await getProjectBySlugFromDb(slug)
     return project ? mapProject(project) : null
   },
+  async getPublishedResearchAgenda() {
+    const agenda = await getPublishedResearchAgendaFromDb()
+    return agenda ? mapResearchAgenda(agenda) : null
+  },
+  async getAllResearchProposals() {
+    return (await getAllResearchProposalsFromDb()).map(mapResearchProposal)
+  },
+  async getResearchProposalBySlug(slug) {
+    const proposal = await getResearchProposalBySlugFromDb(slug)
+    return proposal ? mapResearchProposal(proposal) : null
+  },
   async getAllTags() {
     return (await getAllTagsFromDb()).map(mapTag)
   },
@@ -375,6 +426,9 @@ export const {
   getFeaturedProjects: getFeaturedProjectsPublic,
   getAllProjects: getAllProjectsPublic,
   getProjectBySlug: getProjectBySlugPublic,
+  getPublishedResearchAgenda: getPublishedResearchAgendaPublic,
+  getAllResearchProposals: getAllResearchProposalsPublic,
+  getResearchProposalBySlug: getResearchProposalBySlugPublic,
   getAllTags: getAllTagsPublic,
   getMediaForOwner: getMediaForOwnerPublic,
   getTimelineEvents: getTimelineEventsPublic,

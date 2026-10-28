@@ -159,6 +159,41 @@ export const staticProjectSchema = z
   })
   .strict()
 
+export const staticResearchAgendaSchema = z
+  .object({
+    id: z.string(),
+    headline: z.string(),
+    summary: z.string(),
+    themes: z.array(z.string()),
+    description: nullableStringSchema,
+    documentUrl: optionalNullableStringSchema,
+    updatedAt: isoDateTimeSchema,
+  })
+  .strict()
+
+export const staticResearchProposalSchema = z
+  .object({
+    id: z.string(),
+    slug: z.string(),
+    title: z.string(),
+    kind: z.enum(["thesis_proposal", "research_proposal", "concept_note"]),
+    stage: z.enum(["in_preparation", "active", "archived"]),
+    year: z.number().int(),
+    versionLabel: z.string(),
+    summary: z.string(),
+    themes: z.array(z.string()),
+    motivation: nullableStringSchema,
+    researchQuestion: nullableStringSchema,
+    approach: nullableStringSchema,
+    expectedContributions: nullableStringSchema,
+    limitations: nullableStringSchema,
+    pdfUrl: optionalNullableStringSchema,
+    featured: z.boolean(),
+    sortOrder: z.number().int(),
+    updatedAt: isoDateTimeSchema,
+  })
+  .strict()
+
 export const staticCourseFileSchema = z
   .object({
     id: z.string(),
@@ -291,6 +326,8 @@ export const staticSiteDataSchema = z
     settings: staticSettingsSchema,
     publications: z.array(staticPublicationSchema),
     projects: z.array(staticProjectSchema),
+    researchAgenda: staticResearchAgendaSchema.nullable(),
+    researchProposals: z.array(staticResearchProposalSchema),
     tags: z.array(staticTagSchema),
     timelineEvents: z.array(staticTimelineEventSchema),
     skillCategories: z.array(staticSkillCategorySchema),
@@ -323,6 +360,8 @@ export type StaticSiteData = z.infer<typeof staticSiteDataSchema>
 export type StaticAssetManifest = z.infer<typeof staticAssetManifestSchema>
 export type StaticPublication = z.infer<typeof staticPublicationSchema>
 export type StaticProject = z.infer<typeof staticProjectSchema>
+export type StaticResearchAgenda = z.infer<typeof staticResearchAgendaSchema>
+export type StaticResearchProposal = z.infer<typeof staticResearchProposalSchema>
 export type StaticTag = z.infer<typeof staticTagSchema>
 export type StaticTimelineEvent = z.infer<typeof staticTimelineEventSchema>
 export type StaticCourse = z.infer<typeof staticCourseSchema>

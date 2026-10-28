@@ -6,6 +6,8 @@ import type {
   PublicProject,
   PublicPublication,
   PublicResearchAssistant,
+  PublicResearchAgenda,
+  PublicResearchProposal,
   PublicSettingKey,
   PublicSettingMap,
   PublicTeachingAssistant,
@@ -32,6 +34,20 @@ const publications: PublicPublication[] = siteData.publications.map((publication
 }))
 
 const projects: PublicProject[] = siteData.projects
+
+const researchAgenda: PublicResearchAgenda | null = siteData.researchAgenda
+  ? {
+      ...siteData.researchAgenda,
+      documentUrl: siteData.researchAgenda.documentUrl ?? null,
+      updatedAt: toDate(siteData.researchAgenda.updatedAt),
+    }
+  : null
+
+const researchProposals: PublicResearchProposal[] = siteData.researchProposals.map((proposal) => ({
+  ...proposal,
+  updatedAt: toDate(proposal.updatedAt),
+  pdfUrl: proposal.pdfUrl ?? null,
+}))
 
 const timelineEvents: PublicTimelineEvent[] = siteData.timelineEvents.map((event) => ({
   ...event,
@@ -87,6 +103,15 @@ export const publicDataProvider: PublicDataProvider = {
   async getProjectBySlug(slug) {
     return projects.find((project) => project.slug === slug) ?? null
   },
+  async getPublishedResearchAgenda() {
+    return researchAgenda
+  },
+  async getAllResearchProposals() {
+    return researchProposals
+  },
+  async getResearchProposalBySlug(slug) {
+    return researchProposals.find((proposal) => proposal.slug === slug) ?? null
+  },
   async getAllTags() {
     return siteData.tags
   },
@@ -124,6 +149,9 @@ export const {
   getFeaturedProjects: getFeaturedProjectsPublic,
   getAllProjects: getAllProjectsPublic,
   getProjectBySlug: getProjectBySlugPublic,
+  getPublishedResearchAgenda: getPublishedResearchAgendaPublic,
+  getAllResearchProposals: getAllResearchProposalsPublic,
+  getResearchProposalBySlug: getResearchProposalBySlugPublic,
   getAllTags: getAllTagsPublic,
   getMediaForOwner: getMediaForOwnerPublic,
   getTimelineEvents: getTimelineEventsPublic,

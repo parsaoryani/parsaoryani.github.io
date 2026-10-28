@@ -103,12 +103,16 @@ async function main() {
     await readFile(path.join(repoRoot, "src", "content", "generated", "site-data.json"), "utf8")
   ) as {
     publications?: unknown[]
+    researchProposals?: unknown[]
     projects?: unknown[]
     timelineEvents?: Array<{ type?: string }>
   }
 
   if (!snapshot.publications?.length) {
     await rm(path.join(workspace, "src", "app", "(public)", "research", "[slug]"), { recursive: true, force: true })
+  }
+  if (!snapshot.researchProposals?.length) {
+    await rm(path.join(workspace, "src", "app", "(public)", "research", "proposals", "[slug]"), { recursive: true, force: true })
   }
   if (!snapshot.projects?.length) {
     await rm(path.join(workspace, "src", "app", "(public)", "projects", "[slug]"), { recursive: true, force: true })
@@ -119,7 +123,7 @@ async function main() {
 
   await writeFile(
     path.join(workspace, "src", "lib", "public-data", "index.ts"),
-    `export * from "./contract"\nexport {\n  getAllProjectsPublic as getAllProjects,\n  getAllPublicationsPublic as getAllPublications,\n  getAllResearchExperiencePublic as getAllResearchExperience,\n  getAllTagsPublic as getAllTags,\n  getAllTeachingExperiencePublic as getAllTeachingExperience,\n  getEducationEventBySlugPublic as getEducationEventBySlug,\n  getEducationEventsPublic as getEducationEvents,\n  getFeaturedProjectsPublic as getFeaturedProjects,\n  getFeaturedPublicationsPublic as getFeaturedPublications,\n  getLatestResearchExperiencePublic as getLatestResearchExperience,\n  getLatestTeachingExperiencePublic as getLatestTeachingExperience,\n  getMediaForOwnerPublic as getMediaForOwner,\n  getProjectBySlugPublic as getProjectBySlug,\n  getPublicationBySlugPublic as getPublicationBySlug,\n  getSiteSettingPublic as getSiteSetting,\n  getSiteSettingsPublic as getSiteSettings,\n  getSkillCategoriesPublic as getSkillCategories,\n  getTimelineEventsPublic as getTimelineEvents,\n  publicDataProvider,\n} from "./static"\n`
+    `export * from "./contract"\nexport {\n  getAllProjectsPublic as getAllProjects,\n  getAllPublicationsPublic as getAllPublications,\n  getAllResearchExperiencePublic as getAllResearchExperience,\n  getAllResearchProposalsPublic as getAllResearchProposals,\n  getAllTagsPublic as getAllTags,\n  getAllTeachingExperiencePublic as getAllTeachingExperience,\n  getEducationEventBySlugPublic as getEducationEventBySlug,\n  getEducationEventsPublic as getEducationEvents,\n  getFeaturedProjectsPublic as getFeaturedProjects,\n  getFeaturedPublicationsPublic as getFeaturedPublications,\n  getLatestResearchExperiencePublic as getLatestResearchExperience,\n  getLatestTeachingExperiencePublic as getLatestTeachingExperience,\n  getPublishedResearchAgendaPublic as getPublishedResearchAgenda,\n  getMediaForOwnerPublic as getMediaForOwner,\n  getProjectBySlugPublic as getProjectBySlug,\n  getPublicationBySlugPublic as getPublicationBySlug,\n  getResearchProposalBySlugPublic as getResearchProposalBySlug,\n  getSiteSettingPublic as getSiteSetting,\n  getSiteSettingsPublic as getSiteSettings,\n  getSkillCategoriesPublic as getSkillCategories,\n  getTimelineEventsPublic as getTimelineEvents,\n  publicDataProvider,\n} from "./static"\n`
   )
 
   await writeFile(

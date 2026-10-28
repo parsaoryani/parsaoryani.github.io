@@ -172,4 +172,44 @@ describe("static site data contract", () => {
       }).schemaVersion
     ).toBe(1)
   })
+
+  it("accepts public research agenda and proposal records without admin metadata", () => {
+    const parsed = staticSiteDataSchema.parse({
+      ...siteData,
+      researchAgenda: {
+        id: "primary",
+        headline: "Secure and Trustworthy Agentic AI",
+        summary: "A focused agenda for safer tool-using agents.",
+        themes: ["Agent security"],
+        description: null,
+        documentUrl: null,
+        updatedAt: "2026-10-28T00:00:00.000Z",
+      },
+      researchProposals: [
+        {
+          id: "proposal-1",
+          slug: "secure-agent-memory",
+          title: "Secure Agent Memory",
+          kind: "research_proposal",
+          stage: "in_preparation",
+          year: 2026,
+          versionLabel: "v0.1",
+          summary: "A proposal about protecting persistent agent memory.",
+          themes: ["Agent security"],
+          motivation: null,
+          researchQuestion: null,
+          approach: null,
+          expectedContributions: null,
+          limitations: null,
+          pdfUrl: "/research/proposals/secure-agent-memory-v0.1.pdf",
+          featured: true,
+          sortOrder: 0,
+          updatedAt: "2026-10-28T00:00:00.000Z",
+        },
+      ],
+    })
+
+    expect(parsed.researchProposals[0]?.versionLabel).toBe("v0.1")
+    expect(parsed.researchAgenda?.headline).toContain("Agentic AI")
+  })
 })

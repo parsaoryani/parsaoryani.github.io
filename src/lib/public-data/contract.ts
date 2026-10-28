@@ -63,6 +63,37 @@ export interface PublicProject {
   tags: PublicTagAttachment[]
 }
 
+export interface PublicResearchAgenda {
+  id: string
+  headline: string
+  summary: string
+  themes: string[]
+  description: string | null
+  documentUrl: string | null
+  updatedAt: Date
+}
+
+export interface PublicResearchProposal {
+  id: string
+  slug: string
+  title: string
+  kind: "thesis_proposal" | "research_proposal" | "concept_note"
+  stage: "in_preparation" | "active" | "archived"
+  year: number
+  versionLabel: string
+  summary: string
+  themes: string[]
+  motivation: string | null
+  researchQuestion: string | null
+  approach: string | null
+  expectedContributions: string | null
+  limitations: string | null
+  pdfUrl: string | null
+  featured: boolean
+  sortOrder: number
+  updatedAt: Date
+}
+
 export interface PublicCourseFile {
   id: string
   name: string
@@ -178,6 +209,9 @@ export interface PublicDataProvider {
   getFeaturedProjects(): Promise<PublicProject[]>
   getAllProjects(): Promise<PublicProject[]>
   getProjectBySlug(slug: string): Promise<PublicProject | null>
+  getPublishedResearchAgenda(): Promise<PublicResearchAgenda | null>
+  getAllResearchProposals(): Promise<PublicResearchProposal[]>
+  getResearchProposalBySlug(slug: string): Promise<PublicResearchProposal | null>
   getAllTags(): Promise<PublicTag[]>
   getMediaForOwner(ownerType: "publication" | "project" | "page", ownerId: string): Promise<PublicMedia[]>
   getTimelineEvents(): Promise<PublicTimelineEvent[]>
