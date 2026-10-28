@@ -51,6 +51,22 @@ async function main() {
   })
   console.log(`${deletedPublications.count} stale publications removed`)
 
+  await prisma.researchAgenda.upsert({
+    where: { id: "primary" },
+    update: {},
+    create: {
+      id: "primary",
+      headline: "Secure and Trustworthy Agentic AI",
+      summary:
+        "I study how tool-using AI agents can be built, updated, and operated securely through provenance, authorization, information-flow control, secure memory, and runtime enforcement.",
+      description:
+        "My M.Sc. thesis frames agent security across the full lifecycle of sources, tools, skills, memory, and delegated authority, building on foundations in applied cryptography, formal methods, and distributed systems.",
+      themes: ["Agent Security", "Provenance", "Authorization", "Secure Memory"],
+      status: "published",
+    },
+  })
+  console.log("Research agenda foundation created")
+
   // Create projects
   const projects = [
     {

@@ -91,6 +91,10 @@ async function main() {
   await copyIfPresent(path.join(repoRoot, "src", "lib", "home"), path.join(workspace, "src", "lib", "home"))
   await copyIfPresent(path.join(repoRoot, "src", "lib", "timeline"), path.join(workspace, "src", "lib", "timeline"))
   await copyIfPresent(path.join(repoRoot, "src", "lib", "projects"), path.join(workspace, "src", "lib", "projects"))
+  await copyIfPresent(
+    path.join(repoRoot, "src", "lib", "validation", "research-portfolio.ts"),
+    path.join(workspace, "src", "lib", "validation", "research-portfolio.ts")
+  )
   await copyIfPresent(path.join(repoRoot, "src", "lib", "utils"), path.join(workspace, "src", "lib", "utils"))
 
   await mkdir(path.join(workspace, "src", "app"), { recursive: true })

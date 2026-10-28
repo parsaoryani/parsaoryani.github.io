@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
     }
     const { version: _version, ...data } = parsed.data
+    void _version
     const proposal = await prisma.researchProposal.create({ data })
     await prisma.auditLog.create({
       data: {

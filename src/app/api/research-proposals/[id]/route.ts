@@ -31,6 +31,7 @@ export async function PUT(request: Request, { params }: Context) {
     }
 
     const { version: _version, ...data } = parsed.data
+    void _version
     await prisma.$transaction(async (tx) => {
       await tx.revision.create({
         data: {

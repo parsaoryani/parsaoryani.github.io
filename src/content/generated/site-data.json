@@ -204,7 +204,20 @@
       ]
     }
   ],
-  "researchAgenda": null,
+  "researchAgenda": {
+    "id": "primary",
+    "headline": "Secure and Trustworthy Agentic AI",
+    "summary": "I study how tool-using AI agents can be built, updated, and operated securely through provenance, authorization, information-flow control, secure memory, and runtime enforcement.",
+    "themes": [
+      "Agent Security",
+      "Provenance",
+      "Authorization",
+      "Secure Memory"
+    ],
+    "description": "My M.Sc. thesis frames agent security across the full lifecycle of sources, tools, skills, memory, and delegated authority, building on foundations in applied cryptography, formal methods, and distributed systems.",
+    "documentUrl": null,
+    "updatedAt": "2026-10-28T09:28:16.702Z"
+  },
   "researchProposals": [],
   "tags": [
     {

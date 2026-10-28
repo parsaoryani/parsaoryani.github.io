@@ -22,6 +22,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Conflict: this record was modified. Refresh and try again." }, { status: 409 })
     }
     const { version: _version, ...data } = parsed.data
+    void _version
     const agenda = await prisma.researchAgenda.upsert({
       where: { id: "primary" },
       create: { id: "primary", ...data },
