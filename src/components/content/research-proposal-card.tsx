@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowUpRight, FileText, FlaskConical } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button-variants"
 import type { PublicResearchProposal } from "@/lib/public-data"
 import { proposalKindLabels, proposalStageLabels } from "@/lib/validation/research-portfolio"
 import { cn } from "@/lib/utils/cn"
@@ -47,9 +47,9 @@ export function ResearchProposalCard({ proposal }: { proposal: PublicResearchPro
               target="_blank"
               rel="noopener noreferrer"
               className={cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-1.5")}
-              aria-label={`Sanitized public PDF: ${proposal.title}`}
+              aria-label={`Public English PDF: ${proposal.title}`}
             >
-              <FileText size={12} aria-hidden="true" /> Sanitized public PDF
+              <FileText size={12} aria-hidden="true" /> Public English PDF
             </Link>
           )}
         </div>

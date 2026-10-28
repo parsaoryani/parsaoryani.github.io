@@ -67,6 +67,42 @@ async function main() {
   })
   console.log("Research agenda foundation created")
 
+  const thesisProposal = {
+    title: "Lifecycle Security of Tool-Using AI Agents Based on Provenance, Trust, and Authority",
+    kind: "thesis_proposal" as const,
+    stage: "active" as const,
+    year: 2026,
+    versionLabel: "v1.0",
+    summary:
+      "A model-independent security mechanism for preserving provenance, scoped trust, and revocable authority across tools, skills, memory, delegation, and externally consequential agent actions.",
+    themes: ["Agent Security", "Provenance", "Trust", "Authority", "Runtime Enforcement"],
+    motivation:
+      "Tool-using AI agents combine untrusted data, mutable tools and skills, persistent memory, and delegated permissions. Safety cannot be established from the model's final response alone: the system must retain where information came from, why it is trusted, who authorized an action, and whether that authority remains valid at execution time.",
+    researchQuestion:
+      "How can provenance, trust, and authority be represented and enforced consistently across the lifecycle of a tool-using AI agent so that untrusted inputs, mutable capabilities, and persistent memory cannot silently expand the agent's effective authority?",
+    approach:
+      "The research will define lifecycle objects and security invariants, then implement an enforcement layer outside the model. Framework adapters will mediate source and capability changes, memory admission and retrieval, delegation and revocation, and tool calls. A compact decision receipt will preserve the evidence and current authority behind important actions.",
+    expectedContributions:
+      "A unified lifecycle model connecting provenance, scoped trust, and revocable authority; a model-independent enforcement architecture; a prototype with reproducible adversarial and benign scenarios; and an empirical analysis of security, utility, false blocking, auditability, and runtime overhead.",
+    limitations:
+      "Guarantees remain conditional on correct policy, trustworthy enforcement components, and accurate identity and artifact binding. Provenance explains derivation but does not prove semantic truth, and cryptographic integrity does not make a malicious source trustworthy. Host compromise and broken cryptographic roots are outside the initial scope.",
+    pdfUrl: "/research/proposals/lifecycle-security-tool-using-ai-agents-v1.0.pdf",
+    status: "published" as const,
+    featured: true,
+    sortOrder: 0,
+  }
+
+  await prisma.researchProposal.upsert({
+    where: { slug: "lifecycle-security-tool-using-ai-agents" },
+    update: thesisProposal,
+    create: {
+      id: "proposal-lifecycle-security-v1",
+      slug: "lifecycle-security-tool-using-ai-agents",
+      ...thesisProposal,
+    },
+  })
+  console.log("Public English thesis proposal created")
+
   // Create projects
   const projects = [
     {

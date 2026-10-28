@@ -7,6 +7,13 @@
       "sha256": "c07b8a37da45c7f49d762c71729290853d2a6fa7f038c9d41206ee03a94ee880",
       "bytes": 112011,
       "mimeType": "image/jpeg"
+    },
+    {
+      "sourceKey": "ResearchProposal:proposal-lifecycle-security-v1:pdfUrl",
+      "publicPath": "/research/proposals/lifecycle-security-tool-using-ai-agents-v1.0.pdf",
+      "sha256": "f071a7a72cf582e7fcddd0f01ba8e0570ac3a979883e0310d0ddde0b5a715316",
+      "bytes": 111485,
+      "mimeType": "application/pdf"
     }
   ]
 }

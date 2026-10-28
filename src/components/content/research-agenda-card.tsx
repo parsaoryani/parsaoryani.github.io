@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowUpRight, Compass } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button-variants"
 import type { PublicResearchAgenda } from "@/lib/public-data"
 import { cn } from "@/lib/utils/cn"
 

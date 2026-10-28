@@ -35,7 +35,7 @@ describe("ResearchProposalCard", () => {
       "href",
       "/research/proposals/secure-agent-memory"
     )
-    expect(screen.getByRole("link", { name: /Sanitized public PDF/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Public English PDF/i })).toHaveAttribute(
       "href",
       proposal.pdfUrl
     )
@@ -43,6 +43,6 @@ describe("ResearchProposalCard", () => {
 
   it("omits the PDF action when there is no public document", () => {
     render(<ResearchProposalCard proposal={{ ...proposal, pdfUrl: null }} />)
-    expect(screen.queryByRole("link", { name: /Sanitized public PDF/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole("link", { name: /Public English PDF/i })).not.toBeInTheDocument()
   })
 })

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, ExternalLink, FileText, FlaskConical } from "lucide-react"
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button-variants"
 import { getAllResearchProposals, getResearchProposalBySlug } from "@/lib/public-data"
 import { safeQuery } from "@/lib/public-data/query-result"
 import { canonicalPath } from "@/lib/site/metadata"
@@ -80,7 +80,7 @@ export default async function ResearchProposalPage({ params }: Props) {
               rel="noopener noreferrer"
               className={cn(buttonVariants({ variant: "default" }), "mb-12 gap-2")}
             >
-              <FileText size={15} aria-hidden="true" /> Sanitized public PDF
+              <FileText size={15} aria-hidden="true" /> Public English PDF
               <ExternalLink size={13} aria-hidden="true" />
             </Link>
           )}
