@@ -40,7 +40,7 @@ interface AdminNavGroup {
   items: AdminNavItem[]
 }
 
-const adminNavGroups: AdminNavGroup[] = [
+export const adminNavGroups: AdminNavGroup[] = [
   {
     label: "Dashboard",
     items: [{ href: "", label: "Dashboard", icon: LayoutDashboard }],
@@ -48,6 +48,7 @@ const adminNavGroups: AdminNavGroup[] = [
   {
     label: "Content",
     items: [
+      { href: "research-portfolio", label: "Research Portfolio", icon: FlaskConical },
       { href: "publications", label: "Publications", icon: FileText },
       { href: "projects", label: "Projects", icon: FolderGit2 },
       { href: "researching-assistance", label: "Research Experience", icon: FlaskConical },
