@@ -61,6 +61,23 @@ enum EntryStatus {
   published
 }
 
+enum ResearchContentStatus {
+  draft
+  published
+}
+
+enum ResearchProposalKind {
+  thesis_proposal
+  research_proposal
+  concept_note
+}
+
+enum ResearchProposalStage {
+  in_preparation
+  active
+  archived
+}
+
 enum UserRole {
   owner
   editor
@@ -123,6 +140,48 @@ model Project {
   updatedAt     DateTime      @updatedAt
   deletedAt     DateTime?
   tags          ProjectTag[]
+
+  @@index([status, deletedAt, featured, sortOrder])
+}
+
+model ResearchAgenda {
+  id          String                @id @default("primary")
+  headline    String
+  summary     String
+  themes      Json
+  description String?
+  documentUrl String?
+  status      ResearchContentStatus @default(draft)
+  version     Int                   @default(1)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([status])
+}
+
+model ResearchProposal {
+  id                    String                @id @default(cuid())
+  slug                  String                @unique
+  title                 String
+  kind                  ResearchProposalKind
+  stage                 ResearchProposalStage @default(in_preparation)
+  year                  Int
+  versionLabel          String
+  summary               String
+  themes                Json
+  motivation            String?
+  researchQuestion      String?
+  approach              String?
+  expectedContributions String?
+  limitations           String?
+  pdfUrl                String?
+  status                ResearchContentStatus @default(draft)
+  featured              Boolean               @default(false)
+  sortOrder             Int                   @default(0)
+  version               Int                   @default(1)
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  deletedAt             DateTime?
 
   @@index([status, deletedAt, featured, sortOrder])
 }
