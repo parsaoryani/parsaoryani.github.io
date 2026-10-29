@@ -212,4 +212,17 @@ describe("static site data contract", () => {
     expect(parsed.researchProposals[0]?.versionLabel).toBe("v0.1")
     expect(parsed.researchAgenda?.headline).toContain("Agentic AI")
   })
+
+  it("publishes the curated proposal set without the retired cross-chain direction", () => {
+    expect(siteData.researchProposals.map((proposal) => proposal.slug)).toEqual([
+      "lifecycle-security-tool-using-ai-agents",
+      "causal-diagnosis-minimal-policy-repair",
+      "continuous-threat-model-maintenance",
+      "joint-authorization-transformed-artifacts",
+    ])
+
+    expect(JSON.stringify(siteData)).not.toContain(
+      "Secure and Scalable Cross-Chain & Layer-2 Interoperability"
+    )
+  })
 })
