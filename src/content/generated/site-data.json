@@ -435,15 +435,7 @@
               "sortOrder": 0
             }
           ],
-          "links": [
-            {
-              "id": "cmt31qfef0003z59aotjkm702",
-              "type": "project",
-              "name": "Agentic Vulnerability Detection",
-              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
-              "sortOrder": 0
-            }
-          ]
+          "links": []
         },
         {
           "id": "cmt0d38jq000gz520h7pbsv13",

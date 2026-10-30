@@ -414,6 +414,16 @@ async function main() {
       )
     }
 
+    const secureSoftwareSystems = await prisma.course.findFirst({
+      where: { timelineEventId: mscSharif.id, name: "Secure Software Systems" },
+    })
+    if (secureSoftwareSystems) {
+      // The course-project PDF is the assignment brief, not a public project page.
+      await prisma.courseLink.deleteMany({
+        where: { courseId: secureSoftwareSystems.id, name: "Agentic Vulnerability Detection" },
+      })
+    }
+
     const formalMethods = await prisma.course.findFirst({
       where: { timelineEventId: mscSharif.id, name: "Formal Methods in Information Security" },
     })
