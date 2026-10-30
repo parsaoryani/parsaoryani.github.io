@@ -43,10 +43,10 @@ const courses: CourseUpdate[] = [
     exercises: "HW1: Memory corruption & exploitation (format string, ROP, CVE analysis, remote pwn). HW2: Fuzzing (Atheris) + static analysis (AST + Z3). HW3: LLM-based vulnerability detection (context strategies, 3-stage pipeline, patch generation, model comparison). See files for details.",
     projects: "Agentic Vulnerability Detection: Iterative LLM agent with CodeQL integration, SARIF parsing, confidence scoring, tools for regex/grep extraction, dangerous pattern detection, caller identification; analyzed nginx (10K+ LOC); 10-page report on architecture, execution traces, comparative analysis, real-world findings",
     files: [
-      { name: "HW1: Memory Corruption & Exploitation", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw1.pdf", description: "Format string, ROP, CVE exploitation, remote pwn challenges", kind: "pdf" },
-      { name: "HW2: Fuzzing & Static Analysis", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw2.pdf", description: "Atheris fuzzing, SAT static analyzer with Z3", kind: "pdf" },
-      { name: "HW3: LLM-Based Vulnerability Detection", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw3.pdf", description: "Context strategies, 3-stage pipeline, patch generation, model comparison", kind: "pdf" },
-      { name: "Project: Agentic Vulnerability Detection", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/ce815-041-project.pdf", description: "Iterative LLM agent with CodeQL integration, nginx analysis", kind: "pdf" },
+      { name: "HW1: Memory Corruption & Exploitation", url: "/coursework/secure-software-systems/ce815-041-hw1.pdf", description: "Format string, ROP, CVE exploitation, remote pwn challenges", kind: "pdf" },
+      { name: "HW2: Fuzzing & Static Analysis", url: "/coursework/secure-software-systems/ce815-041-hw2.pdf", description: "Atheris fuzzing, SAT static analyzer with Z3", kind: "pdf" },
+      { name: "HW3: LLM-Based Vulnerability Detection", url: "/coursework/secure-software-systems/ce815-041-hw3.pdf", description: "Context strategies, 3-stage pipeline, patch generation, model comparison", kind: "pdf" },
+      { name: "Project: Agentic Vulnerability Detection", url: "/coursework/secure-software-systems/ce815-041-project.pdf", description: "Iterative LLM agent with CodeQL integration, nginx analysis", kind: "pdf" },
     ],
   },
   {

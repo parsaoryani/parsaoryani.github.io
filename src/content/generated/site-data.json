@@ -397,7 +397,7 @@
             {
               "id": "cmt31pgq50001z5yq4y4uxpyy",
               "name": "HW1: Memory Corruption & Exploitation",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw1.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-hw1.pdf",
               "description": "Format string, ROP, CVE exploitation, remote pwn challenges",
               "kind": "pdf",
               "size": 52379,
@@ -407,7 +407,7 @@
             {
               "id": "cmt31pgq80003z5yq2tjuwnz1",
               "name": "HW2: Fuzzing & Static Analysis",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw2.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-hw2.pdf",
               "description": "Atheris fuzzing, SAT static analyzer with Z3",
               "kind": "pdf",
               "size": 53718,
@@ -417,7 +417,7 @@
             {
               "id": "cmt31pgqb0005z5yqh3b1q0kj",
               "name": "HW3: LLM-Based Vulnerability Detection",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw3.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-hw3.pdf",
               "description": "Context strategies, 3-stage pipeline, patch generation, model comparison",
               "kind": "pdf",
               "size": 85461,
@@ -427,7 +427,7 @@
             {
               "id": "cmt31pgqd0007z5yqv406g6ce",
               "name": "Project: Agentic Vulnerability Detection",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/ce815-041-project.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
               "description": "Iterative LLM agent with CodeQL integration, nginx analysis",
               "kind": "pdf",
               "size": 68490,
