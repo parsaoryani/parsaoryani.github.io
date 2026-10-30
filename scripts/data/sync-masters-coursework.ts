@@ -23,6 +23,7 @@ interface FileEntry {
 
 interface CourseUpdate {
   name: string
+  grade?: string
   focus: string
   exercises: string
   projects: string
@@ -51,6 +52,7 @@ const courses: CourseUpdate[] = [
   },
   {
     name: "Formal Methods in Information Security",
+    grade: "16.7 / 20",
     focus: "Formal modeling of security policies and verification of secure systems using logical and structural reasoning",
     exercises: "HW1: Access control models & policy specification. HW2: Logic-based reasoning & information flow control. HW3: Formal protocol verification. All in English & Persian. See files for details.",
     projects: "Formal Verification of ZK-Rollup Security Mechanisms: Applied formal methods to verify security properties of ZK-Rollup protocols",
@@ -65,6 +67,7 @@ const courses: CourseUpdate[] = [
   },
   {
     name: "Foundations and Applications of Blockchain",
+    grade: "18.9 / 20",
     focus: "Core distributed systems and cryptographic ideas applied to real blockchain protocols, consensus design, scalability, and practical application-level analysis",
     exercises: "HW1: Blockchain foundations (mempool, Merkle trees, P2P, mining, Bitcoin Script). HW2: Consensus & selfish mining (protocol divergence, difficulty, mempool, safety/liveness, simulator). HW3: Network efficiency & smart contracts (propagation, reentrancy, NFT sale). See files for details.",
     projects: "opML: Optimistic Machine Learning on Blockchain — Optimistic execution of ML inference on-chain with fraud proofs. ZKsync Protocol: Analysis and implementation of ZK-Rollup scaling solution with zero-knowledge proofs.",
@@ -125,7 +128,7 @@ async function main() {
 
     await prisma.course.update({
       where: { id: match.id },
-      data: { focus: entry.focus, exercises: entry.exercises || null, projects: entry.projects },
+      data: { grade: entry.grade ?? null, focus: entry.focus, exercises: entry.exercises || null, projects: entry.projects },
     })
 
     const existingNames = new Set(match.files.map((f) => f.name))

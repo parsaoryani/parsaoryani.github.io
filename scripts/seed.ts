@@ -370,9 +370,9 @@ async function main() {
       { name: "Applied Cryptography", grade: "18.9/20" },
       { name: "Secure Software Systems", grade: "18.2/20" },
       // Spring 2026 (started Feb 2026) — grades/details pending
-      { name: "Formal Methods in Information Security" },
+      { name: "Formal Methods in Information Security", grade: "16.7 / 20" },
       { name: "Deep Learning" },
-      { name: "Foundations and Applications of Blockchain" },
+      { name: "Foundations and Applications of Blockchain", grade: "18.9 / 20" },
     ]
     let order = 0
     for (const course of mscCourses) {

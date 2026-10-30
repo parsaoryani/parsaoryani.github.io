@@ -440,7 +440,7 @@
         {
           "id": "cmt0d38jq000gz520h7pbsv13",
           "name": "Formal Methods in Information Security",
-          "grade": null,
+          "grade": "16.7 / 20",
           "highlight": null,
           "instructor": "Dr. Morteza Amini",
           "focus": "Formal modeling of security policies and verification of secure systems using logical and structural reasoning",
@@ -690,7 +690,7 @@
         {
           "id": "cmt0d38js000kz520r9ypqq4v",
           "name": "Foundations and Applications of Blockchain",
-          "grade": null,
+          "grade": "18.9 / 20",
           "highlight": null,
           "instructor": "Dr. Amir Mahdi Sadeghzadeh",
           "focus": "Core distributed systems and cryptographic ideas applied to real blockchain protocols, consensus design, scalability, and practical application-level analysis",
