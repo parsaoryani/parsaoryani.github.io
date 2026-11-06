@@ -317,7 +317,7 @@ async function main() {
       location: "Tehran, Iran",
       startDate: new Date("2025-09-01"),
       endDate: null,
-      description: "National Master's Entrance Examination Rank: 56",
+      description: "National Master's Entrance Examination Rank: 56 (GPA: 4.00 / 4.00)",
       sortOrder: 0,
     },
     {
@@ -327,7 +327,7 @@ async function main() {
       location: "Tehran, Iran",
       startDate: new Date("2020-09-01"),
       endDate: new Date("2025-02-01"),
-      description: "National University Entrance Examination Rank: 343",
+      description: "National University Entrance Examination Rank: 343 (GPA: 3.63 / 4.00)",
       sortOrder: 7,
     },
   ]

@@ -22,7 +22,7 @@ M.Sc. student in Secure Computing at Sharif University of Technology. Current re
 
 **Sharif University of Technology**, Tehran, Iran
 **Sep 2025 - Present**
-National Master's Entrance Examination Rank: **56**
+National Master's Entrance Examination Rank: **56** (GPA: **4.00 / 4.00**)
 
 - Research interests: LLM-agent security, information-flow control, authorization, provenance, and secure agent architectures.
 - Selected coursework: Applied Cryptography (18.9/20), Deep Learning (18.35/20, Dr. Soleymani), Secure Software Systems (18.2/20), Formal Methods in Information Security, and Foundations and Applications of Blockchain.
@@ -32,7 +32,7 @@ National Master's Entrance Examination Rank: **56**
 
 **Amirkabir University of Technology (Tehran Polytechnic)**, Tehran, Iran
 **Sep 2020 - Feb 2025**
-National University Entrance Examination Rank: **343**
+National University Entrance Examination Rank: **343** (GPA: **3.63 / 4.00**)
 
 - Background in cryptography, algorithms, probability, linear algebra, AI, and software development.
 - Cryptography I (18.75/20); Special Topics in Cryptography (18.25/20, highest grade in class).
