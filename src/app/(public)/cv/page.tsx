@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getTimelineEvents, getSkillCategories, getAllPublications, getAllResearchExperience, getAllTeachingExperience } from "@/lib/public-data"
 import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
+import { GpaBadge } from "@/components/content/gpa-badge"
 import { Download, ArrowUpRight, GraduationCap, Briefcase, Award, HeartHandshake, Sparkles, Code2, UserCheck, Mail } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -94,6 +95,7 @@ export default async function CVPage() {
                     <div>
                       <h3 className="font-semibold">{event.title}</h3>
                       <p className="text-sm text-mist">{event.organization}</p>
+                      <GpaBadge gpa={event.gpa} gpaConverted={event.gpaConverted} className="mt-1.5" />
                     </div>
                     <span className="font-mono text-xs text-ash shrink-0">
                       {formatDate(event.startDate, event.endDate)}

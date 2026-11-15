@@ -36,6 +36,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         endDate: body.endDate ? new Date(body.endDate) : null,
         description: body.description || null,
         highlights: body.highlights || null,
+        gpa: body.gpa || null,
+        gpaConverted: body.gpaConverted || null,
         url: body.url || null,
         visible: body.visible ?? true,
       },

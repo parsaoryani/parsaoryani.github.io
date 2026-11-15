@@ -108,6 +108,8 @@ export interface PublicTimelineEvent {
   endDate: Date | null
   description: string | null
   highlights: string[] | null
+  gpa: string | null
+  gpaConverted: string | null
   url: string | null
   sortOrder: number
   courses: PublicCourse[]

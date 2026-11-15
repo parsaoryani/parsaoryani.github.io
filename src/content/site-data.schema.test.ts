@@ -173,3 +173,36 @@ describe("static site data contract", () => {
     ).toBe(1)
   })
 })
+
+describe("education GPA in the generated snapshot", () => {
+  const educationEvents = siteData.timelineEvents.filter((event) => event.type === "education")
+
+  it("publishes an original and converted GPA for each degree", () => {
+    expect(educationEvents.map((event) => event.organization)).toEqual([
+      "Sharif University of Technology",
+      "Amirkabir University of Technology (Tehran Polytechnic)",
+    ])
+    expect(educationEvents.map((event) => event.gpa)).toEqual(["18.26/20", "17.30/20"])
+    expect(educationEvents.map((event) => event.gpaConverted)).toEqual(["4.00/4.00", "3.63/4.00"])
+  })
+
+  it("keeps GPA optional so snapshots exported before the field existed still parse", () => {
+    const legacySnapshot = JSON.parse(JSON.stringify(siteData)) as {
+      timelineEvents: Array<Record<string, unknown>>
+    }
+    for (const event of legacySnapshot.timelineEvents) {
+      delete event.gpa
+      delete event.gpaConverted
+    }
+
+    expect(parseStaticSiteData(legacySnapshot).timelineEvents).toHaveLength(siteData.timelineEvents.length)
+  })
+
+  it("rejects a non-string GPA", () => {
+    const withBadGpa = siteData.timelineEvents.map((event) =>
+      event.type === "education" ? { ...event, gpa: 18.26 } : event
+    )
+
+    expect(() => parseStaticSiteData({ ...siteData, timelineEvents: withBadGpa })).toThrow()
+  })
+})

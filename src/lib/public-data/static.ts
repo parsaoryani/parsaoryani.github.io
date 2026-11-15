@@ -37,6 +37,8 @@ const timelineEvents: PublicTimelineEvent[] = siteData.timelineEvents.map((event
   ...event,
   startDate: toDate(event.startDate),
   endDate: toNullableDate(event.endDate),
+  gpa: event.gpa ?? null,
+  gpaConverted: event.gpaConverted ?? null,
 }))
 
 const researchingAssistants: PublicResearchAssistant[] = siteData.researchingAssistants.map((item) => ({

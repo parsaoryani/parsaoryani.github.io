@@ -1,6 +1,7 @@
 import { Container, Section } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { GpaBadge } from "@/components/content/gpa-badge"
 import { getAllResearchExperience, getAllTeachingExperience, getTimelineEvents } from "@/lib/public-data"
 import { safeQuery, QueryErrorFallback } from "@/lib/public-data/query-result"
 import { slugify } from "@/lib/utils/slugify"
@@ -73,6 +74,7 @@ function TimelineEventItem({ event, config, isLast }: { event: PublicTimelineEve
         {event.organization}
         {event.location && <span className="text-ash">, {event.location}</span>}
       </p>
+      <GpaBadge gpa={event.gpa} gpaConverted={event.gpaConverted} className="mt-2" />
       {event.description && (
         <p className="text-sm text-mist/70 mt-1">{event.description}</p>
       )}

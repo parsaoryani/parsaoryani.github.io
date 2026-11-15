@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { getEducationEventBySlug, getEducationEvents } from "@/lib/public-data"
 import { CourseDetailCard } from "@/components/content/course-detail-card"
+import { GpaBadge } from "@/components/content/gpa-badge"
 import { slugify } from "@/lib/utils/slugify"
 import { canonicalPath } from "@/lib/site/metadata"
 import { GraduationCap, ArrowLeft, Calendar } from "lucide-react"
@@ -61,7 +62,8 @@ export default async function EducationDetailPage({ params }: Props) {
               <GraduationCap size={12} className="mr-1.5" /> Coursework
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-3"><span className="text-gradient">{event.title}</span></h1>
-            <p className="text-lg text-mist mb-2">{event.organization}</p>
+            <p className="text-lg text-mist mb-3">{event.organization}</p>
+            <GpaBadge gpa={event.gpa} gpaConverted={event.gpaConverted} className="mb-3" />
             <p className="flex items-center gap-1.5 text-sm text-ash font-mono mb-12">
               <Calendar size={13} /> {formatDate(event.startDate, event.endDate)}
             </p>

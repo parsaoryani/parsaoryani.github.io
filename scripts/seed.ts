@@ -175,6 +175,8 @@ async function main() {
       startDate: new Date("2025-09-01"),
       endDate: null,
       description: "National Master's Entrance Examination Rank: 56",
+      gpa: "18.26/20",
+      gpaConverted: "4.00/4.00",
       sortOrder: 0,
     },
     {
@@ -185,6 +187,8 @@ async function main() {
       startDate: new Date("2020-09-01"),
       endDate: new Date("2025-02-01"),
       description: "National University Entrance Examination Rank: 343",
+      gpa: "17.30/20",
+      gpaConverted: "3.63/4.00",
       sortOrder: 7,
     },
   ]

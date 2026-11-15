@@ -19,6 +19,8 @@ type TimelineEvent = {
   endDate: string | null
   description: string | null
   highlights: string[] | null
+  gpa: string | null
+  gpaConverted: string | null
   url: string | null
   visible: boolean
 }
@@ -42,6 +44,8 @@ export function EditTimelineForm({ event }: { event: TimelineEvent }) {
       endDate: (form.get("endDate") as string) || undefined,
       description: (form.get("description") as string) || undefined,
       highlights: (form.get("highlights") as string)?.split("\n").map((h) => h.trim()).filter(Boolean) || [],
+      gpa: (form.get("gpa") as string) || undefined,
+      gpaConverted: (form.get("gpaConverted") as string) || undefined,
       url: (form.get("url") as string) || undefined,
       visible: form.get("visible") === "on",
     }
@@ -121,6 +125,16 @@ export function EditTimelineForm({ event }: { event: TimelineEvent }) {
             <div className="space-y-2">
               <Label htmlFor="highlights">Highlights <span className="text-[var(--text-tertiary)] font-mono text-xs">(one per line)</span></Label>
               <Textarea id="highlights" name="highlights" rows={3} defaultValue={event.highlights?.join("\n") || ""} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="gpa">GPA <span className="text-[var(--text-tertiary)] font-mono text-xs">(education, e.g. 18.26/20)</span></Label>
+                <Input id="gpa" name="gpa" defaultValue={event.gpa || ""} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="gpaConverted">GPA <span className="text-[var(--text-tertiary)] font-mono text-xs">(converted, e.g. 4.00/4.00)</span></Label>
+                <Input id="gpaConverted" name="gpaConverted" defaultValue={event.gpaConverted || ""} />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="url">URL</Label>

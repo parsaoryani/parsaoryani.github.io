@@ -305,7 +305,7 @@ async function buildSiteData(repoRoot: string) {
     where: { visible: true, ...(hiddenTypes.length > 0 ? { type: { notIn: hiddenTypes } } : {}) },
     select: {
       id: true, type: true, title: true, organization: true, location: true, startDate: true, endDate: true,
-      description: true, highlights: true, url: true, sortOrder: true,
+      description: true, highlights: true, gpa: true, gpaConverted: true, url: true, sortOrder: true,
       courses: {
         select: {
           id: true, name: true, grade: true, highlight: true, instructor: true, focus: true, topics: true,

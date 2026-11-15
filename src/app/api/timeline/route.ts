@@ -33,6 +33,8 @@ export async function POST(request: Request) {
         endDate: body.endDate ? new Date(body.endDate) : null,
         description: body.description || null,
         highlights: body.highlights || null,
+        gpa: body.gpa || null,
+        gpaConverted: body.gpaConverted || null,
         url: body.url || null,
         visible: body.visible ?? true,
         sortOrder: (maxOrder._max.sortOrder ?? 0) + 1,

@@ -211,6 +211,8 @@ export const staticTimelineEventSchema = z
     endDate: isoDateTimeSchema.nullable(),
     description: nullableStringSchema,
     highlights: z.array(z.string()).nullable(),
+    gpa: optionalNullableStringSchema,
+    gpaConverted: optionalNullableStringSchema,
     url: nullableStringSchema,
     sortOrder: z.number().int(),
     courses: z.array(staticCourseSchema),

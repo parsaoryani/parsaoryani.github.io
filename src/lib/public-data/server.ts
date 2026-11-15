@@ -133,6 +133,8 @@ function mapTimelineEvent(event: Awaited<ReturnType<typeof getTimelineEventsFrom
     endDate: event.endDate,
     description: event.description,
     highlights: stringArrayOrNull(event.highlights),
+    gpa: event.gpa ?? null,
+    gpaConverted: event.gpaConverted ?? null,
     url: event.url,
     sortOrder: event.sortOrder,
     courses: event.courses.map((course) => ({

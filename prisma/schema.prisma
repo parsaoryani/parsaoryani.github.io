@@ -169,6 +169,8 @@ model TimelineEvent {
   endDate      DateTime?
   description  String?
   highlights   Json?
+  gpa          String?
+  gpaConverted String?
   url          String?
   sortOrder    Int               @default(0)
   visible      Boolean           @default(true)
