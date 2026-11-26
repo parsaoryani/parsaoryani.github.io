@@ -13,16 +13,6 @@
           "Authority",
           "Tool Security"
         ]
-      },
-      {
-        "title": "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
-        "description": "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
-        "tags": [
-          "Blockchain Security",
-          "Cross-Chain",
-          "Layer 2",
-          "Distributed Systems"
-        ]
       }
     ],
     "hidden_timeline_sections": [],
@@ -204,6 +194,123 @@
       ]
     }
   ],
+  "researchAgenda": {
+    "id": "primary",
+    "headline": "Secure and Trustworthy Agentic AI",
+    "summary": "I study how tool-using AI agents can be built, updated, and operated securely through provenance, authorization, information-flow control, secure memory, and runtime enforcement.",
+    "themes": [
+      "Agent Security",
+      "Provenance",
+      "Authorization",
+      "Secure Memory"
+    ],
+    "description": "My M.Sc. thesis frames agent security across the full lifecycle of sources, tools, skills, memory, and delegated authority, building on foundations in applied cryptography, formal methods, and distributed systems.",
+    "documentUrl": null,
+    "updatedAt": "2026-10-28T09:28:16.702Z"
+  },
+  "researchProposals": [
+    {
+      "id": "proposal-lifecycle-security-v1",
+      "slug": "lifecycle-security-tool-using-ai-agents",
+      "title": "Lifecycle Security of Tool-Using AI Agents Based on Provenance, Trust, and Authority",
+      "kind": "thesis_proposal",
+      "stage": "active",
+      "year": 2026,
+      "versionLabel": "v1.0",
+      "summary": "A model-independent security mechanism for preserving provenance, scoped trust, and revocable authority across tools, skills, memory, delegation, and externally consequential agent actions.",
+      "themes": [
+        "Agent Security",
+        "Provenance",
+        "Trust",
+        "Authority",
+        "Runtime Enforcement"
+      ],
+      "motivation": "Tool-using AI agents combine untrusted data, mutable tools and skills, persistent memory, and delegated permissions. Safety cannot be established from the model's final response alone: the system must retain where information came from, why it is trusted, who authorized an action, and whether that authority remains valid at execution time.",
+      "researchQuestion": "How can provenance, trust, and authority be represented and enforced consistently across the lifecycle of a tool-using AI agent so that untrusted inputs, mutable capabilities, and persistent memory cannot silently expand the agent's effective authority?",
+      "approach": "The research will define lifecycle objects and security invariants, then implement an enforcement layer outside the model. Framework adapters will mediate source and capability changes, memory admission and retrieval, delegation and revocation, and tool calls. A compact decision receipt will preserve the evidence and current authority behind important actions.",
+      "expectedContributions": "A unified lifecycle model connecting provenance, scoped trust, and revocable authority; a model-independent enforcement architecture; a prototype with reproducible adversarial and benign scenarios; and an empirical analysis of security, utility, false blocking, auditability, and runtime overhead.",
+      "limitations": "Guarantees remain conditional on correct policy, trustworthy enforcement components, and accurate identity and artifact binding. Provenance explains derivation but does not prove semantic truth, and cryptographic integrity does not make a malicious source trustworthy. Host compromise and broken cryptographic roots are outside the initial scope.",
+      "pdfUrl": "/research/proposals/lifecycle-security-tool-using-ai-agents-v1.0.pdf",
+      "featured": true,
+      "sortOrder": 0,
+      "updatedAt": "2026-10-28T15:00:00.000Z"
+    },
+    {
+      "id": "proposal-causal-policy-repair-v1",
+      "slug": "causal-diagnosis-minimal-policy-repair",
+      "title": "Causal Diagnosis and Minimal Repair of Agent Security Policies",
+      "kind": "research_proposal",
+      "stage": "active",
+      "year": 2026,
+      "versionLabel": "v1.0",
+      "summary": "A bounded diagnosis-and-repair study testing when counterfactual evidence helps synthesize executable policy repairs under explicit safety, utility, and regression constraints.",
+      "themes": [
+        "Agent Security",
+        "Access Control",
+        "Program Repair",
+        "Causal Diagnosis"
+      ],
+      "motivation": "A faulty agent policy may allow an unsafe tool call or block legitimate work, while a broad correction can create new violations. Repair therefore requires more than identifying a suspicious rule: one patch must satisfy the full set of reviewed authorization requirements.",
+      "researchQuestion": "When do local intervention witnesses correspond to one jointly valid repair, and when does causal diagnosis improve repair quality or search cost beyond direct symbolic synthesis and inexpensive structural analysis?",
+      "approach": "The project combines deterministic policy replay, a bounded typed repair grammar, MaxSMT synthesis, counterfactual rule-eligibility interventions, realizability checks, full-space fallback, independent validation, and selected full-agent reruns.",
+      "expectedContributions": "A model of diagnosis-to-edit realizability for ordered agent policies; an auditable bounded repair prototype; and a matched evaluation identifying where causal guidance helps, is neutral, or wastes budget.",
+      "limitations": "Guarantees depend on complete requirements, faithful policy semantics, trusted evidence, and the declared repair grammar. Snapshot replay does not predict every replanning behavior, and the study does not claim general causal discovery or universal safety.",
+      "pdfUrl": "/research/proposals/causal-policy-repair-v1.0.pdf",
+      "featured": true,
+      "sortOrder": 1,
+      "updatedAt": "2026-10-29T06:00:00.000Z"
+    },
+    {
+      "id": "proposal-continuous-threat-model-v1",
+      "slug": "continuous-threat-model-maintenance",
+      "title": "Continuous Security Threat-Model Maintenance for Tool-Using Agents",
+      "kind": "research_proposal",
+      "stage": "active",
+      "year": 2026,
+      "versionLabel": "v1.0",
+      "summary": "An evidence-aware dependency model for keeping security assumptions, conclusions, controls, and tests current as agent tools, authority, memory, policies, and models change.",
+      "themes": [
+        "Agent Security",
+        "Threat Modeling",
+        "Runtime Assurance",
+        "Security Testing"
+      ],
+      "motivation": "Agent systems evolve after deployment, but their threat models and old test results can remain unchanged. This creates stale security conclusions whose assumptions or evidence no longer match the current tools, permissions, memory, or enforcement configuration.",
+      "researchQuestion": "Can selective, evidence-aware reassessment capture every relevant threat-model update after an agent-system change while reducing unnecessary checks and representing missing or stale observations explicitly?",
+      "approach": "The project builds a versioned security graph linking observable agent state to assumptions, threats, conclusions, controls, tests, and evidence, then compares incremental change propagation with full reassessment and conservative invalidation baselines.",
+      "expectedContributions": "Agent-specific dependency semantics; a maintenance procedure that distinguishes changed risk from lost knowledge; and an empirical account of freshness, traceability, reassessment cost, and adapter portability.",
+      "limitations": "Changes outside the observation boundary remain invisible, dependency links can be wrong, and some changes require new threat discovery rather than incremental maintenance. The initial scope excludes enterprise-scale inventories and arbitrary multi-agent concurrency.",
+      "pdfUrl": "/research/proposals/continuous-threat-model-maintenance-v1.0.pdf",
+      "featured": true,
+      "sortOrder": 2,
+      "updatedAt": "2026-10-29T06:00:00.000Z"
+    },
+    {
+      "id": "proposal-joint-artifact-authorization-v1",
+      "slug": "joint-authorization-transformed-artifacts",
+      "title": "Joint Authorization of Transformed Artifacts",
+      "kind": "research_proposal",
+      "stage": "active",
+      "year": 2026,
+      "versionLabel": "v1.0",
+      "summary": "A restricted authorization calculus for preserving multi-owner obligations across projection, filtering, joins, aggregation, and final release to an exact recipient set.",
+      "themes": [
+        "Authorization",
+        "Information Flow",
+        "Multi-Principal Systems",
+        "Provenance"
+      ],
+      "motivation": "Independent owners may approve different inputs, yet a later transformation or audience change can make the combined output unauthorized while every individual approval record still appears valid.",
+      "researchQuestion": "Which owner obligations survive supported artifact transformations, when is issuer-specific renewal required, and can a checker authorize more useful releases than global renewal without weakening any owner's declared policy?",
+      "approach": "The project uses immutable content-addressed artifacts, issuer-scoped policies, a typed transformation algebra, obligation propagation, exact output and recipient binding, and a release checker that returns a preservation witness, minimal conflict, or scoped renewal request.",
+      "expectedContributions": "A restricted semantics for transformation-sensitive multi-owner obligations; an auditable checker and decision receipt; and evidence about security, useful completion, approval burden, and explanation quality against conservative baselines.",
+      "limitations": "Guarantees depend on correct owner assignment, truthful transformation witnesses, faithful transform semantics, secure artifact binding, and a mediated release gate. Arbitrary summaries, compromised hosts, and global distributed revocation are outside the first version.",
+      "pdfUrl": "/research/proposals/joint-authorization-transformed-artifacts-v1.0.pdf",
+      "featured": true,
+      "sortOrder": 3,
+      "updatedAt": "2026-10-29T06:00:00.000Z"
+    }
+  ],
   "tags": [
     {
       "id": "cmskkdgqw0004z5i2y5wv87jz",
@@ -243,12 +350,12 @@
       "location": "Tehran, Iran",
       "startDate": "2025-09-01T00:00:00.000Z",
       "endDate": null,
-      "description": "National Master's Entrance Examination Rank: 56",
+          "description": "National Master's Entrance Examination Rank: 56 · GPA: 18.28 / 20 (4 / 4)",
       "highlights": [
         "Research focus on the security of LLM agents and multi-agent systems",
         "Graduate coursework in applied cryptography, deep learning, formal methods, and secure software systems"
       ],
-      "gpa": "18.26/20",
+      "gpa": "18.28/20",
       "gpaConverted": "4.00/4.00",
       "url": null,
       "sortOrder": 0,
@@ -271,7 +378,7 @@
               "id": "cmt31qfec0001z59ao258vtub",
               "type": "project",
               "name": "ZK-Mixer",
-              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
+              "url": "/projects/zk-mixer",
               "sortOrder": 0
             }
           ]
@@ -292,7 +399,7 @@
             {
               "id": "cmt31pgq50001z5yq4y4uxpyy",
               "name": "HW1: Memory Corruption & Exploitation",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw1.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-hw1.pdf",
               "description": "Format string, ROP, CVE exploitation, remote pwn challenges",
               "kind": "pdf",
               "size": 52379,
@@ -302,7 +409,7 @@
             {
               "id": "cmt31pgq80003z5yq2tjuwnz1",
               "name": "HW2: Fuzzing & Static Analysis",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw2.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-hw2.pdf",
               "description": "Atheris fuzzing, SAT static analyzer with Z3",
               "kind": "pdf",
               "size": 53718,
@@ -312,7 +419,7 @@
             {
               "id": "cmt31pgqb0005z5yqh3b1q0kj",
               "name": "HW3: LLM-Based Vulnerability Detection",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw3.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-hw3.pdf",
               "description": "Context strategies, 3-stage pipeline, patch generation, model comparison",
               "kind": "pdf",
               "size": 85461,
@@ -322,7 +429,7 @@
             {
               "id": "cmt31pgqd0007z5yqv406g6ce",
               "name": "Project: Agentic Vulnerability Detection",
-              "url": "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/ce815-041-project.pdf",
+              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
               "description": "Iterative LLM agent with CodeQL integration, nginx analysis",
               "kind": "pdf",
               "size": 68490,
@@ -330,20 +437,12 @@
               "sortOrder": 0
             }
           ],
-          "links": [
-            {
-              "id": "cmt31qfef0003z59aotjkm702",
-              "type": "project",
-              "name": "Agentic Vulnerability Detection",
-              "url": "/coursework/secure-software-systems/ce815-041-project.pdf",
-              "sortOrder": 0
-            }
-          ]
+          "links": []
         },
         {
           "id": "cmt0d38jq000gz520h7pbsv13",
           "name": "Formal Methods in Information Security",
-          "grade": null,
+          "grade": "16.7 / 20",
           "highlight": null,
           "instructor": "Dr. Morteza Amini",
           "focus": "Formal modeling of security policies and verification of secure systems using logical and structural reasoning",
@@ -427,7 +526,7 @@
         {
           "id": "cmt0d38jr000iz520ymur9obt",
           "name": "Deep Learning",
-          "grade": "18.35 / 20",
+          "grade": "18.6 / 20",
           "highlight": null,
           "instructor": "Dr. Soleymani",
           "focus": "Foundational theory and applied practical work in model development, evaluation, and analysis across deep learning paradigms from classical MLPs to modern transformers, generative models, and foundation-model style training",
@@ -593,7 +692,7 @@
         {
           "id": "cmt0d38js000kz520r9ypqq4v",
           "name": "Foundations and Applications of Blockchain",
-          "grade": null,
+          "grade": "18.9 / 20",
           "highlight": null,
           "instructor": "Dr. Amir Mahdi Sadeghzadeh",
           "focus": "Core distributed systems and cryptographic ideas applied to real blockchain protocols, consensus design, scalability, and practical application-level analysis",
@@ -701,7 +800,7 @@
       "location": "Tehran, Iran",
       "startDate": "2020-09-01T00:00:00.000Z",
       "endDate": "2025-02-01T00:00:00.000Z",
-      "description": "National University Entrance Examination Rank: 343",
+          "description": "National University Entrance Examination Rank: 343 · GPA: 17.3 / 20 (3.63 / 4)",
       "highlights": null,
       "gpa": "17.30/20",
       "gpaConverted": "3.63/4.00",

@@ -23,6 +23,7 @@ interface FileEntry {
 
 interface CourseUpdate {
   name: string
+  grade?: string
   focus: string
   exercises: string
   projects: string
@@ -43,14 +44,15 @@ const courses: CourseUpdate[] = [
     exercises: "HW1: Memory corruption & exploitation (format string, ROP, CVE analysis, remote pwn). HW2: Fuzzing (Atheris) + static analysis (AST + Z3). HW3: LLM-based vulnerability detection (context strategies, 3-stage pipeline, patch generation, model comparison). See files for details.",
     projects: "Agentic Vulnerability Detection: Iterative LLM agent with CodeQL integration, SARIF parsing, confidence scoring, tools for regex/grep extraction, dangerous pattern detection, caller identification; analyzed nginx (10K+ LOC); 10-page report on architecture, execution traces, comparative analysis, real-world findings",
     files: [
-      { name: "HW1: Memory Corruption & Exploitation", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw1.pdf", description: "Format string, ROP, CVE exploitation, remote pwn challenges", kind: "pdf" },
-      { name: "HW2: Fuzzing & Static Analysis", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw2.pdf", description: "Atheris fuzzing, SAT static analyzer with Z3", kind: "pdf" },
-      { name: "HW3: LLM-Based Vulnerability Detection", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/HW/ce815-041-hw3.pdf", description: "Context strategies, 3-stage pipeline, patch generation, model comparison", kind: "pdf" },
-      { name: "Project: Agentic Vulnerability Detection", url: "https://github.com/parsaoryani/courses/blob/main/masters/secure-software-systems/ce815-041-project.pdf", description: "Iterative LLM agent with CodeQL integration, nginx analysis", kind: "pdf" },
+      { name: "HW1: Memory Corruption & Exploitation", url: "/coursework/secure-software-systems/ce815-041-hw1.pdf", description: "Format string, ROP, CVE exploitation, remote pwn challenges", kind: "pdf" },
+      { name: "HW2: Fuzzing & Static Analysis", url: "/coursework/secure-software-systems/ce815-041-hw2.pdf", description: "Atheris fuzzing, SAT static analyzer with Z3", kind: "pdf" },
+      { name: "HW3: LLM-Based Vulnerability Detection", url: "/coursework/secure-software-systems/ce815-041-hw3.pdf", description: "Context strategies, 3-stage pipeline, patch generation, model comparison", kind: "pdf" },
+      { name: "Project: Agentic Vulnerability Detection", url: "/coursework/secure-software-systems/ce815-041-project.pdf", description: "Iterative LLM agent with CodeQL integration, nginx analysis", kind: "pdf" },
     ],
   },
   {
     name: "Formal Methods in Information Security",
+    grade: "16.7 / 20",
     focus: "Formal modeling of security policies and verification of secure systems using logical and structural reasoning",
     exercises: "HW1: Access control models & policy specification. HW2: Logic-based reasoning & information flow control. HW3: Formal protocol verification. All in English & Persian. See files for details.",
     projects: "Formal Verification of ZK-Rollup Security Mechanisms: Applied formal methods to verify security properties of ZK-Rollup protocols",
@@ -65,6 +67,7 @@ const courses: CourseUpdate[] = [
   },
   {
     name: "Foundations and Applications of Blockchain",
+    grade: "18.9 / 20",
     focus: "Core distributed systems and cryptographic ideas applied to real blockchain protocols, consensus design, scalability, and practical application-level analysis",
     exercises: "HW1: Blockchain foundations (mempool, Merkle trees, P2P, mining, Bitcoin Script). HW2: Consensus & selfish mining (protocol divergence, difficulty, mempool, safety/liveness, simulator). HW3: Network efficiency & smart contracts (propagation, reentrancy, NFT sale). See files for details.",
     projects: "opML: Optimistic Machine Learning on Blockchain — Optimistic execution of ML inference on-chain with fraud proofs. ZKsync Protocol: Analysis and implementation of ZK-Rollup scaling solution with zero-knowledge proofs.",
@@ -125,7 +128,7 @@ async function main() {
 
     await prisma.course.update({
       where: { id: match.id },
-      data: { focus: entry.focus, exercises: entry.exercises || null, projects: entry.projects },
+      data: { grade: entry.grade ?? null, focus: entry.focus, exercises: entry.exercises || null, projects: entry.projects },
     })
 
     const existingNames = new Set(match.files.map((f) => f.name))

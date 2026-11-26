@@ -172,6 +172,59 @@ describe("static site data contract", () => {
       }).schemaVersion
     ).toBe(1)
   })
+
+  it("accepts public research agenda and proposal records without admin metadata", () => {
+    const parsed = staticSiteDataSchema.parse({
+      ...siteData,
+      researchAgenda: {
+        id: "primary",
+        headline: "Secure and Trustworthy Agentic AI",
+        summary: "A focused agenda for safer tool-using agents.",
+        themes: ["Agent security"],
+        description: null,
+        documentUrl: null,
+        updatedAt: "2026-10-28T00:00:00.000Z",
+      },
+      researchProposals: [
+        {
+          id: "proposal-1",
+          slug: "secure-agent-memory",
+          title: "Secure Agent Memory",
+          kind: "research_proposal",
+          stage: "in_preparation",
+          year: 2026,
+          versionLabel: "v0.1",
+          summary: "A proposal about protecting persistent agent memory.",
+          themes: ["Agent security"],
+          motivation: null,
+          researchQuestion: null,
+          approach: null,
+          expectedContributions: null,
+          limitations: null,
+          pdfUrl: "/research/proposals/secure-agent-memory-v0.1.pdf",
+          featured: true,
+          sortOrder: 0,
+          updatedAt: "2026-10-28T00:00:00.000Z",
+        },
+      ],
+    })
+
+    expect(parsed.researchProposals[0]?.versionLabel).toBe("v0.1")
+    expect(parsed.researchAgenda?.headline).toContain("Agentic AI")
+  })
+
+  it("publishes the curated proposal set without the retired cross-chain direction", () => {
+    expect(siteData.researchProposals.map((proposal) => proposal.slug)).toEqual([
+      "lifecycle-security-tool-using-ai-agents",
+      "causal-diagnosis-minimal-policy-repair",
+      "continuous-threat-model-maintenance",
+      "joint-authorization-transformed-artifacts",
+    ])
+
+    expect(JSON.stringify(siteData)).not.toContain(
+      "Secure and Scalable Cross-Chain & Layer-2 Interoperability"
+    )
+  })
 })
 
 describe("education GPA in the generated snapshot", () => {
@@ -182,7 +235,7 @@ describe("education GPA in the generated snapshot", () => {
       "Sharif University of Technology",
       "Amirkabir University of Technology (Tehran Polytechnic)",
     ])
-    expect(educationEvents.map((event) => event.gpa)).toEqual(["18.26/20", "17.30/20"])
+    expect(educationEvents.map((event) => event.gpa)).toEqual(["18.28/20", "17.30/20"])
     expect(educationEvents.map((event) => event.gpaConverted)).toEqual(["4.00/4.00", "3.63/4.00"])
   })
 

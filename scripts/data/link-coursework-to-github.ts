@@ -13,14 +13,15 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const REPO = "https://github.com/parsaoryani/courses"
+const LOCAL_COURSEWORK = "/coursework"
 
 // Folders link to `tree`, single files link to `blob`.
 const files: Record<string, string> = {
   // Secure Software Systems
-  "HW1: Memory Corruption & Exploitation": `${REPO}/blob/main/masters/secure-software-systems/HW/ce815-041-hw1.pdf`,
-  "HW2: Fuzzing & Static Analysis": `${REPO}/blob/main/masters/secure-software-systems/HW/ce815-041-hw2.pdf`,
-  "HW3: LLM-Based Vulnerability Detection": `${REPO}/blob/main/masters/secure-software-systems/HW/ce815-041-hw3.pdf`,
-  "Project: Agentic Vulnerability Detection": `${REPO}/blob/main/masters/secure-software-systems/ce815-041-project.pdf`,
+  "HW1: Memory Corruption & Exploitation": `${LOCAL_COURSEWORK}/secure-software-systems/ce815-041-hw1.pdf`,
+  "HW2: Fuzzing & Static Analysis": `${LOCAL_COURSEWORK}/secure-software-systems/ce815-041-hw2.pdf`,
+  "HW3: LLM-Based Vulnerability Detection": `${LOCAL_COURSEWORK}/secure-software-systems/ce815-041-hw3.pdf`,
+  "Project: Agentic Vulnerability Detection": `${LOCAL_COURSEWORK}/secure-software-systems/ce815-041-project.pdf`,
 
   // Formal Methods in Information Security
   "HW1: Access Control Models (English)": `${REPO}/blob/main/masters/formal-methods-in-information-security/HW/FMS_HW1_EN.pdf`,

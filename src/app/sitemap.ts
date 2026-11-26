@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next"
-import { getAllProjects, getAllPublications, getEducationEvents } from "@/lib/public-data"
+import { getAllProjects, getAllPublications, getAllResearchProposals, getEducationEvents } from "@/lib/public-data"
 import { slugify } from "@/lib/utils/slugify"
 
 export const dynamic = "force-static"
@@ -7,9 +7,10 @@ export const dynamic = "force-static"
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:4321"
   const lastModified = new Date("2026-08-22T00:00:00.000Z")
-  const [projects, publications, educationEvents] = await Promise.all([
+  const [projects, publications, researchProposals, educationEvents] = await Promise.all([
     getAllProjects(),
     getAllPublications(),
+    getAllResearchProposals(),
     getEducationEvents(),
   ])
 
@@ -30,6 +31,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...publications.map((publication) => ({
       url: `${siteUrl}/research/${publication.slug}`,
       lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...researchProposals.map((proposal) => ({
+      url: `${siteUrl}/research/proposals/${proposal.slug}`,
+      lastModified: proposal.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),

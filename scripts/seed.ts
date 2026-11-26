@@ -51,6 +51,149 @@ async function main() {
   })
   console.log(`${deletedPublications.count} stale publications removed`)
 
+  await prisma.researchAgenda.upsert({
+    where: { id: "primary" },
+    update: {},
+    create: {
+      id: "primary",
+      headline: "Secure and Trustworthy Agentic AI",
+      summary:
+        "I study how tool-using AI agents can be built, updated, and operated securely through provenance, authorization, information-flow control, secure memory, and runtime enforcement.",
+      description:
+        "My M.Sc. thesis frames agent security across the full lifecycle of sources, tools, skills, memory, and delegated authority, building on foundations in applied cryptography, formal methods, and distributed systems.",
+      themes: ["Agent Security", "Provenance", "Authorization", "Secure Memory"],
+      status: "published",
+    },
+  })
+  console.log("Research agenda foundation created")
+
+  const thesisProposal = {
+    title: "Lifecycle Security of Tool-Using AI Agents Based on Provenance, Trust, and Authority",
+    kind: "thesis_proposal" as const,
+    stage: "active" as const,
+    year: 2026,
+    versionLabel: "v1.0",
+    summary:
+      "A model-independent security mechanism for preserving provenance, scoped trust, and revocable authority across tools, skills, memory, delegation, and externally consequential agent actions.",
+    themes: ["Agent Security", "Provenance", "Trust", "Authority", "Runtime Enforcement"],
+    motivation:
+      "Tool-using AI agents combine untrusted data, mutable tools and skills, persistent memory, and delegated permissions. Safety cannot be established from the model's final response alone: the system must retain where information came from, why it is trusted, who authorized an action, and whether that authority remains valid at execution time.",
+    researchQuestion:
+      "How can provenance, trust, and authority be represented and enforced consistently across the lifecycle of a tool-using AI agent so that untrusted inputs, mutable capabilities, and persistent memory cannot silently expand the agent's effective authority?",
+    approach:
+      "The research will define lifecycle objects and security invariants, then implement an enforcement layer outside the model. Framework adapters will mediate source and capability changes, memory admission and retrieval, delegation and revocation, and tool calls. A compact decision receipt will preserve the evidence and current authority behind important actions.",
+    expectedContributions:
+      "A unified lifecycle model connecting provenance, scoped trust, and revocable authority; a model-independent enforcement architecture; a prototype with reproducible adversarial and benign scenarios; and an empirical analysis of security, utility, false blocking, auditability, and runtime overhead.",
+    limitations:
+      "Guarantees remain conditional on correct policy, trustworthy enforcement components, and accurate identity and artifact binding. Provenance explains derivation but does not prove semantic truth, and cryptographic integrity does not make a malicious source trustworthy. Host compromise and broken cryptographic roots are outside the initial scope.",
+    pdfUrl: "/research/proposals/lifecycle-security-tool-using-ai-agents-v1.0.pdf",
+    status: "published" as const,
+    featured: true,
+    sortOrder: 0,
+  }
+
+  await prisma.researchProposal.upsert({
+    where: { slug: "lifecycle-security-tool-using-ai-agents" },
+    update: thesisProposal,
+    create: {
+      id: "proposal-lifecycle-security-v1",
+      slug: "lifecycle-security-tool-using-ai-agents",
+      ...thesisProposal,
+    },
+  })
+  console.log("Public English thesis proposal created")
+
+  const selectedResearchProposals = [
+    {
+      id: "proposal-causal-policy-repair-v1",
+      slug: "causal-diagnosis-minimal-policy-repair",
+      title: "Causal Diagnosis and Minimal Repair of Agent Security Policies",
+      kind: "research_proposal" as const,
+      stage: "active" as const,
+      year: 2026,
+      versionLabel: "v1.0",
+      summary:
+        "A bounded diagnosis-and-repair study testing when counterfactual evidence helps synthesize executable policy repairs under explicit safety, utility, and regression constraints.",
+      themes: ["Agent Security", "Access Control", "Program Repair", "Causal Diagnosis"],
+      motivation:
+        "A faulty agent policy may allow an unsafe tool call or block legitimate work, while a broad correction can create new violations. Repair therefore requires more than identifying a suspicious rule: one patch must satisfy the full set of reviewed authorization requirements.",
+      researchQuestion:
+        "When do local intervention witnesses correspond to one jointly valid repair, and when does causal diagnosis improve repair quality or search cost beyond direct symbolic synthesis and inexpensive structural analysis?",
+      approach:
+        "The project combines deterministic policy replay, a bounded typed repair grammar, MaxSMT synthesis, counterfactual rule-eligibility interventions, realizability checks, full-space fallback, independent validation, and selected full-agent reruns.",
+      expectedContributions:
+        "A model of diagnosis-to-edit realizability for ordered agent policies; an auditable bounded repair prototype; and a matched evaluation identifying where causal guidance helps, is neutral, or wastes budget.",
+      limitations:
+        "Guarantees depend on complete requirements, faithful policy semantics, trusted evidence, and the declared repair grammar. Snapshot replay does not predict every replanning behavior, and the study does not claim general causal discovery or universal safety.",
+      pdfUrl: "/research/proposals/causal-policy-repair-v1.0.pdf",
+      status: "published" as const,
+      featured: true,
+      sortOrder: 1,
+    },
+    {
+      id: "proposal-continuous-threat-model-v1",
+      slug: "continuous-threat-model-maintenance",
+      title: "Continuous Security Threat-Model Maintenance for Tool-Using Agents",
+      kind: "research_proposal" as const,
+      stage: "active" as const,
+      year: 2026,
+      versionLabel: "v1.0",
+      summary:
+        "An evidence-aware dependency model for keeping security assumptions, conclusions, controls, and tests current as agent tools, authority, memory, policies, and models change.",
+      themes: ["Agent Security", "Threat Modeling", "Runtime Assurance", "Security Testing"],
+      motivation:
+        "Agent systems evolve after deployment, but their threat models and old test results can remain unchanged. This creates stale security conclusions whose assumptions or evidence no longer match the current tools, permissions, memory, or enforcement configuration.",
+      researchQuestion:
+        "Can selective, evidence-aware reassessment capture every relevant threat-model update after an agent-system change while reducing unnecessary checks and representing missing or stale observations explicitly?",
+      approach:
+        "The project builds a versioned security graph linking observable agent state to assumptions, threats, conclusions, controls, tests, and evidence, then compares incremental change propagation with full reassessment and conservative invalidation baselines.",
+      expectedContributions:
+        "Agent-specific dependency semantics; a maintenance procedure that distinguishes changed risk from lost knowledge; and an empirical account of freshness, traceability, reassessment cost, and adapter portability.",
+      limitations:
+        "Changes outside the observation boundary remain invisible, dependency links can be wrong, and some changes require new threat discovery rather than incremental maintenance. The initial scope excludes enterprise-scale inventories and arbitrary multi-agent concurrency.",
+      pdfUrl: "/research/proposals/continuous-threat-model-maintenance-v1.0.pdf",
+      status: "published" as const,
+      featured: true,
+      sortOrder: 2,
+    },
+    {
+      id: "proposal-joint-artifact-authorization-v1",
+      slug: "joint-authorization-transformed-artifacts",
+      title: "Joint Authorization of Transformed Artifacts",
+      kind: "research_proposal" as const,
+      stage: "active" as const,
+      year: 2026,
+      versionLabel: "v1.0",
+      summary:
+        "A restricted authorization calculus for preserving multi-owner obligations across projection, filtering, joins, aggregation, and final release to an exact recipient set.",
+      themes: ["Authorization", "Information Flow", "Multi-Principal Systems", "Provenance"],
+      motivation:
+        "Independent owners may approve different inputs, yet a later transformation or audience change can make the combined output unauthorized while every individual approval record still appears valid.",
+      researchQuestion:
+        "Which owner obligations survive supported artifact transformations, when is issuer-specific renewal required, and can a checker authorize more useful releases than global renewal without weakening any owner's declared policy?",
+      approach:
+        "The project uses immutable content-addressed artifacts, issuer-scoped policies, a typed transformation algebra, obligation propagation, exact output and recipient binding, and a release checker that returns a preservation witness, minimal conflict, or scoped renewal request.",
+      expectedContributions:
+        "A restricted semantics for transformation-sensitive multi-owner obligations; an auditable checker and decision receipt; and evidence about security, useful completion, approval burden, and explanation quality against conservative baselines.",
+      limitations:
+        "Guarantees depend on correct owner assignment, truthful transformation witnesses, faithful transform semantics, secure artifact binding, and a mediated release gate. Arbitrary summaries, compromised hosts, and global distributed revocation are outside the first version.",
+      pdfUrl: "/research/proposals/joint-authorization-transformed-artifacts-v1.0.pdf",
+      status: "published" as const,
+      featured: true,
+      sortOrder: 3,
+    },
+  ]
+
+  for (const proposal of selectedResearchProposals) {
+    const { id, slug, ...content } = proposal
+    await prisma.researchProposal.upsert({
+      where: { slug },
+      update: content,
+      create: { id, slug, ...content },
+    })
+  }
+  console.log(`${selectedResearchProposals.length} selected research proposals created`)
+
   // Create projects
   const projects = [
     {
@@ -175,7 +318,7 @@ async function main() {
       startDate: new Date("2025-09-01"),
       endDate: null,
       description: "National Master's Entrance Examination Rank: 56",
-      gpa: "18.26/20",
+      gpa: "18.28/20",
       gpaConverted: "4.00/4.00",
       sortOrder: 0,
     },
@@ -231,9 +374,9 @@ async function main() {
       { name: "Applied Cryptography", grade: "18.9/20" },
       { name: "Secure Software Systems", grade: "18.2/20" },
       // Spring 2026 (started Feb 2026) — grades/details pending
-      { name: "Formal Methods in Information Security" },
-      { name: "Deep Learning" },
-      { name: "Foundations and Applications of Blockchain" },
+      { name: "Formal Methods in Information Security", grade: "16.7 / 20" },
+      { name: "Deep Learning", grade: "18.6/20" },
+      { name: "Foundations and Applications of Blockchain", grade: "18.9 / 20" },
     ]
     let order = 0
     for (const course of mscCourses) {
@@ -273,6 +416,16 @@ async function main() {
         "https://docs.google.com/presentation/d/1TOtABEE-BxehewOyfk-qVNsLYb-tzV6QI-S6NThfhIg/edit?usp=sharing",
         1
       )
+    }
+
+    const secureSoftwareSystems = await prisma.course.findFirst({
+      where: { timelineEventId: mscSharif.id, name: "Secure Software Systems" },
+    })
+    if (secureSoftwareSystems) {
+      // The course-project PDF is the assignment brief, not a public project page.
+      await prisma.courseLink.deleteMany({
+        where: { courseId: secureSoftwareSystems.id, name: "Agentic Vulnerability Detection" },
+      })
     }
 
     const formalMethods = await prisma.course.findFirst({
@@ -496,16 +649,10 @@ async function main() {
     update: {
       value: [
         {
-          title: "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
-          description: "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
-          tags: ["Blockchain Security", "Cross-Chain", "Layer 2", "Distributed Systems"],
-        },
-        {
-          title: "Ethereum Mempool Security and Asymmetric DoS",
-          description: "Investigating denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.",
-          tags: ["Ethereum", "Security", "Mempool", "DoS", "Systems"],
-          href: "/projects/brcc-lab",
-          linkLabel: "View BRCC lab",
+          title: "Lifecycle Security of Tool-Using AI Agents",
+          description:
+            "M.Sc. thesis: a model-independent mechanism for controlling source, tool, and skill changes; memory entry, transformation, and retrieval; and authority delegation — grounded in provenance, trust, and authority.",
+          tags: ["Provenance", "Trust", "Authority", "Tool Security"],
         },
       ],
     },
@@ -513,16 +660,10 @@ async function main() {
       key: RESEARCH_DIRECTIONS_SETTING_KEY,
       value: [
         {
-          title: "Secure and Scalable Cross-Chain & Layer-2 Interoperability",
-          description: "Exploring security, scalability, atomicity, and verification challenges in cross-chain and cross-rollup protocols.",
-          tags: ["Blockchain Security", "Cross-Chain", "Layer 2", "Distributed Systems"],
-        },
-        {
-          title: "Ethereum Mempool Security and Asymmetric DoS",
-          description: "Investigating denial-of-service attacks against Ethereum transaction pools through controlled and reproducible experiments.",
-          tags: ["Ethereum", "Security", "Mempool", "DoS", "Systems"],
-          href: "/projects/brcc-lab",
-          linkLabel: "View BRCC lab",
+          title: "Lifecycle Security of Tool-Using AI Agents",
+          description:
+            "M.Sc. thesis: a model-independent mechanism for controlling source, tool, and skill changes; memory entry, transformation, and retrieval; and authority delegation — grounded in provenance, trust, and authority.",
+          tags: ["Provenance", "Trust", "Authority", "Tool Security"],
         },
       ],
     },

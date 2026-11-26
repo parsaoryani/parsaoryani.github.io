@@ -50,6 +50,26 @@ export async function getProjectBySlug(slug: string) {
   })
 }
 
+export async function getPublishedResearchAgenda() {
+  return prisma.researchAgenda.findFirst({
+    where: { status: "published" },
+    orderBy: { updatedAt: "desc" },
+  })
+}
+
+export async function getAllResearchProposals() {
+  return prisma.researchProposal.findMany({
+    where: { status: "published", deletedAt: null },
+    orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { year: "desc" }],
+  })
+}
+
+export async function getResearchProposalBySlug(slug: string) {
+  return prisma.researchProposal.findFirst({
+    where: { slug, status: "published", deletedAt: null },
+  })
+}
+
 export async function getAllTags() {
   return prisma.tag.findMany({
     orderBy: { label: "asc" },
