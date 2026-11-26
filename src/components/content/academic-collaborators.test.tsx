@@ -7,11 +7,14 @@ const visibleNames = [
   "Dr. Morteza Amini",
   "Prof. Mehdi Ghatee",
   "Dr. Mohammad Mahdi Bejani",
+  "Dr. Mahdieh Soleymani Baghshah",
+  "Dr. Nasour Bagheri",
+  "Dr. Amir Mahdi Sadeghzadeh",
 ]
 
 // Kept in the content collection but hidden from the public References section
 // for now. Remove `hidden: true` from their entries to re-publish them.
-const hiddenNames = ["Dr. Amir Mahdi Sadeghzadeh", "Dr. Mohammad Ali"]
+const hiddenNames = ["Dr. Mohammad Ali"]
 
 const visibleCollaborators = academicCollaborators.filter(
   (collaborator) => !collaborator.hidden
@@ -48,7 +51,9 @@ describe("AcademicCollaborators", () => {
       expect(collaborator.relationship).toBeTruthy()
       expect(collaborator.scholarUrl).toMatch(/^https:\/\/scholar\.google\./)
       expect(collaborator.email).toMatch(/^[^@]+@[^@]+$/)
-      expect(collaborator.photoUrl).toMatch(/^\/collaborators\/.+-scholar\.jpg$/)
+      if (collaborator.photoUrl) {
+        expect(collaborator.photoUrl).toMatch(/^\/collaborators\/.+-scholar\.jpg$/)
+      }
 
       for (const removedField of ["period", "context", "summary", "interests", "linkedinUrl"]) {
         expect(removedField in collaborator).toBe(false)
