@@ -257,6 +257,7 @@
       "limitations": "Guarantees depend on complete requirements, faithful policy semantics, trusted evidence, and the declared repair grammar. Snapshot replay does not predict every replanning behavior, and the study does not claim general causal discovery or universal safety.",
       "pdfUrl": "/research/proposals/causal-policy-repair-v1.0.pdf",
       "featured": true,
+      "hidden": true,
       "sortOrder": 1,
       "updatedAt": "2026-10-29T06:00:00.000Z"
     },
@@ -307,6 +308,7 @@
       "limitations": "Guarantees depend on correct owner assignment, truthful transformation witnesses, faithful transform semantics, secure artifact binding, and a mediated release gate. Arbitrary summaries, compromised hosts, and global distributed revocation are outside the first version.",
       "pdfUrl": "/research/proposals/joint-authorization-transformed-artifacts-v1.0.pdf",
       "featured": true,
+      "hidden": true,
       "sortOrder": 3,
       "updatedAt": "2026-10-29T06:00:00.000Z"
     }

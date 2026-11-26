@@ -189,6 +189,8 @@ export const staticResearchProposalSchema = z
     limitations: nullableStringSchema,
     pdfUrl: optionalNullableStringSchema,
     featured: z.boolean(),
+    /** Keep the record in the snapshot but hide it from the public site. */
+    hidden: z.boolean().optional(),
     sortOrder: z.number().int(),
     updatedAt: isoDateTimeSchema,
   })

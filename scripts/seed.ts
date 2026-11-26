@@ -126,7 +126,9 @@ async function main() {
       limitations:
         "Guarantees depend on complete requirements, faithful policy semantics, trusted evidence, and the declared repair grammar. Snapshot replay does not predict every replanning behavior, and the study does not claim general causal discovery or universal safety.",
       pdfUrl: "/research/proposals/causal-policy-repair-v1.0.pdf",
-      status: "published" as const,
+      // Hidden from the public site for now; keep the record and set back to
+      // "published" (and drop `hidden` from site-data.json) to re-publish.
+      status: "draft" as const,
       featured: true,
       sortOrder: 1,
     },
@@ -178,7 +180,9 @@ async function main() {
       limitations:
         "Guarantees depend on correct owner assignment, truthful transformation witnesses, faithful transform semantics, secure artifact binding, and a mediated release gate. Arbitrary summaries, compromised hosts, and global distributed revocation are outside the first version.",
       pdfUrl: "/research/proposals/joint-authorization-transformed-artifacts-v1.0.pdf",
-      status: "published" as const,
+      // Hidden from the public site for now; keep the record and set back to
+      // "published" (and drop `hidden` from site-data.json) to re-publish.
+      status: "draft" as const,
       featured: true,
       sortOrder: 3,
     },

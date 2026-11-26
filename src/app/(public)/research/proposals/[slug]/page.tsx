@@ -66,7 +66,7 @@ export default async function ResearchProposalPage({ params }: Props) {
           <p className="mb-6 text-lg leading-relaxed text-mist">{proposal.summary}</p>
 
           <div className="mb-10 rounded-xl border border-amber/20 bg-amber/[0.04] p-5 text-sm leading-relaxed text-mist">
-            This document is a public research plan and work in progress. It is not a peer-reviewed publication.
+            This document is a public research plan and work in progress.
           </div>
 
           <div className="mb-10 flex flex-wrap gap-2">

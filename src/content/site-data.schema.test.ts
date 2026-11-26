@@ -214,10 +214,21 @@ describe("static site data contract", () => {
   })
 
   it("publishes the curated proposal set without the retired cross-chain direction", () => {
-    expect(siteData.researchProposals.map((proposal) => proposal.slug)).toEqual([
+    expect(
+      siteData.researchProposals
+        .filter((proposal) => !proposal.hidden)
+        .map((proposal) => proposal.slug)
+    ).toEqual([
       "lifecycle-security-tool-using-ai-agents",
-      "causal-diagnosis-minimal-policy-repair",
       "continuous-threat-model-maintenance",
+    ])
+
+    expect(
+      siteData.researchProposals
+        .filter((proposal) => proposal.hidden)
+        .map((proposal) => proposal.slug)
+    ).toEqual([
+      "causal-diagnosis-minimal-policy-repair",
       "joint-authorization-transformed-artifacts",
     ])
 

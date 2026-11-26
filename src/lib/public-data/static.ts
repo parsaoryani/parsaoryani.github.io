@@ -43,11 +43,13 @@ const researchAgenda: PublicResearchAgenda | null = siteData.researchAgenda
     }
   : null
 
-const researchProposals: PublicResearchProposal[] = siteData.researchProposals.map((proposal) => ({
-  ...proposal,
-  updatedAt: toDate(proposal.updatedAt),
-  pdfUrl: proposal.pdfUrl ?? null,
-}))
+const researchProposals: PublicResearchProposal[] = siteData.researchProposals
+  .filter((proposal) => !proposal.hidden)
+  .map((proposal) => ({
+    ...proposal,
+    updatedAt: toDate(proposal.updatedAt),
+    pdfUrl: proposal.pdfUrl ?? null,
+  }))
 
 const timelineEvents: PublicTimelineEvent[] = siteData.timelineEvents.map((event) => ({
   ...event,
