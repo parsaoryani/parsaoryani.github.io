@@ -7,6 +7,11 @@ export interface AcademicCollaborator {
   email: string
   photoUrl: string | null
   photoPosition?: string
+  /**
+   * Set to `true` to keep a profile in this file but hide it from the public
+   * References section. Remove the flag (or set it to `false`) to re-publish.
+   */
+  hidden?: boolean
 }
 
 /**
@@ -38,6 +43,7 @@ export const academicCollaborators: AcademicCollaborator[] = [
     scholarUrl: "https://scholar.google.com/citations?user=SndfdlwAAAAJ&hl=en",
     email: "sadeghzadeh@sharif.edu",
     photoUrl: "/collaborators/amir-mahdi-sadeghzadeh-scholar.jpg",
+    hidden: true,
   },
   {
     name: "Dr. Mohammad Ali",
@@ -50,6 +56,7 @@ export const academicCollaborators: AcademicCollaborator[] = [
     scholarUrl: "https://scholar.google.com/citations?user=0MJl8EcAAAAJ&hl=en",
     email: "mali71@aut.ac.ir",
     photoUrl: "/collaborators/mohammad-ali-scholar.jpg",
+    hidden: true,
   },
   {
     name: "Prof. Mehdi Ghatee",

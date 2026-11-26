@@ -8,6 +8,10 @@ import {
   type AcademicCollaborator,
 } from "@/content/academic-collaborators"
 
+const visibleCollaborators = academicCollaborators.filter(
+  (collaborator) => !collaborator.hidden
+)
+
 function initials(name: string) {
   const parts = name
     .replace(/^(Dr\.|Prof\.)\s+/, "")
@@ -116,7 +120,7 @@ export function AcademicCollaborators() {
         </ScrollReveal>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {academicCollaborators.map((collaborator, index) => (
+          {visibleCollaborators.map((collaborator, index) => (
             <ScrollReveal key={collaborator.name} delay={index * 70} className="h-full">
               <ReferenceCard collaborator={collaborator} />
             </ScrollReveal>
